@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:checkable="true"
+    android:foreground="?android:attr/selectableItemBackground">
+    <TextView
+        android:id="@+id/tv_recipe_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/cardview_dark_background"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:hint="@string/hint_recipe_name"/>
+
+</androidx.cardview.widget.CardView>

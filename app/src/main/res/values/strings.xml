@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BakingApp</string>
+    <string name="error_message">An error occurred. Try again later.</string>
+    <string name="hint_recipe_name">Recipe title should appear here</string>
+</resources>
