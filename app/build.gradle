@@ -38,6 +38,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //OKHttp for networking
     implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-    //GSON for JSON parsing
+    //JSONLoader for converting .json file to String
+    implementation 'com.github.zainfikrih:jsonloader-library:1.0.3'
+    //GSON for parsing JSON-Java Deserialization
     implementation 'com.google.code.gson:gson:2.8.6'
 }
