@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/card_radius"
     android:clickable="true"
-    android:checkable="true"
+    android:longClickable="true"
     android:foreground="?android:attr/selectableItemBackground">
     <TextView
         android:id="@+id/tv_recipe_title"

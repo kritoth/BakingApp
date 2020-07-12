@@ -23,13 +23,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     private List<Recipe> mRecipes;
     // member var for own custom clicklistener
     private RecipeAdapterItemClickListener mClickListener;
+    // member var for own custom long clicklistener
+    private RecipeAdapterItemLongClickListener mLongClickListener;
 
      /** The interface that receives onClick messages.
      */
      public interface RecipeAdapterItemClickListener {
         void onItemClick(int position);
      }
-
     /**
      * Sets the received custom item click listener to the member custom item click listener
      * @param onItemClickListener
@@ -37,6 +38,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      public void setOnItemClickListener(RecipeAdapterItemClickListener onItemClickListener){
         mClickListener = onItemClickListener;
      }
+
+    /** The interface that receives onLongClick messages.
+     */
+    public interface RecipeAdapterItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+    /**
+     * Sets the received custom item long click listener to the member custom item long click listener
+     * @param onItemLongClickListener
+     */
+    public void setOnItemLongClickListener(RecipeAdapterItemLongClickListener onItemLongClickListener){
+        mLongClickListener = onItemLongClickListener;
+    }
 
     /**
      * Constructor
@@ -50,7 +64,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public RecipeAdapter.RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         CardItemBinding itemBinding = CardItemBinding.inflate(inflater, parent, false);
-        return new RecipeViewHolder(itemBinding, mClickListener);
+        return new RecipeViewHolder(itemBinding, mClickListener, mLongClickListener);
     }
 
     @Override
@@ -67,7 +81,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
         public CardItemBinding cardBinding;
 
-        public RecipeViewHolder(@NotNull CardItemBinding cardItemBinding, final RecipeAdapterItemClickListener clickListener) {
+        public RecipeViewHolder(@NotNull CardItemBinding cardItemBinding,
+                                final RecipeAdapterItemClickListener clickListener, final RecipeAdapterItemLongClickListener longClickListener) {
             super(cardItemBinding.getRoot());
             this.cardBinding = cardItemBinding;
 
@@ -83,6 +98,18 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 }
             });
 
+            cardBinding.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if(clickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            longClickListener.onItemLongClick(position);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
     }
     /**

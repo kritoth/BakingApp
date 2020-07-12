@@ -70,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Item clicked: " + mRecipes[position].getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        mAdapter.setOnItemLongClickListener(new RecipeAdapter.RecipeAdapterItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position) {
+                Toast.makeText(getApplicationContext(), "Item LONG clicked: " + mRecipes[position].getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
