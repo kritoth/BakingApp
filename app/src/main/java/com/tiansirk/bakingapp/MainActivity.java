@@ -1,6 +1,7 @@
 package com.tiansirk.bakingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import men.ngopi.zain.jsonloaderlibrary.JSONLoader;
@@ -58,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initRecycler() {
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        binding.rvRecipes.setLayoutManager(linearLayoutManager);
+        // use the respective number of columns for phones and tablets
+        int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
+        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
+        binding.rvRecipes.setLayoutManager(gridLayoutManager);
         binding.rvRecipes.setHasFixedSize(true);
         mAdapter = new RecipeAdapter(this);
         binding.rvRecipes.setAdapter(mAdapter);
