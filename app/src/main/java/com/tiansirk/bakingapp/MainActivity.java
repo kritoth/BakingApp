@@ -1,18 +1,15 @@
 package com.tiansirk.bakingapp;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import men.ngopi.zain.jsonloaderlibrary.JSONLoader;
 import men.ngopi.zain.jsonloaderlibrary.StringLoaderListener;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
@@ -20,8 +17,9 @@ import com.tiansirk.bakingapp.ui.RecipeAdapter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity implements RecipeAdapter.RecipeAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -43,6 +41,14 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
 
         // Load data from JSON
         parseJsonFromFile();
+
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
+        String firstRec= JsonParser.dummyRecipes()[0].toString();
+        Log.d(TAG, "Recipes array size: " + JsonParser.dummyRecipes().length + "\nFirst element: " + firstRec);
+        Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
+        Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+        if(mAdapter.getRecipesData().isEmpty()) showErrorMessage();
+        else showDataView();
     }
 
     private void initViews() {
@@ -57,6 +63,13 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         binding.rvRecipes.setHasFixedSize(true);
         mAdapter = new RecipeAdapter(this);
         binding.rvRecipes.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new RecipeAdapter.RecipeAdapterItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(getApplicationContext(), "Item clicked: " + mRecipes[position].getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**
@@ -83,11 +96,6 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         binding.tvErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onClick(Recipe clickedRecipe) {
-
-    }
-
     /**
      * Reads from the .json file and returns its String representation. Uses JSONLoader Library,
      * https://android-arsenal.com/details/1/7916,
@@ -101,14 +109,18 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
                 .get(new StringLoaderListener() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d(TAG, "onResponse get called");
                         // response as String to be used to parse content into array of Recipe
                         mRecipes = JsonParser.jsonToJavaDeserialization(response);
+
+
                     }
 
                     @Override
                     public void onFailure(IOException error) {
                         // error with opening/reading file
                         Log.e(TAG, "Error with reading from .json file!:", error);
+                        showErrorMessage();
                     }
                 });
     }

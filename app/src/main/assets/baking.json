@@ -529,5 +529,589 @@
     ],
     "servings": 8,
     "image": ""
+  },
+  {
+    "id": 5,
+    "name": "Cheesecake COPY",
+    "ingredients": [
+      {
+        "quantity": 2,
+        "measure": "CUP",
+        "ingredient": "Graham Cracker crumbs"
+      },
+      {
+        "quantity": 6,
+        "measure": "TBLSP",
+        "ingredient": "unsalted butter, melted"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "granulated sugar"
+      },
+      {
+        "quantity": 1,
+        "measure": "TSP",
+        "ingredient": "salt"
+      },
+      {
+        "quantity": 4,
+        "measure": "TSP",
+        "ingredient": "vanilla,divided"
+      },
+      {
+        "quantity": 680,
+        "measure": "G",
+        "ingredient": "cream cheese, softened"
+      },
+      {
+        "quantity": 3,
+        "measure": "UNIT",
+        "ingredient": "large whole eggs"
+      },
+      {
+        "quantity": 2,
+        "measure": "UNIT",
+        "ingredient": "large egg yolks"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "heavy cream"
+      }
+    ],
+    "steps": [
+      {
+        "id": 0,
+        "shortDescription": "Recipe Introduction",
+        "description": "Recipe Introduction",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdae8_-intro-cheesecake/-intro-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 1,
+        "shortDescription": "Starting prep.",
+        "description": "1. Preheat the oven to 350\u00b0F. Grease the bottom of a 9-inch round springform pan with butter. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 2,
+        "shortDescription": "Prep the cookie crust.",
+        "description": "2. To assemble the crust, whisk together the cookie crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt for the crust in a medium bowl. Stir in the melted butter and 1 teaspoon of vanilla extract until uniform. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb1d_2-form-crust-to-bottom-of-pan-cheesecake/2-form-crust-to-bottom-of-pan-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 3,
+        "shortDescription": "Start water bath.",
+        "description": "3. Fill a large roasting pan with a few inches of hot water and place it on the bottom rack of the oven.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 4,
+        "shortDescription": "Prebake cookie crust. ",
+        "description": "4. Press the cookie mixture into the bottom and slightly up the sides of the prepared pan. Bake for 11 minutes and then let cool.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 5,
+        "shortDescription": "Mix cream cheese and dry ingredients.",
+        "description": "5. Beat the cream cheese, remaining 200 grams (1 cup) of sugar, and remaining 1/2 teaspoon salt on medium speed in a stand mixer with the paddle attachment for 3 minutes (or high speed if using a hand mixer). ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb3a_3-mix-sugar-salt-together-cheesecake/3-mix-sugar-salt-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 6,
+        "shortDescription": "Add eggs.",
+        "description": "6. Scrape down the sides of the pan. Add in the eggs one at a time, beating each one on medium-low speed just until incorporated. Scrape down the sides and bottom of the bowl. Add in both egg yolks and beat until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb55_4-add-eggs-mix-cheesecake/4-add-eggs-mix-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 7,
+        "shortDescription": "Add heavy cream and vanilla.",
+        "description": "7. Add the cream and remaining tablespoon of vanilla to the batter and beat on medium-low speed until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb72_5-mix-vanilla-cream-together-cheesecake/5-mix-vanilla-cream-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 8,
+        "shortDescription": "Pour batter in pan.",
+        "description": "8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter.",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb88_6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake/6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 9,
+        "shortDescription": "Bake the cheesecake.",
+        "description": "9. Bake the cheesecake on a middle rack of the oven above the roasting pan full of water for 50 minutes. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 10,
+        "shortDescription": "Turn off oven and leave cake in.",
+        "description": "10. Turn off the oven but keep the cheesecake in the oven with the door closed for 50 more minutes.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 11,
+        "shortDescription": "Remove from oven and cool at room temperature.",
+        "description": "11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 12,
+        "shortDescription": "Final cooling and set.",
+        "description": "12. Cover the cheesecake with plastic wrap, not allowing the plastic to touch the top of the cake, and refrigerate it for at least 8 hours. Then it's ready to serve!",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdbac_9-finished-product-cheesecake/9-finished-product-cheesecake.mp4",
+        "thumbnailURL": ""
+      }
+    ],
+    "servings": 8,
+    "image": ""
+  },
+  {
+    "id": 6,
+    "name": "Cheesecake COPY2",
+    "ingredients": [
+      {
+        "quantity": 2,
+        "measure": "CUP",
+        "ingredient": "Graham Cracker crumbs"
+      },
+      {
+        "quantity": 6,
+        "measure": "TBLSP",
+        "ingredient": "unsalted butter, melted"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "granulated sugar"
+      },
+      {
+        "quantity": 1,
+        "measure": "TSP",
+        "ingredient": "salt"
+      },
+      {
+        "quantity": 4,
+        "measure": "TSP",
+        "ingredient": "vanilla,divided"
+      },
+      {
+        "quantity": 680,
+        "measure": "G",
+        "ingredient": "cream cheese, softened"
+      },
+      {
+        "quantity": 3,
+        "measure": "UNIT",
+        "ingredient": "large whole eggs"
+      },
+      {
+        "quantity": 2,
+        "measure": "UNIT",
+        "ingredient": "large egg yolks"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "heavy cream"
+      }
+    ],
+    "steps": [
+      {
+        "id": 0,
+        "shortDescription": "Recipe Introduction",
+        "description": "Recipe Introduction",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdae8_-intro-cheesecake/-intro-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 1,
+        "shortDescription": "Starting prep.",
+        "description": "1. Preheat the oven to 350\u00b0F. Grease the bottom of a 9-inch round springform pan with butter. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 2,
+        "shortDescription": "Prep the cookie crust.",
+        "description": "2. To assemble the crust, whisk together the cookie crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt for the crust in a medium bowl. Stir in the melted butter and 1 teaspoon of vanilla extract until uniform. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb1d_2-form-crust-to-bottom-of-pan-cheesecake/2-form-crust-to-bottom-of-pan-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 3,
+        "shortDescription": "Start water bath.",
+        "description": "3. Fill a large roasting pan with a few inches of hot water and place it on the bottom rack of the oven.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 4,
+        "shortDescription": "Prebake cookie crust. ",
+        "description": "4. Press the cookie mixture into the bottom and slightly up the sides of the prepared pan. Bake for 11 minutes and then let cool.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 5,
+        "shortDescription": "Mix cream cheese and dry ingredients.",
+        "description": "5. Beat the cream cheese, remaining 200 grams (1 cup) of sugar, and remaining 1/2 teaspoon salt on medium speed in a stand mixer with the paddle attachment for 3 minutes (or high speed if using a hand mixer). ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb3a_3-mix-sugar-salt-together-cheesecake/3-mix-sugar-salt-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 6,
+        "shortDescription": "Add eggs.",
+        "description": "6. Scrape down the sides of the pan. Add in the eggs one at a time, beating each one on medium-low speed just until incorporated. Scrape down the sides and bottom of the bowl. Add in both egg yolks and beat until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb55_4-add-eggs-mix-cheesecake/4-add-eggs-mix-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 7,
+        "shortDescription": "Add heavy cream and vanilla.",
+        "description": "7. Add the cream and remaining tablespoon of vanilla to the batter and beat on medium-low speed until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb72_5-mix-vanilla-cream-together-cheesecake/5-mix-vanilla-cream-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 8,
+        "shortDescription": "Pour batter in pan.",
+        "description": "8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter.",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb88_6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake/6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 9,
+        "shortDescription": "Bake the cheesecake.",
+        "description": "9. Bake the cheesecake on a middle rack of the oven above the roasting pan full of water for 50 minutes. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 10,
+        "shortDescription": "Turn off oven and leave cake in.",
+        "description": "10. Turn off the oven but keep the cheesecake in the oven with the door closed for 50 more minutes.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 11,
+        "shortDescription": "Remove from oven and cool at room temperature.",
+        "description": "11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 12,
+        "shortDescription": "Final cooling and set.",
+        "description": "12. Cover the cheesecake with plastic wrap, not allowing the plastic to touch the top of the cake, and refrigerate it for at least 8 hours. Then it's ready to serve!",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdbac_9-finished-product-cheesecake/9-finished-product-cheesecake.mp4",
+        "thumbnailURL": ""
+      }
+    ],
+    "servings": 8,
+    "image": ""
+  },
+  {
+    "id": 7,
+    "name": "Cheesecake COPY3",
+    "ingredients": [
+      {
+        "quantity": 2,
+        "measure": "CUP",
+        "ingredient": "Graham Cracker crumbs"
+      },
+      {
+        "quantity": 6,
+        "measure": "TBLSP",
+        "ingredient": "unsalted butter, melted"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "granulated sugar"
+      },
+      {
+        "quantity": 1,
+        "measure": "TSP",
+        "ingredient": "salt"
+      },
+      {
+        "quantity": 4,
+        "measure": "TSP",
+        "ingredient": "vanilla,divided"
+      },
+      {
+        "quantity": 680,
+        "measure": "G",
+        "ingredient": "cream cheese, softened"
+      },
+      {
+        "quantity": 3,
+        "measure": "UNIT",
+        "ingredient": "large whole eggs"
+      },
+      {
+        "quantity": 2,
+        "measure": "UNIT",
+        "ingredient": "large egg yolks"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "heavy cream"
+      }
+    ],
+    "steps": [
+      {
+        "id": 0,
+        "shortDescription": "Recipe Introduction",
+        "description": "Recipe Introduction",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdae8_-intro-cheesecake/-intro-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 1,
+        "shortDescription": "Starting prep.",
+        "description": "1. Preheat the oven to 350\u00b0F. Grease the bottom of a 9-inch round springform pan with butter. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 2,
+        "shortDescription": "Prep the cookie crust.",
+        "description": "2. To assemble the crust, whisk together the cookie crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt for the crust in a medium bowl. Stir in the melted butter and 1 teaspoon of vanilla extract until uniform. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb1d_2-form-crust-to-bottom-of-pan-cheesecake/2-form-crust-to-bottom-of-pan-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 3,
+        "shortDescription": "Start water bath.",
+        "description": "3. Fill a large roasting pan with a few inches of hot water and place it on the bottom rack of the oven.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 4,
+        "shortDescription": "Prebake cookie crust. ",
+        "description": "4. Press the cookie mixture into the bottom and slightly up the sides of the prepared pan. Bake for 11 minutes and then let cool.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 5,
+        "shortDescription": "Mix cream cheese and dry ingredients.",
+        "description": "5. Beat the cream cheese, remaining 200 grams (1 cup) of sugar, and remaining 1/2 teaspoon salt on medium speed in a stand mixer with the paddle attachment for 3 minutes (or high speed if using a hand mixer). ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb3a_3-mix-sugar-salt-together-cheesecake/3-mix-sugar-salt-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 6,
+        "shortDescription": "Add eggs.",
+        "description": "6. Scrape down the sides of the pan. Add in the eggs one at a time, beating each one on medium-low speed just until incorporated. Scrape down the sides and bottom of the bowl. Add in both egg yolks and beat until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb55_4-add-eggs-mix-cheesecake/4-add-eggs-mix-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 7,
+        "shortDescription": "Add heavy cream and vanilla.",
+        "description": "7. Add the cream and remaining tablespoon of vanilla to the batter and beat on medium-low speed until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb72_5-mix-vanilla-cream-together-cheesecake/5-mix-vanilla-cream-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 8,
+        "shortDescription": "Pour batter in pan.",
+        "description": "8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter.",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb88_6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake/6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 9,
+        "shortDescription": "Bake the cheesecake.",
+        "description": "9. Bake the cheesecake on a middle rack of the oven above the roasting pan full of water for 50 minutes. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 10,
+        "shortDescription": "Turn off oven and leave cake in.",
+        "description": "10. Turn off the oven but keep the cheesecake in the oven with the door closed for 50 more minutes.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 11,
+        "shortDescription": "Remove from oven and cool at room temperature.",
+        "description": "11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 12,
+        "shortDescription": "Final cooling and set.",
+        "description": "12. Cover the cheesecake with plastic wrap, not allowing the plastic to touch the top of the cake, and refrigerate it for at least 8 hours. Then it's ready to serve!",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdbac_9-finished-product-cheesecake/9-finished-product-cheesecake.mp4",
+        "thumbnailURL": ""
+      }
+    ],
+    "servings": 8,
+    "image": ""
+  },
+  {
+    "id": 8,
+    "name": "Cheesecake COPY4",
+    "ingredients": [
+      {
+        "quantity": 2,
+        "measure": "CUP",
+        "ingredient": "Graham Cracker crumbs"
+      },
+      {
+        "quantity": 6,
+        "measure": "TBLSP",
+        "ingredient": "unsalted butter, melted"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "granulated sugar"
+      },
+      {
+        "quantity": 1,
+        "measure": "TSP",
+        "ingredient": "salt"
+      },
+      {
+        "quantity": 4,
+        "measure": "TSP",
+        "ingredient": "vanilla,divided"
+      },
+      {
+        "quantity": 680,
+        "measure": "G",
+        "ingredient": "cream cheese, softened"
+      },
+      {
+        "quantity": 3,
+        "measure": "UNIT",
+        "ingredient": "large whole eggs"
+      },
+      {
+        "quantity": 2,
+        "measure": "UNIT",
+        "ingredient": "large egg yolks"
+      },
+      {
+        "quantity": 250,
+        "measure": "G",
+        "ingredient": "heavy cream"
+      }
+    ],
+    "steps": [
+      {
+        "id": 0,
+        "shortDescription": "Recipe Introduction",
+        "description": "Recipe Introduction",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdae8_-intro-cheesecake/-intro-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 1,
+        "shortDescription": "Starting prep.",
+        "description": "1. Preheat the oven to 350\u00b0F. Grease the bottom of a 9-inch round springform pan with butter. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 2,
+        "shortDescription": "Prep the cookie crust.",
+        "description": "2. To assemble the crust, whisk together the cookie crumbs, 50 grams (1/4 cup) of sugar, and 1/2 teaspoon of salt for the crust in a medium bowl. Stir in the melted butter and 1 teaspoon of vanilla extract until uniform. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb1d_2-form-crust-to-bottom-of-pan-cheesecake/2-form-crust-to-bottom-of-pan-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 3,
+        "shortDescription": "Start water bath.",
+        "description": "3. Fill a large roasting pan with a few inches of hot water and place it on the bottom rack of the oven.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 4,
+        "shortDescription": "Prebake cookie crust. ",
+        "description": "4. Press the cookie mixture into the bottom and slightly up the sides of the prepared pan. Bake for 11 minutes and then let cool.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 5,
+        "shortDescription": "Mix cream cheese and dry ingredients.",
+        "description": "5. Beat the cream cheese, remaining 200 grams (1 cup) of sugar, and remaining 1/2 teaspoon salt on medium speed in a stand mixer with the paddle attachment for 3 minutes (or high speed if using a hand mixer). ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb3a_3-mix-sugar-salt-together-cheesecake/3-mix-sugar-salt-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 6,
+        "shortDescription": "Add eggs.",
+        "description": "6. Scrape down the sides of the pan. Add in the eggs one at a time, beating each one on medium-low speed just until incorporated. Scrape down the sides and bottom of the bowl. Add in both egg yolks and beat until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb55_4-add-eggs-mix-cheesecake/4-add-eggs-mix-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 7,
+        "shortDescription": "Add heavy cream and vanilla.",
+        "description": "7. Add the cream and remaining tablespoon of vanilla to the batter and beat on medium-low speed until just incorporated. ",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb72_5-mix-vanilla-cream-together-cheesecake/5-mix-vanilla-cream-together-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 8,
+        "shortDescription": "Pour batter in pan.",
+        "description": "8. Pour the batter into the cooled cookie crust. Bang the pan on a counter or sturdy table a few times to release air bubbles from the batter.",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdb88_6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake/6-add-the-batter-to-the-pan-w-the-crumbs-cheesecake.mp4",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 9,
+        "shortDescription": "Bake the cheesecake.",
+        "description": "9. Bake the cheesecake on a middle rack of the oven above the roasting pan full of water for 50 minutes. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 10,
+        "shortDescription": "Turn off oven and leave cake in.",
+        "description": "10. Turn off the oven but keep the cheesecake in the oven with the door closed for 50 more minutes.",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 11,
+        "shortDescription": "Remove from oven and cool at room temperature.",
+        "description": "11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature. ",
+        "videoURL": "",
+        "thumbnailURL": ""
+      },
+      {
+        "id": 12,
+        "shortDescription": "Final cooling and set.",
+        "description": "12. Cover the cheesecake with plastic wrap, not allowing the plastic to touch the top of the cake, and refrigerate it for at least 8 hours. Then it's ready to serve!",
+        "videoURL": "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffdbac_9-finished-product-cheesecake/9-finished-product-cheesecake.mp4",
+        "thumbnailURL": ""
+      }
+    ],
+    "servings": 8,
+    "image": ""
   }
 ]

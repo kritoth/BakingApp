@@ -2,26 +2,26 @@ package com.tiansirk.bakingapp.data;
 
 public class Step {
 
-    private int number;
+    private int id;
     private String shortDescription;
     private String description;
     private String videoURL;
     private String imageURL;
 
-    public Step(int number, String shortDescription, String description, String videoURL, String imageURL) {
-        this.number = number;
+    public Step(int id, String shortDescription, String description, String videoURL, String imageURL) {
+        this.id = id;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
         this.imageURL = imageURL;
     }
 
-    public int getNumber() {
-        return number;
+    public int getId() {
+        return id;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getShortDescription() {
@@ -59,7 +59,7 @@ public class Step {
     @Override
     public String toString() {
         return "Step{" +
-                "number=" + number +
+                "id=" + id +
                 ", shortDescription='" + shortDescription + '\'' +
                 ", description='" + description + '\'' +
                 ", videoURL='" + videoURL + '\'' +

@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Recipe {
 
-    private String title;
+    private String name;
     private List<Ingredient> ingredients;
     private List<Step> steps;
     private int servings;
     private String imgUrl;
 
     public Recipe(String name, List<Ingredient> ingredients, List<Step> steps, int servings, String imgUrl) {
-        this.title = name;
+        this.name = name;
         this.ingredients = ingredients;
         this.steps = steps;
         this.servings = servings;
@@ -20,15 +20,15 @@ public class Recipe {
     }
 
     public Recipe(String name, int servings, String imgUrl) {
-        this.title = name;
+        this.name = name;
         this.ingredients = new ArrayList<>();
         this.steps  = new ArrayList<>();
         this.servings = servings;
         this.imgUrl = imgUrl;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public List<Ingredient> getIngredients() {
@@ -50,7 +50,7 @@ public class Recipe {
     @Override
     public String toString() {
         return "Recipe{" +
-                "title='" + title + '\'' +
+                "name='" + name + '\'' +
                 ",\n ingredients=" + ingredients +
                 ",\n steps=" + steps +
                 ", servings=" + servings +

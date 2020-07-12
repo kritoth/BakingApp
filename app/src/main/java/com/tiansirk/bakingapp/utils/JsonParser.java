@@ -5,7 +5,9 @@ import com.google.gson.stream.JsonReader;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Recipe;
+import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.ui.RecipeAdapter;
 
 import org.json.JSONArray;
@@ -33,7 +35,7 @@ public class JsonParser {
      * Reads from the JSON and creates {@link Recipe} objects accordingly. Uses Gson, https://android-arsenal.com/details/1/229,
      * to convert a JSON string to equivalent Java object.
      *
-     * @return the list of {@link Recipe}s
+     * @return the array of {@link Recipe}s
      */
     public static Recipe[] jsonToJavaDeserialization(String json){
 
@@ -43,5 +45,16 @@ public class JsonParser {
         return recipes;
     }
 
+    /**
+     * For testing purposes
+     * @return array of dummy Recipes
+     */
+    public static Recipe[] dummyRecipes(){
+        Recipe[] recipes = new Recipe[10];
+        for(int i=0; i<recipes.length; i++){
+            recipes[i] = new Recipe("Az " + i + ". recept", new ArrayList<Ingredient>(), new ArrayList<Step>(), 10, "www.kep_helye.com");
+        }
 
+        return recipes;
+    }
 }
