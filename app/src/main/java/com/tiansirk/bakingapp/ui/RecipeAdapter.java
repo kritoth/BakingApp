@@ -19,46 +19,94 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
-
+    // member var for data
     private List<Recipe> mRecipes;
+    // member var for own custom clicklistener
+    private RecipeAdapterItemClickListener mClickListener;
+
+     /** The interface that receives onClick messages.
+     */
+     public interface RecipeAdapterItemClickListener {
+        void onItemClick(int position);
+     }
 
     /**
-     * The interface that receives onClick messages.
+     * Sets the received custom item click listener to the member custom item click listener
+     * @param onItemClickListener
      */
-    public interface RecipeAdapterOnClickHandler {
-        void onClick(Recipe clickedRecipe);
-    }
-
-    private final RecipeAdapterOnClickHandler mClickHandler;
+     public void setOnItemClickListener(RecipeAdapterItemClickListener onItemClickListener){
+        mClickListener = onItemClickListener;
+     }
 
     /**
      * Constructor
-     *
-     * @param onClickHandler registers the click handler
      */
-    public RecipeAdapter(RecipeAdapterOnClickHandler onClickHandler) {
-        mClickHandler = onClickHandler;
+    public RecipeAdapter(Context context) {
         this.mRecipes = new ArrayList<>();
     }
 
     @NonNull
     @Override
-    public RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        return new RecipeViewHolder(CardItemBinding.inflate(LayoutInflater.from(parent.getContext()),
-                parent, false));
+    public RecipeAdapter.RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        CardItemBinding itemBinding = CardItemBinding.inflate(inflater, parent, false);
+        return new RecipeViewHolder(itemBinding, mClickListener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        Recipe recipeForThisItem = mRecipes.get(position);
-        holder.cardBinding.tvRecipeTitle.setText(recipeForThisItem.getTitle());
+    public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position) {
+        Recipe currentItem = mRecipes.get(position);
+        holder.cardBinding.tvRecipeTitle.setText(currentItem.getName());
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mRecipes.size();
     }
+
+    public class RecipeViewHolder extends RecyclerView.ViewHolder {
+        public CardItemBinding cardBinding;
+
+        public RecipeViewHolder(@NotNull CardItemBinding cardItemBinding, final RecipeAdapterItemClickListener clickListener) {
+            super(cardItemBinding.getRoot());
+            this.cardBinding = cardItemBinding;
+
+            cardBinding.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(clickListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            clickListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+        }
+    }
+    /**
+     * This method is to set the data of the Recipes on a RecipeAdapter if we've already
+     * created one. This is handy when there is new data but don't needed to create a
+     * new RecipeAdapter to display it.
+     *
+     * @param recipes The list of Recipes to set to the Adapter
+     */
+    public void setRecipesData (List<Recipe> recipes) {
+        this.mRecipes = recipes;
+    }
+
+    /**
+     * Getter method for the Recipes data present in the adapter
+     * @return
+     */
+    public List<Recipe> getRecipesData() {
+        return mRecipes;
+    }
+}
+
+/**
+
 
     public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
         public CardItemBinding cardBinding;
@@ -81,14 +129,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-    /**
-     * This method is to set the data of the Recipes on a RecipeAdapter if we've already
-     * created one. This is handy when there is new data but don't needed to create a
-     * new RecipeAdapter to display it.
-     *
-     * @param recipes The list of Recipes to set to the Adapter
-     */
-    public void setRecipesData (List<Recipe> recipes) {
-        this.mRecipes = recipes;
-    }
+
 }
+ */
