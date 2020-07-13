@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // Load data from JSON
         parseJsonFromFile();
 
-        // Set ItemClickListener
+        // Set ItemClickListeners: plain and long
         setupItemClickListeners();
 
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemLongClick(int position) {
                 Toast.makeText(getApplicationContext(), "Item LONG clicked: " + mRecipes[position].getName(), Toast.LENGTH_SHORT).show();
+                //TODO: make it favorite into local db
             }
         });
     }

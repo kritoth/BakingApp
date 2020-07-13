@@ -77,8 +77,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     /** The custom ViewHolder class */
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
+        /** member var for the item layout */
         public CardItemBinding cardBinding;
 
+        /** Constructor for the custom ViewHolder */
         public RecipeViewHolder(@NotNull CardItemBinding cardItemBinding,
                                 final RecipeAdapterItemClickListener clickListener,
                                 final RecipeAdapterItemLongClickListener longClickListener) {

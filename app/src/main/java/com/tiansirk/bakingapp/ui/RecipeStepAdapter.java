@@ -1,11 +1,11 @@
 package com.tiansirk.bakingapp.ui;
 
 import android.content.Context;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.databinding.CardItemBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +26,15 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Re
     @NonNull
     @Override
     public RecipeStepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        CardItemBinding binding = CardItemBinding.inflate(inflater, parent, false);
+        return new RecipeStepViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecipeStepViewHolder holder, int position) {
-
+        Step currentStep = mSteps.get(position);
+        holder.cardBinding.tvRecipeTitle.setText(currentStep.getShortDescription());
     }
 
     @Override
@@ -41,10 +44,15 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Re
 
     /** The custom ViewHolder class */
     public class RecipeStepViewHolder extends RecyclerView.ViewHolder{
+        /** member var for the item layout */
+        CardItemBinding cardBinding;
 
-        public RecipeStepViewHolder(@NonNull View itemView) {
-            super(itemView);
+        /** Constructor for the custom ViewHolder */
+        public RecipeStepViewHolder(@NonNull CardItemBinding itemViewBinding) {
+            super(itemViewBinding.getRoot());
+            this.cardBinding = itemViewBinding;
         }
+
     }
 
     /**
