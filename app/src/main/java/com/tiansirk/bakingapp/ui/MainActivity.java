@@ -121,23 +121,23 @@ public class MainActivity extends AppCompatActivity {
      * @return String file
      */
     private void parseJsonFromFile(){
-        JSONLoader.with(this)
-                .fileName("baking.json")
-                .get(new StringLoaderListener() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "onResponse get called");
-                        // response as String to be used to parse content into array of Recipe
-                        mRecipes = JsonParser.getRecipesFromJson(response);
-                    }
+            JSONLoader.with(this)
+                    .fileName("baking.json")
+                    .get(new StringLoaderListener() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d(TAG, "onResponse get called");
+                            // response as String to be used to parse content into array of Recipe
+                            mRecipes = JsonParser.getRecipesFromJson(response);
+                        }
 
-                    @Override
-                    public void onFailure(IOException error) {
-                        // error with opening/reading file
-                        Log.e(TAG, "Error with reading from .json file!:", error);
-                        showErrorMessage();
-                    }
-                });
+                        @Override
+                        public void onFailure(IOException error) {
+                            // error with opening/reading file
+                            Log.e(TAG, "Error with reading from .json file!:", error);
+                            showErrorMessage();
+                        }
+                    });
     }
 
     /**
