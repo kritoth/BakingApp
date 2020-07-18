@@ -14,6 +14,7 @@ import com.tiansirk.bakingapp.utils.JsonParser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -66,6 +67,9 @@ public class FragmentSelectSteps extends Fragment {
         RecyclerView.LayoutManager linearLayoutManagerIngredients = new LinearLayoutManager(getContext());
         mRecyclerViewIngredients.setLayoutManager(linearLayoutManagerIngredients);
         mRecyclerViewIngredients.setHasFixedSize(true);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerViewIngredients.getContext(),
+                LinearLayoutManager.VERTICAL);
+        mRecyclerViewIngredients.addItemDecoration(dividerItemDecoration);
 
         mRecyclerViewSteps = binding.rvSelectStepsSteps;
         RecyclerView.LayoutManager linearLayoutManagerSteps = new LinearLayoutManager(getContext());

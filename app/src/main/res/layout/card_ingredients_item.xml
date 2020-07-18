@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/card_item_margin"
-    app:cardCornerRadius="@dimen/card_radius"
-    android:clickable="true"
-    android:longClickable="true"
-    android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/card_item_margin">
         <TextView
             android:id="@+id/tv_ingredient_name"
             android:layout_width="0dp"
@@ -22,7 +14,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:padding="4dp"
+            android:paddingStart="@dimen/card_item_margin"
+            android:paddingEnd="@dimen/card_item_margin"
+            android:paddingBottom="@dimen/card_item_margin"
             android:fontFamily="sans-serif"
             android:textColor="@color/cardview_dark_background"
             android:textSize="18sp"
@@ -35,7 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:padding="4dp"
+            android:paddingStart="@dimen/card_item_margin"
+            android:paddingEnd="@dimen/card_item_margin"
+            android:paddingBottom="@dimen/card_item_margin"
             android:fontFamily="sans-serif"
             android:textColor="@color/cardview_dark_background"
             android:textSize="18sp"
@@ -47,10 +43,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:padding="4dp"
+            android:paddingStart="@dimen/card_item_margin"
+            android:paddingEnd="@dimen/card_item_margin"
+            android:paddingBottom="@dimen/card_item_margin"
             android:fontFamily="sans-serif"
             android:textColor="@color/cardview_dark_background"
             android:textSize="18sp"
             android:hint="unit"/>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+
