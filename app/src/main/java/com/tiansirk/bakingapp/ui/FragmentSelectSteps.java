@@ -6,19 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.SelectStepsFragmentBinding;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,9 +26,12 @@ public class FragmentSelectSteps extends Fragment {
     private final String STEPS_LIST_STATE = "steps_list_state";
 
     private SelectStepsFragmentBinding binding;
-    private RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerViewIngredients;
+    private RecyclerView mRecyclerViewSteps;
 
     private StepAndIngredientAdapter mAdapter;
+    private IngredientsAdapter mIngredientsAdapter;
+    private StepsAdapter mStepsAdapter;
     private Ingredient[] mIngredients;
     private Step[] mSteps;
 
@@ -48,6 +46,7 @@ public class FragmentSelectSteps extends Fragment {
             mIngredients = JsonParser.getIngredientsFromJson(savedInstanceState.getString(INGREDIENTS_LIST_STATE));
             mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STEPS_LIST_STATE));
         }
+
         // Inflate the Select-Step fragment layout
         binding = SelectStepsFragmentBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
@@ -61,31 +60,34 @@ public class FragmentSelectSteps extends Fragment {
         return rootView;
     }
 
+    // Get a reference to the RecyclerView in the fragment layout and set it up
     private void setupRecyclerView(){
-        // Get a reference to the RecyclerView in the fragment layout and set it up
-        mRecyclerView = binding.rvSelectSteps;
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerViewIngredients = binding.rvSelectStepsIngredients;
+        RecyclerView.LayoutManager linearLayoutManagerIngredients = new LinearLayoutManager(getContext());
+        mRecyclerViewIngredients.setLayoutManager(linearLayoutManagerIngredients);
+        mRecyclerViewIngredients.setHasFixedSize(true);
+
+        mRecyclerViewSteps = binding.rvSelectStepsSteps;
+        RecyclerView.LayoutManager linearLayoutManagerSteps = new LinearLayoutManager(getContext());
+        mRecyclerViewSteps.setLayoutManager(linearLayoutManagerSteps);
+        mRecyclerViewSteps.setHasFixedSize(true);
     }
 
+    // If a list of Ingredients and Steps exist, set them to the Adapter
+    // Otherwise, create a Log statement that indicates that the list was not found
     private void initAdapter(){
-        // If a list of Ingredients and Steps exist, set them to the Adapter
-        // Otherwise, create a Log statement that indicates that the list was not found
         if(mIngredients != null && mSteps != null){
-            // Set the data to the list item at the stored index
-            mAdapter = new StepAndIngredientAdapter(getContext());
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setIngredientsData(mIngredients);
-            mAdapter.setStepsData(mSteps);
+            mIngredientsAdapter = new IngredientsAdapter(getContext());
+            mRecyclerViewIngredients.setAdapter(mIngredientsAdapter);
+            mIngredientsAdapter.setIngredientsData(mIngredients);
+
+            mStepsAdapter = new StepsAdapter(getContext());
+            mRecyclerViewSteps.setAdapter(mStepsAdapter);
+            mStepsAdapter.setStepsData(mSteps);
         }
         else {
             Log.wtf(TAG, "This fragment has a null list of Ingredients or Steps");
         }
-    }
-
-    public Ingredient[] getIngredients() {
-        return mIngredients;
     }
 
     public void setIngredients(Ingredient[] ingredients) {
@@ -93,22 +95,23 @@ public class FragmentSelectSteps extends Fragment {
         this.mIngredients = ingredients;
     }
 
-    public Step[] getSteps() {
-        return mSteps;
-    }
-
     public void setSteps(Step[] steps) {
         Log.d(TAG, "setSteps called");
         this.mSteps = steps;
     }
 
-    /**
-     * Save the current state of this fragment
-     */
+    /** Save the current state of this fragment */
     @Override
     public void onSaveInstanceState(Bundle currentState) {
         currentState.putString(INGREDIENTS_LIST_STATE, JsonParser.serializeIngredientsToJson(mIngredients));
         currentState.putString(STEPS_LIST_STATE, JsonParser.serializeStepsToJson(mSteps));
+    }
+
+    public Ingredient[] getIngredients() {
+        return mIngredients;
+    }
+    public Step[] getSteps() {
+        return mSteps;
     }
 
 }
