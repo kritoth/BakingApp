@@ -6,12 +6,12 @@ import java.util.List;
 public class Recipe {
 
     private String name;
-    private List<Ingredient> ingredients;
-    private List<Step> steps;
+    private Ingredient[] ingredients;
+    private Step[] steps;
     private int servings;
     private String imgUrl;
 
-    public Recipe(String name, List<Ingredient> ingredients, List<Step> steps, int servings, String imgUrl) {
+    public Recipe(String name, Ingredient[] ingredients, Step[] steps, int servings, String imgUrl) {
         this.name = name;
         this.ingredients = ingredients;
         this.steps = steps;
@@ -21,8 +21,8 @@ public class Recipe {
 
     public Recipe(String name, int servings, String imgUrl) {
         this.name = name;
-        this.ingredients = new ArrayList<>();
-        this.steps  = new ArrayList<>();
+        this.ingredients = new Ingredient[0];
+        this.steps  = new Step[0];
         this.servings = servings;
         this.imgUrl = imgUrl;
     }
@@ -31,11 +31,11 @@ public class Recipe {
         return name;
     }
 
-    public List<Ingredient> getIngredients() {
+    public Ingredient[] getIngredients() {
         return ingredients;
     }
 
-    public List<Step> getSteps() {
+    public Step[] getSteps() {
         return steps;
     }
 

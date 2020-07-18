@@ -21,7 +21,6 @@ public class JsonParser {
     /**
      * Deserialize (ie. reads from) the JSON and creates {@link Recipe} objects accordingly. Uses Gson, https://android-arsenal.com/details/1/229,
      * to convert a JSON string to equivalent Java object.
-     *
      * @return the array of {@link Recipe}s
      */
     public static Recipe[] getRecipesFromJson(String json){
@@ -33,8 +32,23 @@ public class JsonParser {
     }
 
     /**
-     * Serialize (ie. converts) the array of {@link Step} objects to JSON formatted String. Uses Gson, https://android-arsenal.com/details/1/229,
      *
+     */
+    public static String serializeRecipeToJson(Recipe recipe){
+        Gson gson = new Gson();
+        return gson.toJson(recipe);
+    }
+
+    /**
+     *
+     */
+    public static Recipe getRecipeFromJson(String json){
+        Gson gson = new Gson();
+        return gson.fromJson(json, Recipe.class);
+    }
+
+    /**
+     * Serialize (ie. converts) the array of {@link Step} objects to JSON formatted String. Uses Gson, https://android-arsenal.com/details/1/229
      * @return JSON formatted String
      */
     public static String serializeStepsToJson(Step[] steps){
@@ -45,14 +59,29 @@ public class JsonParser {
     /**
      * Deserialize (ie. reads from)  from the JSON and creates {@link Step} objects accordingly. Uses Gson, https://android-arsenal.com/details/1/229,
      * to convert a JSON string to equivalent Java object.
-     *
      * @return the array of {@link Step}s
      */
     public static Step[] getStepsFromJson(String json){
         Gson gson = new Gson();
         Step[] steps = gson.fromJson(json, Step[].class);
-
         return steps;
+    }
+
+    /**
+     *
+     */
+    public static String serializeIngredientsToJson(Ingredient[] ingredients){
+        Gson gson = new Gson();
+        return gson.toJson(ingredients);
+    }
+
+    /**
+     *
+     */
+    public static Ingredient[] getIngredientsFromJson(String json){
+        Gson gson = new Gson();
+        Ingredient[] ingredients = gson.fromJson(json, Ingredient[].class);
+        return ingredients;
     }
 
     /**
@@ -62,7 +91,7 @@ public class JsonParser {
     public static Recipe[] dummyRecipes(){
         Recipe[] recipes = new Recipe[10];
         for(int i=0; i<recipes.length; i++){
-            recipes[i] = new Recipe("Az " + i + ". recept", new ArrayList<Ingredient>(), new ArrayList<Step>(), 10, "www.kep_helye.com");
+            recipes[i] = new Recipe("Az " + i + ". recept", new Ingredient[i], new Step[0], 10, "www.kep_helye.com");
         }
 
         return recipes;

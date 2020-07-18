@@ -10,7 +10,7 @@
         android:scrollbars="vertical"/>
 
     <TextView
-        android:id="@+id/tv_error_message_display"
+        android:id="@+id/tv_error_message_select_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -20,7 +20,7 @@
         android:visibility="invisible" />
 
     <ProgressBar
-        android:id="@+id/pb_loading_indicator"
+        android:id="@+id/pb_loading_indicator_select_steps"
         android:layout_height="42dp"
         android:layout_width="42dp"
         android:layout_gravity="center"

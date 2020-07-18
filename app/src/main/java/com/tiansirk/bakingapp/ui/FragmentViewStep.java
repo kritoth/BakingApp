@@ -26,4 +26,6 @@ public class FragmentViewStep extends Fragment {
         View rootView = inflater.inflate(R.layout.view_step_fragment, container, false);
         return rootView;
     }
+
+
 }

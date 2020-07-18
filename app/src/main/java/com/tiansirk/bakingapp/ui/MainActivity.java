@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Recipe;
-import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
 
         // Initiating RecyclerView
-        initRecycler();
+        setupRecyclerView();
 
         // Load data from JSON
         parseJsonFromFile();
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
     }
 
-    private void initRecycler() {
+    private void setupRecyclerView() {
         // use the respective number of columns for phones and tablets(sw600dp)
         int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
@@ -85,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
                 Recipe clickedRecipe = mRecipes[position];
-                startSelectRecipeStep(clickedRecipe);
+                startSelectRecipeStepActivity(clickedRecipe);
             }
         });
 
@@ -99,17 +98,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Starts the {@link SelectRecipeStep} activity and passing the Recipe that was clicked on as
+     * Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on as
      * JSON by using Gson for converting
      * @param recipe that was clicked on
      */
-    private void startSelectRecipeStep(Recipe recipe) {
-        Step[] steps = recipe.getSteps().toArray(new Step[0]);
-        String selectedRecipeToJson = JsonParser.serializeStepsToJson(steps);
+    private void startSelectRecipeStepActivity(Recipe recipe) {
+        String selectedRecipeToJson = JsonParser.serializeRecipeToJson(recipe);
 
-        Intent intent = new Intent(this, SelectRecipeStep.class);
+        Intent intent = new Intent(this, SelectStepActivity.class);
         intent.putExtra(EXTRA_SELECTED_RECIPE, selectedRecipeToJson);
-
         startActivity(intent);
     }
 
@@ -145,9 +142,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showDataView() {
         /* First, make sure the error is invisible */
-        binding.tvErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        binding.tvErrorMessageRecipes.setVisibility(View.INVISIBLE);
         /* Then hide loading indicator */
-        binding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
+        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
         /* Then, make sure the movie is visible */
         binding.rvRecipes.setVisibility(View.VISIBLE);
     }
@@ -159,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
         /* First, hide the currently visible data */
         binding.rvRecipes.setVisibility(View.INVISIBLE);
         /* Then hide loading indicator */
-        binding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
+        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
         /* Then, show the error */
-        binding.tvErrorMessageDisplay.setVisibility(View.VISIBLE);
+        binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
     }
 }

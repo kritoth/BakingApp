@@ -38,10 +38,6 @@ public class Ingredient {
 
     @Override
     public String toString() {
-        return "Ingredient{" +
-                "quantity=" + quantity +
-                ", measure='" + measure + '\'' +
-                ", ingredient='" + ingredient + '\'' +
-                "}\n";
+        return ingredient + ": " + quantity + " " + measure;
     }
 }

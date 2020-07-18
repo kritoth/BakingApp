@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tiansirk.bakingapp.data.Recipe;
-import com.tiansirk.bakingapp.databinding.CardItemBinding;
+import com.tiansirk.bakingapp.databinding.CardRecipeItemBinding;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -60,7 +60,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     @Override
     public RecipeAdapter.RecipeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        CardItemBinding itemBinding = CardItemBinding.inflate(inflater, parent, false);
+        CardRecipeItemBinding itemBinding = CardRecipeItemBinding.inflate(inflater, parent, false);
         return new RecipeViewHolder(itemBinding, mClickListener, mLongClickListener);
     }
 
@@ -78,10 +78,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     /** The custom ViewHolder class */
     public class RecipeViewHolder extends RecyclerView.ViewHolder {
         /** member var for the item layout */
-        public CardItemBinding cardBinding;
+        public CardRecipeItemBinding cardBinding;
 
         /** Constructor for the custom ViewHolder */
-        public RecipeViewHolder(@NotNull CardItemBinding cardItemBinding,
+        public RecipeViewHolder(@NotNull CardRecipeItemBinding cardItemBinding,
                                 final RecipeAdapterItemClickListener clickListener,
                                 final RecipeAdapterItemLongClickListener longClickListener) {
             super(cardItemBinding.getRoot());

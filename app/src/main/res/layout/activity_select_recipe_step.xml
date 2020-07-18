@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.SelectRecipeStep"
+    tools:context=".ui.SelectStepActivity"
     android:orientation="vertical">
 
-    <com.google.android.material.tabs.TabLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:tabMode="fixed"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorAccent"
-        android:id="@+id/tab_layout"/>
-
-
-    <androidx.viewpager.widget.ViewPager
+    <!-- This container holds the Select Recipe Step Fragment -->
+    <FrameLayout android:id="@+id/select_step_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager"/>
+        android:scaleType="centerInside"/>
 
-</LinearLayout>
+    <!-- This container holds the View Recipe Step Fragment -->
+    <FrameLayout android:id="@+id/view_step_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"/>
+
+</FrameLayout>
