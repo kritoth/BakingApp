@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/previous"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_navigate_before_24"
+        android:title="@string/prev_button"/>
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/home_button"/>
+    <item
+        android:id="@+id/next"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_navigate_next_24"
+        android:title="@string/next_button"/>
+</menu>

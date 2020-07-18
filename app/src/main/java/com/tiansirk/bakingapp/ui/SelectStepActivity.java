@@ -58,22 +58,17 @@ public class SelectStepActivity extends AppCompatActivity {
         Log.d(TAG, "Content of mSteps: " + Arrays.toString(mSteps));
         Log.d(TAG, "Content of mIngredients: " + Arrays.toString(mIngredients));
 
-        // select fragment
-        // Create and display the select fragment
-        FragmentSelectSteps selectFragment = new FragmentSelectSteps();
-        selectFragment.setIngredients(mIngredients);
-        selectFragment.setSteps(mSteps);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.select_step_container, selectFragment)
-                .commit();
-
-        // view fragment
-
+        if(true) {
+            // select fragment
+            showSelectFragment();
+        }
+        else {
+            // view fragment
+            showViewFragment();
+        }
 
         // Remove shadow from the Actionbar
         removeShadowFromActionbar();
-
 
 
         // TODO: Set ItemClickListener to change ViewStep Fragment
@@ -81,16 +76,28 @@ public class SelectStepActivity extends AppCompatActivity {
     }
 
 
-/*
-    private void showViewFragment(){
-        // Create and display the view fragment
-        FragmentViewStep viewFragment = new FragmentViewStep();
-        viewFragment;
+    // Create and display the select fragment
+    private void showSelectFragment(){
+        FragmentSelectSteps selectFragment = new FragmentSelectSteps();
+        selectFragment.setIngredients(mIngredients);
+        selectFragment.setSteps(mSteps);
+        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .add(R.id.body_container, bodyFragment)
+                .add(R.id.select_step_container, selectFragment)
                 .commit();
     }
-*/
+
+    // Create and display the view fragment
+    private void showViewFragment(){
+        int selectedStep = 0;
+        FragmentViewStep viewFragment = new FragmentViewStep();
+        viewFragment.setStepDescription(mSteps[selectedStep].getDescription());
+        FragmentManager fragmentManager1 = getSupportFragmentManager();
+        fragmentManager1.beginTransaction()
+                .add(R.id.view_step_container, viewFragment)
+                .commit();
+    }
+
 
     private void removeShadowFromActionbar(){
         ActionBar actionBar = getSupportActionBar();

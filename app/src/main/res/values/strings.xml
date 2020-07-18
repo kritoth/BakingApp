@@ -6,4 +6,5 @@
     <string name="next_button">Next</string>
     <string name="home_button">Recipe Steps</string>
     <string name="prev_button">Previous</string>
+    <string name="hint_step_description">Step description should appear here.</string>
 </resources>

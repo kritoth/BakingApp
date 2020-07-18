@@ -6,12 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tiansirk.bakingapp.R;
+import com.tiansirk.bakingapp.databinding.ViewStepFragmentBinding;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class FragmentViewStep extends Fragment {
+
+    private final static String TAG = FragmentViewStep.class.getSimpleName();
+
+    private final String MEDIA_PLAYER_STATE = "media_player_state";
+    private final String STEPS_DESCRIPTION_STATE = "steps_description_state";
+
+    private ViewStepFragmentBinding binding;
+    private String mStepDescription;
 
     public FragmentViewStep() {
     }
@@ -23,9 +32,14 @@ public class FragmentViewStep extends Fragment {
         if(savedInstanceState != null) {
         }
 
-        View rootView = inflater.inflate(R.layout.view_step_fragment, container, false);
+        // Inflate the Select-Step fragment layout
+        binding = ViewStepFragmentBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+
         return rootView;
     }
 
-
+    public void setStepDescription(String stepDescription) {
+        this.mStepDescription = stepDescription;
+    }
 }
