@@ -5,7 +5,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.SelectStepsFragmentBinding;
@@ -14,6 +16,7 @@ import com.tiansirk.bakingapp.utils.JsonParser;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +36,7 @@ public class FragmentSelectSteps extends Fragment {
     private StepAndIngredientAdapter mAdapter;
     private IngredientsAdapter mIngredientsAdapter;
     private StepsAdapter mStepsAdapter;
+
     private Ingredient[] mIngredients;
     private Step[] mSteps;
 
@@ -57,6 +61,9 @@ public class FragmentSelectSteps extends Fragment {
 
         // initiate StepAndIngredientAdapter
         initAdapter();
+
+        // set ItemClickListener onto StepsAdapter to change to ViewStep Fragment
+        setupItemClickListeners();
 
         return rootView;
     }
@@ -109,6 +116,34 @@ public class FragmentSelectSteps extends Fragment {
     public void onSaveInstanceState(Bundle currentState) {
         currentState.putString(INGREDIENTS_LIST_STATE, JsonParser.serializeIngredientsToJson(mIngredients));
         currentState.putString(STEPS_LIST_STATE, JsonParser.serializeStepsToJson(mSteps));
+    }
+
+    /**
+     * Sets StepsAdapterItemClickListener to the RecyclerView items
+     * according to the respective interface is in {@link StepsAdapter}
+     */
+    private void setupItemClickListeners(){
+        mStepsAdapter.setOnItemClickListener(new StepsAdapter.StepsAdapterItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Step clickedStep = mSteps[position];
+                Toast.makeText(getContext(), "Clicked step: "+clickedStep.getShortDescription(), Toast.LENGTH_SHORT).show();
+                showViewFragment(clickedStep);
+            }
+        });
+    }
+
+    //TODO Problem: this fragment is not getting hide and all clicks create new viewFragment
+    /** Create and display the view fragment */
+    private void showViewFragment(Step step){
+        int idSelectedStep = step.getId();
+        FragmentViewStep viewFragment = new FragmentViewStep();
+        viewFragment.setSteps(mSteps, idSelectedStep);
+        FragmentManager fragmentManager1 = getFragmentManager();
+        fragmentManager1.beginTransaction()
+                .add(R.id.view_step_container, viewFragment)
+                .commit();
+        this.getFragmentManager().beginTransaction().hide(this);
     }
 
     public Ingredient[] getIngredients() {

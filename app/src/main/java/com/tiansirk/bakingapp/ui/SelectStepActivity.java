@@ -33,7 +33,6 @@ public class SelectStepActivity extends AppCompatActivity {
 
     private FrameLayout mSelectStepContainer;
     private FrameLayout mViewStepContainer;
-    private BottomNavigationView mBottomNavigationView;
 
     private Recipe mRecipe;
     private Step[] mSteps;
@@ -58,21 +57,12 @@ public class SelectStepActivity extends AppCompatActivity {
         Log.d(TAG, "Content of mSteps: " + Arrays.toString(mSteps));
         Log.d(TAG, "Content of mIngredients: " + Arrays.toString(mIngredients));
 
-        if(true) {
-            // select fragment
-            showSelectFragment();
-        }
-        else {
-            // view fragment
-            showViewFragment();
-        }
+        // start with showing select fragment
+        showSelectFragment();
 
         // Remove shadow from the Actionbar
         removeShadowFromActionbar();
 
-
-        // TODO: Set ItemClickListener to change ViewStep Fragment
-        //setupItemClickListener();
     }
 
 
@@ -87,44 +77,10 @@ public class SelectStepActivity extends AppCompatActivity {
                 .commit();
     }
 
-    // Create and display the view fragment
-    private void showViewFragment(){
-        int selectedStep = 0;
-        FragmentViewStep viewFragment = new FragmentViewStep();
-        viewFragment.setStepDescription(mSteps[selectedStep].getDescription());
-        FragmentManager fragmentManager1 = getSupportFragmentManager();
-        fragmentManager1.beginTransaction()
-                .add(R.id.view_step_container, viewFragment)
-                .commit();
-    }
-
 
     private void removeShadowFromActionbar(){
         ActionBar actionBar = getSupportActionBar();
         actionBar.setElevation(0);
     }
-/*
-    private void setupBottomNavigation(){
-        mBottomNavigationView = ;
 
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.previous:
-                        showViewStep(Step previousStep);
-                        return true;
-                    case R.id.home:
-                        showSelectSteps();
-                        return true;
-                    case R.id.next:
-                        showViewStep(Step nextStep);
-                        return true;
-                    default:
-                        return true;
-                }
-            }
-        });
-    }
-*/
 }
