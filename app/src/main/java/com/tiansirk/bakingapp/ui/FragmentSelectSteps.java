@@ -1,11 +1,11 @@
 package com.tiansirk.bakingapp.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Ingredient;
@@ -26,24 +26,36 @@ public class FragmentSelectSteps extends Fragment {
 
     private final static String TAG = FragmentSelectSteps.class.getSimpleName();
 
+    /** Member constants for saving state */
     private final String ADAPTER_STATE = "adapter_state";
     private final String INGREDIENTS_LIST_STATE = "ingredients_list_state";
     private final String STEPS_LIST_STATE = "steps_list_state";
 
+    /** Member vars for views */
     private SelectStepsFragmentBinding binding;
     private RecyclerView mRecyclerViewIngredients;
     private RecyclerView mRecyclerViewSteps;
 
+    /** Member vars for adapters */
     private StepAndIngredientAdapter mAdapter;
     private IngredientsAdapter mIngredientsAdapter;
     private StepsAdapter mStepsAdapter;
 
+    /** Member vars for data to be shown */
     private Ingredient[] mIngredients;
     private Step[] mSteps;
 
-    public FragmentSelectSteps() {
+    /** Member var for own custom data-to-be-sent listener */
+    private FragmentSelectStepsListener listener;
+
+    /** The interface that receives onClick messages */
+    public interface FragmentSelectStepsListener{
+        void onSelectionSent(int position);
     }
 
+    /* Compulsory empty constructor */
+    public FragmentSelectSteps() {
+    }
 
     @Nullable
     @Override
@@ -62,7 +74,7 @@ public class FragmentSelectSteps extends Fragment {
         // set up Recyclerview
         setupRecyclerView();
 
-        // initiate StepAndIngredientAdapter
+        // initiate necessary Adapters
         initAdapter();
 
         // set ItemClickListener onto StepsAdapter to change to ViewStep Fragment
@@ -71,7 +83,7 @@ public class FragmentSelectSteps extends Fragment {
         return rootView;
     }
 
-    // Get a reference to the RecyclerView in the fragment layout and set it up
+    /** Get a reference to the RecyclerView in the fragment layout and set it up. */
     private void setupRecyclerView(){
         mRecyclerViewIngredients = binding.rvSelectStepsIngredients;
         RecyclerView.LayoutManager linearLayoutManagerIngredients = new LinearLayoutManager(getContext());
@@ -87,8 +99,9 @@ public class FragmentSelectSteps extends Fragment {
         mRecyclerViewSteps.setHasFixedSize(true);
     }
 
-    // If a list of Ingredients and Steps exist, set them to the Adapter
-    // Otherwise, create a Log statement that indicates that the list was not found
+    /** If a list of Ingredients and Steps exist, set them to the Adapter
+     * Otherwise, create a Log statement that indicates that the list was not found
+     */
     private void initAdapter(){
         if(mIngredients != null && mSteps != null){
             mIngredientsAdapter = new IngredientsAdapter(getContext());
@@ -104,25 +117,6 @@ public class FragmentSelectSteps extends Fragment {
         }
     }
 
-    public void setIngredients(Ingredient[] ingredients) {
-        Log.d(TAG, "setIngredients called");
-        this.mIngredients = ingredients;
-    }
-
-    public void setSteps(Step[] steps) {
-        Log.d(TAG, "setSteps called");
-        this.mSteps = steps;
-    }
-
-    /** Save the current state of this fragment */
-    @Override
-    public void onSaveInstanceState(Bundle currentState) {
-        Log.d(TAG, "onSaveInstanceState is called");
-        currentState.putString(INGREDIENTS_LIST_STATE, JsonParser.serializeIngredientsToJson(mIngredients));
-        currentState.putString(STEPS_LIST_STATE, JsonParser.serializeStepsToJson(mSteps));
-    }
-
-
     /**
      * Sets StepsAdapterItemClickListener to the RecyclerView items
      * according to the respective interface is in {@link StepsAdapter}
@@ -133,43 +127,63 @@ public class FragmentSelectSteps extends Fragment {
             @Override
             public void onItemClick(int position) {
                 Step clickedStep = mSteps[position];
-                Log.d(TAG, "Clicked step: " + clickedStep.getShortDescription());
-                showViewFragment(clickedStep);
+                Log.d(TAG, "Clicked step: #" + position + ", " + clickedStep.getShortDescription());
+                // at click the host Activity is notified and the clicked position is sent
+                listener.onSelectionSent(position);
             }
         });
     }
 
-
-    /** Create and display the view fragment */
-    private void showViewFragment(Step step){
-        int idSelectedStep = step.getId();
-        FragmentViewStep viewFragment = new FragmentViewStep();
-        viewFragment.setSteps(mSteps, idSelectedStep);
-
-        FragmentManager fragmentManager1 = getFragmentManager();
-        FragmentTransaction ft = fragmentManager1.beginTransaction();
-
-        ft.add(R.id.view_step_container, viewFragment)
-                .commit();
-
-        showHideFragment(this);
+    /** When this fragment is attached to its host activity, ie {@link SelectStepActivity} the listener interface is connected
+     * If not then an error exception is thrown to notify the developer.
+     * @param context
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentSelectStepsListener) {
+            listener = (FragmentSelectStepsListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentSelectStepsListener");
+        }
     }
+
+    /** When this fragment is detached from the host, the listeners is set to null, to decouple. */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    /** Save the current state of this fragment */
+    @Override
+    public void onSaveInstanceState(Bundle currentState) {
+        Log.d(TAG, "onSaveInstanceState is called");
+        currentState.putString(INGREDIENTS_LIST_STATE, JsonParser.serializeIngredientsToJson(mIngredients));
+        currentState.putString(STEPS_LIST_STATE, JsonParser.serializeStepsToJson(mSteps));
+    }
+
+    /** Setter for member var */
+    public void setIngredients(Ingredient[] ingredients) {
+        Log.d(TAG, "setIngredients called");
+        this.mIngredients = ingredients;
+    }
+
+    /** Setter for member var */
+    public void setSteps(Step[] steps) {
+        Log.d(TAG, "setSteps called");
+        this.mSteps = steps;
+    }
+
 
     /** Shows or hides the
      * @param fragment according to its current state */
     private void showHideFragment(Fragment fragment){
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-
-        if(fragment.isHidden()){
-
-            ft.show(fragment);
-        }
-        else{
-            ft.hide(fragment);
-        }
+        if(fragment.isHidden()) ft.show(fragment);
+        else ft.hide(fragment);
         ft.commit();
     }
-
-
 }

@@ -1,5 +1,6 @@
 package com.tiansirk.bakingapp.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.databinding.ViewStepFragmentBinding;
 import com.tiansirk.bakingapp.data.*;
+import com.tiansirk.bakingapp.utils.JsonParser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,15 +26,27 @@ public class FragmentViewStep extends Fragment {
 
     private final static String TAG = FragmentViewStep.class.getSimpleName();
 
-    private final String MEDIA_PLAYER_STATE = "media_player_state";
-    private final String STEPS_DESCRIPTION_STATE = "steps_description_state";
+    /** Member constants for saving state */
+    private final String STEPS_INDEX_STATE = "steps_index_state";
+    private final String STEPS_STATE = "steps_state";
 
+    /** Member vars for views */
     private ViewStepFragmentBinding binding;
     private BottomNavigationView mBottomNavigationView;
 
+    /** Member vars for data to be shown */
     private Step[] mSteps;
     private int mStepsIndex;
 
+    /** Member var for own custom data-to-be-sent listener */
+    private FragmentViewStepListener listener;
+
+    /** The interface that receives onClick messages */
+    public interface FragmentViewStepListener{
+        void onBackSelected(Step[] steps);
+    }
+
+    /** Compulsory empty constructor */
     public FragmentViewStep() {
     }
 
@@ -40,8 +54,10 @@ public class FragmentViewStep extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Load the saved state (the items in the step) if there is one
-        if(savedInstanceState != null) {
-
+        if(savedInstanceState != null && savedInstanceState.get(STEPS_STATE) != null) {
+            Log.d(TAG, "onCreateView's savedInstanceState is called");
+            mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STEPS_STATE));
+            mStepsIndex = savedInstanceState.getInt(STEPS_INDEX_STATE);
         }
 
         // Inflate the Select-Step fragment layout
@@ -49,7 +65,7 @@ public class FragmentViewStep extends Fragment {
         View rootView = binding.getRoot();
 
         // Show the step details
-        showStep();
+        if(mSteps != null) showStep();
 
         // Set up the bottom navigation
         setupBottomNavigation();
@@ -57,22 +73,16 @@ public class FragmentViewStep extends Fragment {
         return rootView;
     }
 
+
+    /** It is to set the fields of this fragment in order to show them to the user */
     public void setSteps(Step[] steps, int position) {
         this.mSteps = steps;
         this.mStepsIndex = position;
     }
 
-    /** Save the current state of this fragment */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-
+    /** A bottom navigation bar to let the user step through the {@link Step}s of the selected {@link Recipe} */
     private void setupBottomNavigation(){
         mBottomNavigationView = binding.bottomNavigation;
-
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -87,7 +97,7 @@ public class FragmentViewStep extends Fragment {
                         }
                         return true;
                     case R.id.home:
-                        //showStepsFragment();
+                        listener.onBackSelected(mSteps);
                         return true;
                     case R.id.next:
                         if(mStepsIndex < mSteps.length - 1) {
@@ -105,6 +115,9 @@ public class FragmentViewStep extends Fragment {
         });
     }
 
+
+
+    /** This presents the data, available in the fields of this fragment, to the user. The videoURL and the description of the selected {@link Step}. */
     private void showStep(){
         // Get a reference to the media player View in the fragment layout
         TextView videoView = binding.mediaPlayerView;
@@ -126,18 +139,39 @@ public class FragmentViewStep extends Fragment {
         }
     }
 
-    /** Create and display the view fragment */
-    private void showStepsFragment(){
-        FragmentSelectSteps stepsFragment = new FragmentSelectSteps();
-        stepsFragment.setSteps(mSteps);
+    /** When this fragment is attached to its host activity, ie {@link SelectStepActivity} the listener interface is connected
+     * If not then an error exception is thrown to notify the developer.
+     * @param context
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentViewStepListener) {
+            listener = (FragmentViewStepListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentViewStepListener");
+        }
+    }
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction ft = fragmentManager.beginTransaction();
+    /** When this fragment is detached from the host, the listeners is set to null, to decouple. */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
 
-        ft.add(R.id.select_step_container, stepsFragment)
-                .commit();
+    /** Save the current state of this fragment */
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState is called");
+        outState.putString(STEPS_STATE, JsonParser.serializeStepsToJson(mSteps));
+        outState.putInt(STEPS_INDEX_STATE, mStepsIndex);
+    }
 
-        showHideFragment(this);
+    public int getStepsIndex() {
+        return mStepsIndex;
     }
 
     /** Shows or hides the
@@ -145,14 +179,8 @@ public class FragmentViewStep extends Fragment {
     private void showHideFragment(Fragment fragment){
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-
-        if(fragment.isHidden()){
-
-            ft.show(fragment);
-        }
-        else{
-            ft.hide(fragment);
-        }
+        if(fragment.isHidden()) ft.show(fragment);
+        else ft.hide(fragment);
         ft.commit();
     }
 

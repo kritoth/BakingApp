@@ -1,21 +1,12 @@
 package com.tiansirk.bakingapp.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.tabs.TabLayout;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Recipe;
@@ -25,18 +16,20 @@ import com.tiansirk.bakingapp.utils.JsonParser;
 
 import java.util.Arrays;
 
-public class SelectStepActivity extends AppCompatActivity {
+public class SelectStepActivity extends AppCompatActivity implements FragmentSelectSteps.FragmentSelectStepsListener, FragmentViewStep.FragmentViewStepListener {
 
     private static final String TAG = SelectStepActivity.class.getSimpleName();
 
-    private ActivitySelectRecipeStepBinding binding;
+    /** Member vars for fragments of this activity */
+    private FragmentSelectSteps mSelectStepFragment;
+    private FragmentViewStep mViewStepFragment;
 
-    private FrameLayout mSelectStepContainer;
-    private FrameLayout mViewStepContainer;
-
+    /** Member vars for data to be shown */
     private Recipe mRecipe;
     private Step[] mSteps;
     private Ingredient[] mIngredients;
+
+    /** Member var for adapter */
     private StepAndIngredientAdapter mAdapter;
 
     @Override
@@ -50,38 +43,55 @@ public class SelectStepActivity extends AppCompatActivity {
                 mRecipe = JsonParser.getRecipeFromJson(getIntent().getStringExtra("selected_recipe"));
             }
         }
-        Log.d(TAG, "Content of mRecipe: " + mRecipe.toString());
+
         /** set the Ingredient and Step objects from the received Recipe */
         mSteps = mRecipe.getSteps();
         mIngredients = mRecipe.getIngredients();
-        Log.d(TAG, "Content of mSteps: " + Arrays.toString(mSteps));
-        Log.d(TAG, "Content of mIngredients: " + Arrays.toString(mIngredients));
 
-        // start with showing select fragment
-        showSelectFragment();
+        // Get the fragments
+        mSelectStepFragment = new FragmentSelectSteps();
+        mViewStepFragment = new FragmentViewStep();
 
-        // Remove shadow from the Actionbar
-        removeShadowFromActionbar();
+        // Set the data of the select fragment
+        mSelectStepFragment.setIngredients(mIngredients);
+        mSelectStepFragment.setSteps(mSteps);
 
-    }
-
-
-    // Create and display the select fragment
-    private void showSelectFragment(){
-        FragmentSelectSteps selectFragment = new FragmentSelectSteps();
-        selectFragment.setIngredients(mIngredients);
-        selectFragment.setSteps(mSteps);
+        // Set up the select fragment with replace (ie. removes the existing fragment and adds it as new: https://stackoverflow.com/questions/24466302/basic-difference-between-add-and-replace-method-of-fragment/24466345 )
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.select_step_container, selectFragment)
-                .show(selectFragment)
-                .commit();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.select_step_container, mSelectStepFragment);
+        ft.commit();
+
+        // start with showing select fragment but not view fragment
+        ft.show(mSelectStepFragment);
+        ft.hide(mViewStepFragment);
+
     }
 
-
-    private void removeShadowFromActionbar(){
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setElevation(0);
+    /** This method is defined in the select fragment's interface to send data from it to the view fragment */
+    @Override
+    public void onSelectionSent(int position) {
+        mViewStepFragment.setSteps(mSteps, position); // saves newly received data
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        // detach and re-attach each time makes sure the newly set data will be shown instead of the previously saved data
+        ft.detach(mViewStepFragment);
+        ft.attach(mViewStepFragment);
+        ft.replace(R.id.view_step_container, mViewStepFragment);
+        ft.commit();
+        ft.hide(mSelectStepFragment);
+        ft.show(mViewStepFragment);
     }
 
+    /** This method is defined in the view fragment's interface to send data from it to the select fragment */
+    @Override
+    public void onBackSelected(Step[] steps) {
+        mSelectStepFragment.setSteps(steps);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.select_step_container, mSelectStepFragment);
+        ft.hide(mViewStepFragment);
+        ft.show(mSelectStepFragment);
+        ft.commit();
+    }
 }
