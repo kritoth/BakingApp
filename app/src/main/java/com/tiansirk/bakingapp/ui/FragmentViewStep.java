@@ -17,6 +17,8 @@ import com.tiansirk.bakingapp.data.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class FragmentViewStep extends Fragment {
 
@@ -48,6 +50,9 @@ public class FragmentViewStep extends Fragment {
 
         // Show the step details
         showStep();
+
+        // Set up the bottom navigation
+        setupBottomNavigation();
 
         return rootView;
     }
@@ -82,7 +87,7 @@ public class FragmentViewStep extends Fragment {
                         }
                         return true;
                     case R.id.home:
-                        //showSelectSteps(); //TODO: act as up button?
+                        //showStepsFragment();
                         return true;
                     case R.id.next:
                         if(mStepsIndex < mSteps.length - 1) {
@@ -105,12 +110,12 @@ public class FragmentViewStep extends Fragment {
         TextView videoView = binding.mediaPlayerView;
         // Get a reference to the step description View in the fragment layout
         TextView descriptionView = binding.tvViewStep;
-        // If a video exists, set it to the view, otherwise show default image
-        if(mSteps[mStepsIndex].getVideoURL() != null){
-            videoView.setText(mSteps[mStepsIndex].getVideoURL());
+        // If a video exists, set it to the view, otherwise show default image/text
+        if(mSteps[mStepsIndex].getVideoURL() == null || mSteps[mStepsIndex].getVideoURL().isEmpty()){
+            videoView.setText("There is no Video available!");
         }
         else{
-            showNoVideo(videoView);
+            videoView.setText(mSteps[mStepsIndex].getVideoURL());
         }
         // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
         if(mSteps[mStepsIndex].getDescription() != null){
@@ -121,10 +126,34 @@ public class FragmentViewStep extends Fragment {
         }
     }
 
+    /** Create and display the view fragment */
+    private void showStepsFragment(){
+        FragmentSelectSteps stepsFragment = new FragmentSelectSteps();
+        stepsFragment.setSteps(mSteps);
 
-    /** Present an Image and Text to the user showing there is no video available */
-    private void showNoVideo(View view){
-        ((TextView)view).setText("There is no Video available!");
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        ft.add(R.id.select_step_container, stepsFragment)
+                .commit();
+
+        showHideFragment(this);
+    }
+
+    /** Shows or hides the
+     * @param fragment according to its current state */
+    private void showHideFragment(Fragment fragment){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        if(fragment.isHidden()){
+
+            ft.show(fragment);
+        }
+        else{
+            ft.hide(fragment);
+        }
+        ft.commit();
     }
 
 }

@@ -74,6 +74,7 @@ public class SelectStepActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.select_step_container, selectFragment)
+                .show(selectFragment)
                 .commit();
     }
 
