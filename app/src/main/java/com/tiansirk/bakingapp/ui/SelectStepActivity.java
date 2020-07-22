@@ -32,6 +32,9 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
     /** Member var for adapter */
     private StepAndIngredientAdapter mAdapter;
 
+    /** Member var for keeping track of UI state */
+    private boolean isDualPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
