@@ -1,6 +1,7 @@
 package com.tiansirk.bakingapp.ui;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.databinding.ViewStepFragmentBinding;
+import com.tiansirk.bakingapp.databinding.FragmentViewStepBinding;
 import com.tiansirk.bakingapp.data.*;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
@@ -31,7 +32,7 @@ public class FragmentViewStep extends Fragment {
     private final String STEPS_STATE = "steps_state";
 
     /** Member vars for views */
-    private ViewStepFragmentBinding binding;
+    private FragmentViewStepBinding binding;
     private BottomNavigationView mBottomNavigationView;
 
     /** Member vars for data to be shown */
@@ -45,6 +46,8 @@ public class FragmentViewStep extends Fragment {
     public interface FragmentViewStepListener{
         void onBackSelected(Step[] steps);
     }
+    /** Member var for keeping track of UI state */
+    private boolean isLandscape;
 
     /** Compulsory empty constructor */
     public FragmentViewStep() {
@@ -53,6 +56,14 @@ public class FragmentViewStep extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // Check the device's orientation
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            isLandscape = true;
+        }
+        else{
+            isLandscape = false;
+        }
+
         // Load the saved state (the items in the step) if there is one
         if(savedInstanceState != null && savedInstanceState.get(STEPS_STATE) != null) {
             Log.d(TAG, "onCreateView's savedInstanceState is called");
@@ -61,18 +72,17 @@ public class FragmentViewStep extends Fragment {
         }
 
         // Inflate the Select-Step fragment layout
-        binding = ViewStepFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentViewStepBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
         // Show the step details
         if(mSteps != null) showStep();
 
-        // Set up the bottom navigation
-        setupBottomNavigation();
+        // Set up the bottom navigation only when the device is in portrait mode
+        if(!isLandscape) setupBottomNavigation();
 
         return rootView;
     }
-
 
     /** It is to set the fields of this fragment in order to show them to the user */
     public void setSteps(Step[] steps, int position) {
@@ -115,14 +125,12 @@ public class FragmentViewStep extends Fragment {
         });
     }
 
-
-
+    //TODO: Ha runtime portrait mode-ba fordítom, akkor nem tünteti el ezt a külön 'land' layoutban lévő containert.
+    // esetleg a a videoplayer widget helyett legyen külön child fragmentje ennek a fragmentnek?
     /** This presents the data, available in the fields of this fragment, to the user. The videoURL and the description of the selected {@link Step}. */
     private void showStep(){
         // Get a reference to the media player View in the fragment layout
         TextView videoView = binding.mediaPlayerView;
-        // Get a reference to the step description View in the fragment layout
-        TextView descriptionView = binding.tvViewStep;
         // If a video exists, set it to the view, otherwise show default image/text
         if(mSteps[mStepsIndex].getVideoURL() == null || mSteps[mStepsIndex].getVideoURL().isEmpty()){
             videoView.setText("There is no Video available!");
@@ -130,12 +138,18 @@ public class FragmentViewStep extends Fragment {
         else{
             videoView.setText(mSteps[mStepsIndex].getVideoURL());
         }
-        // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
-        if(mSteps[mStepsIndex].getDescription() != null){
-            descriptionView.setText(mSteps[mStepsIndex].getDescription());
-        }
-        else{
-            Log.wtf(TAG, "This fragment has a null Step description");
+
+        // Setup the descriptionView only when the device is in portrait mode
+        if(!isLandscape){
+            // Get a reference to the step description View in the fragment layout
+            TextView descriptionView = binding.tvViewStep;
+            // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
+            if(mSteps[mStepsIndex].getDescription() != null){
+                descriptionView.setText(mSteps[mStepsIndex].getDescription());
+            }
+            else{
+                Log.wtf(TAG, "This fragment has a null Step description");
+            }
         }
     }
 

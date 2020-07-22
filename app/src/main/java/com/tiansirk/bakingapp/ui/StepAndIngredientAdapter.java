@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Step;
-import com.tiansirk.bakingapp.databinding.CardIngredientsItemBinding;
-import com.tiansirk.bakingapp.databinding.CardRecipeItemBinding;
+import com.tiansirk.bakingapp.databinding.ItemIngredientsBinding;
+import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,10 +53,10 @@ public class StepAndIngredientAdapter extends RecyclerView.Adapter<RecyclerView.
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case VIEW_TYPE_INGREDIENT:
-                CardIngredientsItemBinding iBinding = CardIngredientsItemBinding.inflate(inflater, parent, false);
+                ItemIngredientsBinding iBinding = ItemIngredientsBinding.inflate(inflater, parent, false);
                 return new IngredientViewHolder(iBinding);
             case VIEW_TYPE_STEP:
-                CardRecipeItemBinding sBinding = CardRecipeItemBinding.inflate(inflater, parent, false);
+                ItemRecipeBinding sBinding = ItemRecipeBinding.inflate(inflater, parent, false);
                 return new StepViewHolder(sBinding);
             default:
                 return null;
@@ -78,10 +78,10 @@ public class StepAndIngredientAdapter extends RecyclerView.Adapter<RecyclerView.
     /** The custom ViewHolder class for Ingredient */
     public class IngredientViewHolder extends RecyclerView.ViewHolder{
         /** member var for the item layout */
-        public CardIngredientsItemBinding cardIngredientsBinding;
+        public ItemIngredientsBinding cardIngredientsBinding;
 
         /** Constructor for the custom ViewHolder */
-        public IngredientViewHolder(@NonNull CardIngredientsItemBinding itemViewBinding) {
+        public IngredientViewHolder(@NonNull ItemIngredientsBinding itemViewBinding) {
             super(itemViewBinding.getRoot());
             this.cardIngredientsBinding = itemViewBinding;
         }
@@ -97,10 +97,10 @@ public class StepAndIngredientAdapter extends RecyclerView.Adapter<RecyclerView.
     /** The custom ViewHolder class for Step */
     public class StepViewHolder extends RecyclerView.ViewHolder{
         /** member var for the item layout */
-        public CardRecipeItemBinding cardStepBinding;
+        public ItemRecipeBinding cardStepBinding;
 
         /** Constructor for the custom ViewHolder */
-        public StepViewHolder(@NonNull CardRecipeItemBinding itemViewBinding) {
+        public StepViewHolder(@NonNull ItemRecipeBinding itemViewBinding) {
             super(itemViewBinding.getRoot());
             this.cardStepBinding = itemViewBinding;
         }

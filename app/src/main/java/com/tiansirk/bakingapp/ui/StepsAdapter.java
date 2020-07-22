@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Step;
-import com.tiansirk.bakingapp.databinding.CardIngredientsItemBinding;
-import com.tiansirk.bakingapp.databinding.CardRecipeItemBinding;
+import com.tiansirk.bakingapp.databinding.ItemIngredientsBinding;
+import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,7 +45,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     @Override
     public StepViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        CardRecipeItemBinding sBinding = CardRecipeItemBinding.inflate(inflater, parent, false);
+        ItemRecipeBinding sBinding = ItemRecipeBinding.inflate(inflater, parent, false);
         return new StepViewHolder(sBinding, mClicklistener);
     }
 
@@ -58,10 +58,10 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
     /** The custom ViewHolder class for Step */
     public class StepViewHolder extends RecyclerView.ViewHolder{
         /** member var for the item layout */
-        public CardRecipeItemBinding cardStepBinding;
+        public ItemRecipeBinding cardStepBinding;
 
         /** Constructor for the custom ViewHolder */
-        public StepViewHolder(@NonNull CardRecipeItemBinding itemViewBinding, final StepsAdapterItemClickListener clickListener) {
+        public StepViewHolder(@NonNull ItemRecipeBinding itemViewBinding, final StepsAdapterItemClickListener clickListener) {
             super(itemViewBinding.getRoot());
             this.cardStepBinding = itemViewBinding;
 

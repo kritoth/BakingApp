@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Step;
-import com.tiansirk.bakingapp.databinding.SelectStepsFragmentBinding;
+import com.tiansirk.bakingapp.databinding.FragmentSelectStepsBinding;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import androidx.annotation.NonNull;
@@ -32,7 +32,7 @@ public class FragmentSelectSteps extends Fragment {
     private final String STEPS_LIST_STATE = "steps_list_state";
 
     /** Member vars for views */
-    private SelectStepsFragmentBinding binding;
+    private FragmentSelectStepsBinding binding;
     private RecyclerView mRecyclerViewIngredients;
     private RecyclerView mRecyclerViewSteps;
 
@@ -68,7 +68,7 @@ public class FragmentSelectSteps extends Fragment {
         }
 
         // Inflate the Select-Step fragment layout
-        binding = SelectStepsFragmentBinding.inflate(inflater, container, false);
+        binding = FragmentSelectStepsBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
         // set up Recyclerview

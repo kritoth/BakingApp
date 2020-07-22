@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Step;
-import com.tiansirk.bakingapp.databinding.CardIngredientsItemBinding;
-import com.tiansirk.bakingapp.databinding.CardRecipeItemBinding;
+import com.tiansirk.bakingapp.databinding.ItemIngredientsBinding;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +29,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     @Override
     public IngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        CardIngredientsItemBinding iBinding = CardIngredientsItemBinding.inflate(inflater, parent, false);
+        ItemIngredientsBinding iBinding = ItemIngredientsBinding.inflate(inflater, parent, false);
         return new IngredientsAdapter.IngredientViewHolder(iBinding);
     }
 
@@ -44,10 +42,10 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     /** The custom ViewHolder class for Ingredient */
     public class IngredientViewHolder extends RecyclerView.ViewHolder{
         /** member var for the item layout */
-        public CardIngredientsItemBinding cardIngredientsBinding;
+        public ItemIngredientsBinding cardIngredientsBinding;
 
         /** Constructor for the custom ViewHolder */
-        public IngredientViewHolder(@NonNull CardIngredientsItemBinding itemViewBinding) {
+        public IngredientViewHolder(@NonNull ItemIngredientsBinding itemViewBinding) {
             super(itemViewBinding.getRoot());
             this.cardIngredientsBinding = itemViewBinding;
         }
