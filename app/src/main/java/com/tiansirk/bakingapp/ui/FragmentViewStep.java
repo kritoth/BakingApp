@@ -25,11 +25,12 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class FragmentViewStep extends Fragment {
 
-    private final static String TAG = FragmentViewStep.class.getSimpleName();
+    public final static String TAG = FragmentViewStep.class.getSimpleName();
 
     /** Member constants for saving state */
-    private final String STEPS_INDEX_STATE = "steps_index_state";
-    private final String STEPS_STATE = "steps_state";
+    private final String STATE_STEPS_INDEX = "steps_index_state";
+    private final String STATE_STEPS = "steps_state";
+    private final String STATE_ORIENTATION = "state_orientation";
 
     /** Member vars for views */
     private FragmentViewStepBinding binding;
@@ -65,13 +66,13 @@ public class FragmentViewStep extends Fragment {
         }
 
         // Load the saved state (the items in the step) if there is one
-        if(savedInstanceState != null && savedInstanceState.get(STEPS_STATE) != null) {
-            Log.d(TAG, "onCreateView's savedInstanceState is called");
-            mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STEPS_STATE));
-            mStepsIndex = savedInstanceState.getInt(STEPS_INDEX_STATE);
+        if(savedInstanceState != null && savedInstanceState.get(STATE_STEPS) != null) {
+            Log.d(TAG, "mSteps, mStepsIndex and isLandscape is recreated from onCreateView's savedInstanceState.");
+            mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STATE_STEPS));
+            mStepsIndex = savedInstanceState.getInt(STATE_STEPS_INDEX);
         }
 
-        // Inflate the Select-Step fragment layout
+        // Inflate the View-Step fragment layout
         binding = FragmentViewStepBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
@@ -101,8 +102,7 @@ public class FragmentViewStep extends Fragment {
                         if(mStepsIndex > 0) {
                             mStepsIndex--;
                             showStep();
-                        }
-                        else{
+                        } else{
                             Toast.makeText(getContext(), "This is the first step!", Toast.LENGTH_SHORT).show();
                         }
                         return true;
@@ -113,8 +113,7 @@ public class FragmentViewStep extends Fragment {
                         if(mStepsIndex < mSteps.length - 1) {
                             mStepsIndex++;
                             showStep();
-                        }
-                        else{
+                        } else{
                             Toast.makeText(getContext(), "This is the last step!", Toast.LENGTH_SHORT).show();
                         }
                         return true;
@@ -125,8 +124,6 @@ public class FragmentViewStep extends Fragment {
         });
     }
 
-    //TODO: Ha runtime portrait mode-ba fordítom, akkor nem tünteti el ezt a külön 'land' layoutban lévő containert.
-    // esetleg a a videoplayer widget helyett legyen külön child fragmentje ennek a fragmentnek?
     /** This presents the data, available in the fields of this fragment, to the user. The videoURL and the description of the selected {@link Step}. */
     private void showStep(){
         // Get a reference to the media player View in the fragment layout
@@ -141,14 +138,17 @@ public class FragmentViewStep extends Fragment {
 
         // Setup the descriptionView only when the device is in portrait mode
         if(!isLandscape){
-            // Get a reference to the step description View in the fragment layout
-            TextView descriptionView = binding.tvViewStep;
-            // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
-            if(mSteps[mStepsIndex].getDescription() != null){
-                descriptionView.setText(mSteps[mStepsIndex].getDescription());
-            }
-            else{
-                Log.wtf(TAG, "This fragment has a null Step description");
+            if(binding.tvViewStep != null){
+                // Get a reference to the step description View in the fragment layout
+                TextView descriptionView = binding.tvViewStep;
+                // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
+                if(mSteps[mStepsIndex].getDescription() != null){
+                    descriptionView.setText(mSteps[mStepsIndex].getDescription());
+                } else{
+                    Log.wtf(TAG, "This fragment has a null Step description!");
+                }
+            } else{
+                Log.wtf(TAG, "view_step TextView is null!");
             }
         }
     }
@@ -180,13 +180,11 @@ public class FragmentViewStep extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState is called");
-        outState.putString(STEPS_STATE, JsonParser.serializeStepsToJson(mSteps));
-        outState.putInt(STEPS_INDEX_STATE, mStepsIndex);
+        outState.putString(STATE_STEPS, JsonParser.serializeStepsToJson(mSteps));
+        outState.putInt(STATE_STEPS_INDEX, mStepsIndex);
     }
 
-    public int getStepsIndex() {
-        return mStepsIndex;
-    }
+
 
     /** Shows or hides the
      * @param fragment according to its current state */

@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class FragmentSelectSteps extends Fragment {
 
-    private final static String TAG = FragmentSelectSteps.class.getSimpleName();
+    public final static String TAG = FragmentSelectSteps.class.getSimpleName();
 
     /** Member constants for saving state */
     private final String ADAPTER_STATE = "adapter_state";
@@ -103,13 +103,14 @@ public class FragmentSelectSteps extends Fragment {
      * Otherwise, create a Log statement that indicates that the list was not found
      */
     private void initAdapter(){
-        if(mIngredients != null && mSteps != null){
-            mIngredientsAdapter = new IngredientsAdapter(getContext());
-            mRecyclerViewIngredients.setAdapter(mIngredientsAdapter);
-            mIngredientsAdapter.setIngredientsData(mIngredients);
+        mIngredientsAdapter = new IngredientsAdapter(getContext());
+        mRecyclerViewIngredients.setAdapter(mIngredientsAdapter);
 
-            mStepsAdapter = new StepsAdapter(getContext());
-            mRecyclerViewSteps.setAdapter(mStepsAdapter);
+        mStepsAdapter = new StepsAdapter(getContext());
+        mRecyclerViewSteps.setAdapter(mStepsAdapter);
+
+        if(mIngredients != null && mSteps != null){
+            mIngredientsAdapter.setIngredientsData(mIngredients);
             mStepsAdapter.setStepsData(mSteps);
         }
         else {
