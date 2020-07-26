@@ -1,8 +1,25 @@
 package com.tiansirk.bakingapp.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "step_table", foreignKeys = @ForeignKey(
+        entity = Recipe.class,
+        parentColumns = "id",
+        childColumns = "recipeId",
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE))
 public class Step {
 
+    @PrimaryKey
+    @NonNull
     private int id;
+    @ColumnInfo(index = true)
+    private int recipeId; //This is the foreign key
+
     private String shortDescription;
     private String description;
     private String videoURL;

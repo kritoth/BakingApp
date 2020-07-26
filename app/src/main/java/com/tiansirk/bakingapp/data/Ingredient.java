@@ -1,6 +1,24 @@
 package com.tiansirk.bakingapp.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "ingredient_table", foreignKeys = @ForeignKey(
+        entity = Recipe.class,
+        parentColumns = "id",
+        childColumns = "recipeId",
+        onDelete = ForeignKey.CASCADE,
+        onUpdate = ForeignKey.CASCADE))
 public class Ingredient {
+
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    private int id;
+    @ColumnInfo(index = true)
+    private int recipeId; //This is the foreign key
 
     private double quantity;
     private String measure;

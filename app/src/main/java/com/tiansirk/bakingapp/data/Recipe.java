@@ -1,16 +1,29 @@
 package com.tiansirk.bakingapp.data;
 
-import java.util.ArrayList;
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "recipe_table")
 public class Recipe {
 
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    private int id;
+
     private String name;
+    @Ignore
     private Ingredient[] ingredients;
+    @Ignore
     private Step[] steps;
     private int servings;
     private String imgUrl;
 
+    // Empty constructor for Room
+    public Recipe(){}
+
+    @Ignore
     public Recipe(String name, Ingredient[] ingredients, Step[] steps, int servings, String imgUrl) {
         this.name = name;
         this.ingredients = ingredients;
@@ -19,12 +32,17 @@ public class Recipe {
         this.imgUrl = imgUrl;
     }
 
+    @Ignore
     public Recipe(String name, int servings, String imgUrl) {
         this.name = name;
         this.ingredients = new Ingredient[0];
         this.steps  = new Step[0];
         this.servings = servings;
         this.imgUrl = imgUrl;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
