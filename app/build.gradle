@@ -32,19 +32,33 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     // RecyclerView
-    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerviewVersion"
     // CardView
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation "androidx.cardview:cardview:$rootProject.cardviewVersion"
     //TabLayout
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //OKHttp for networking
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    //implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+
     //JSONLoader for converting .json file to String
-    implementation 'com.github.zainfikrih:jsonloader-library:1.0.3'
+    implementation "com.github.zainfikrih:jsonloader-library:$rootProject.jsonLoaderVersion"
     //GSON for parsing JSON-Java Deserialization
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
+
+    // Room components
+    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$rootProject.roomVersion"
+    androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$rootProject.archLifecycleVersion"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata:$rootProject.archLifecycleVersion"
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$rootProject.archLifecycleVersion"
+    // Annotation processor
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:$rootProject.archLifecycleVersion"
 }

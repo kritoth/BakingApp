@@ -27,3 +27,14 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    recyclerviewVersion = '1.1.0'
+    cardviewVersion = '1.0.0'
+    materialVersion = '1.1.0'
+    jsonLoaderVersion = '1.0.3'
+    gsonVersion = '2.8.6'
+    roomVersion = '2.2.5'
+    archLifecycleVersion = '2.2.0'
+    preferenceVersion = '1.1.0'
+}
