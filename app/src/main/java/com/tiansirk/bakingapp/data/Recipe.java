@@ -27,6 +27,9 @@ public class Recipe {
     @Expose
     private String imgUrl;
 
+    private long dateAddedToFav;
+    boolean isFavorite;
+
     // Empty constructor for Room
     public Recipe(){}
 
@@ -37,6 +40,7 @@ public class Recipe {
         this.steps = steps;
         this.servings = servings;
         this.imgUrl = imgUrl;
+        this.isFavorite = false;
     }
 
     @Ignore
@@ -46,6 +50,7 @@ public class Recipe {
         this.steps  = new Step[0];
         this.servings = servings;
         this.imgUrl = imgUrl;
+        this.isFavorite = false;
     }
 
     public int getId() {
@@ -72,6 +77,18 @@ public class Recipe {
         return imgUrl;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setDateAddedToFav(long dateAddedToFav) {
+        this.dateAddedToFav = dateAddedToFav;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -80,6 +97,7 @@ public class Recipe {
                 ",\n steps=" + steps +
                 ", servings=" + servings +
                 ", imgUrl='" + imgUrl + '\'' +
+                ", favorite=" + isFavorite +
                 '}';
     }
 }
