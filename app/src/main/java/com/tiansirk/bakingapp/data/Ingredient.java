@@ -35,8 +35,24 @@ public class Ingredient {
         this.ingredient = ingredient;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getRecipeId() {
+        return recipeId;
+    }
+
     public double getQuantity() {
         return quantity;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     public void setQuantity(double quantity) {

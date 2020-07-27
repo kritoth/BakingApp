@@ -77,8 +77,28 @@ public class Recipe {
         return imgUrl;
     }
 
+    public long getDateAddedToFav() {
+        return dateAddedToFav;
+    }
+
     public boolean isFavorite() {
         return isFavorite;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     public void setDateAddedToFav(long dateAddedToFav) {

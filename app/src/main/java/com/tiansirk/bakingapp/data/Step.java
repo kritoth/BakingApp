@@ -43,8 +43,16 @@ public class Step {
         return id;
     }
 
+    public int getRecipeId() {
+        return recipeId;
+    }
+
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setRecipeId(int recipeId) {
+        this.recipeId = recipeId;
     }
 
     public String getShortDescription() {

@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +79,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         public ItemRecipeBinding cardBinding;
 
         /** Constructor for the custom ViewHolder */
-        public RecipeViewHolder(@NotNull ItemRecipeBinding cardItemBinding,
+        public RecipeViewHolder(@NonNull ItemRecipeBinding cardItemBinding,
                                 final RecipeAdapterItemClickListener clickListener,
                                 final RecipeAdapterItemLongClickListener longClickListener) {
             super(cardItemBinding.getRoot());
