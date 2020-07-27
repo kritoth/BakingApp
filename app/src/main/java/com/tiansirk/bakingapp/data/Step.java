@@ -1,5 +1,7 @@
 package com.tiansirk.bakingapp.data;
 
+import com.google.gson.annotations.Expose;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -20,9 +22,13 @@ public class Step {
     @ColumnInfo(index = true)
     private int recipeId; //This is the foreign key
 
+    @Expose
     private String shortDescription;
+    @Expose
     private String description;
+    @Expose
     private String videoURL;
+    @Expose
     private String imageURL;
 
     public Step(int id, String shortDescription, String description, String videoURL, String imageURL) {

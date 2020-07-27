@@ -1,5 +1,7 @@
 package com.tiansirk.bakingapp.data;
 
+import com.google.gson.annotations.Expose;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -20,8 +22,11 @@ public class Ingredient {
     @ColumnInfo(index = true)
     private int recipeId; //This is the foreign key
 
+    @Expose
     private double quantity;
+    @Expose
     private String measure;
+    @Expose
     private String ingredient;
 
     public Ingredient(double quantity, String measure, String ingredient) {

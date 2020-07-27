@@ -3,6 +3,7 @@ package com.tiansirk.bakingapp.utils;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.data.Step;
@@ -23,7 +24,7 @@ public class JsonParser {
      * @return JSON formatted String
      */
     public static String serializeRecipesToJson(Recipe[] recipes){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(recipes);
     }
 
@@ -43,7 +44,7 @@ public class JsonParser {
      * @return JSON formatted String
      */
     public static String serializeRecipeToJson(Recipe recipe){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(recipe);
     }
 
@@ -62,7 +63,7 @@ public class JsonParser {
      * @return JSON formatted String
      */
     public static String serializeStepsToJson(Step[] steps){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(steps);
     }
 
@@ -82,7 +83,7 @@ public class JsonParser {
      * @return JSON formatted String
      */
     public static String serializeIngredientsToJson(Ingredient[] ingredients){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.toJson(ingredients);
     }
 

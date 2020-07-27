@@ -1,5 +1,7 @@
 package com.tiansirk.bakingapp.data;
 
+import com.google.gson.annotations.Expose;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,12 +14,17 @@ public class Recipe {
     @NonNull
     private int id;
 
+    @Expose
     private String name;
+    @Expose
     @Ignore
     private Ingredient[] ingredients;
+    @Expose
     @Ignore
     private Step[] steps;
+    @Expose
     private int servings;
+    @Expose
     private String imgUrl;
 
     // Empty constructor for Room
