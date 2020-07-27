@@ -9,8 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.SelectStepActivity"></activity>
-        <activity android:name=".ui.MainActivity">
+        <!-- singleTop launchMode ensures that the Activity won't be recreated when we navigate back from childactivity -->
+        <activity android:name=".ui.SelectStepActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.FavoriteActivity"
+            android:parentActivityName=".ui.MainActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+        <activity android:name=".ui.MainActivity"
+            android:launchMode="singleTop">>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
