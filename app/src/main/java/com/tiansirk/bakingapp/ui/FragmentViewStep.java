@@ -2,7 +2,9 @@ package com.tiansirk.bakingapp.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -144,6 +146,9 @@ public class FragmentViewStep extends Fragment {
                 // If a description exists, set it to the view, otherwise, create a Log statement that indicates there is no step
                 if(mSteps[mStepsIndex].getDescription() != null){
                     descriptionView.setText(mSteps[mStepsIndex].getDescription());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        descriptionView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+                    }
                 } else{
                     Log.wtf(TAG, "This fragment has a null Step description!");
                 }
