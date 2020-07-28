@@ -112,10 +112,11 @@ public class Recipe {
     @Override
     public String toString() {
         return "Recipe{" +
-                "name='" + name + '\'' +
+                "id= " + id +
+                ", name='" + name + '\'' +
                 ",\n ingredients=" + ingredients +
                 ",\n steps=" + steps +
-                ", servings=" + servings +
+                ",\n servings=" + servings +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", favorite=" + isFavorite +
                 '}';

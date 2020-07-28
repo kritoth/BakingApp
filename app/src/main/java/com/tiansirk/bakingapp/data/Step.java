@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "step_table", foreignKeys = @ForeignKey(
@@ -16,7 +17,7 @@ import androidx.room.PrimaryKey;
         onUpdate = ForeignKey.CASCADE))
 public class Step {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     private int id;
     @ColumnInfo(index = true)
@@ -31,8 +32,21 @@ public class Step {
     @Expose
     private String imageURL;
 
-    public Step(int id, String shortDescription, String description, String videoURL, String imageURL) {
-        this.id = id;
+    // Empty constructor for Room
+    public Step(){}
+
+    @Ignore
+    public Step(String shortDescription, String description, String videoURL, String imageURL) {
+        this.recipeId = -1;
+        this.shortDescription = shortDescription;
+        this.description = description;
+        this.videoURL = videoURL;
+        this.imageURL = imageURL;
+    }
+
+    @Ignore
+    public Step(int recipeId, String shortDescription, String description, String videoURL, String imageURL) {
+        this.recipeId = recipeId;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
@@ -43,16 +57,21 @@ public class Step {
         return id;
     }
 
-    public int getRecipeId() {
-        return recipeId;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
+    public int getRecipeId() {
+        return recipeId;
+    }
+
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
+    }
+
+    public boolean hasRecipeId(){
+        if(this.recipeId == -1) return false;
+        else return true;
     }
 
     public String getShortDescription() {
@@ -95,6 +114,7 @@ public class Step {
                 ", description='" + description + '\'' +
                 ", videoURL='" + videoURL + '\'' +
                 ", imageURL='" + imageURL + '\'' +
+                ", recipeId= " + recipeId +
                 "}\n";
     }
 }
