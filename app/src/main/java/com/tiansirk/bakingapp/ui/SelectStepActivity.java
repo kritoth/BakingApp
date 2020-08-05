@@ -49,8 +49,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
         // check what the device is, ie. if it has the view in sw600dp.xml layout, then it is a tablet
         if (findViewById(R.id.view_container_tablet) != null) {
             isDualPane = true;
-        }
-        else {
+        } else {
             isDualPane = false;
         }
 
@@ -65,8 +64,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             mSelectStepFragment = (FragmentSelectSteps) fragmentManager.getFragment(savedInstanceState, FragmentSelectSteps.TAG);
             mViewStepFragment = (FragmentViewStep) fragmentManager.getFragment(savedInstanceState, FragmentViewStep.TAG);
             Log.d(TAG, "mSelectFragment and mViewFragment is recreated from savedInstanceState.");
-        }
-        else{
+        } else{
             // get the received {@link Step} objects
             if(getIntent() != null){
                 if(getIntent().getStringExtra("selected_recipe") !=  null){
@@ -90,8 +88,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
                 ft.replace(R.id.select_container_tablet, mSelectStepFragment);
                 ft.replace(R.id.view_container_tablet, mViewStepFragment);
                 ft.commit();
-            }
-            else{
+            } else{
                 // Set up the select fragment with replace (ie. removes the existing fragment and adds it as new: https://stackoverflow.com/questions/24466302/basic-difference-between-add-and-replace-method-of-fragment/24466345 )
                 ft.replace(R.id.select_step_container, mSelectStepFragment);
                 ft.replace(R.id.view_step_container, mViewStepFragment);
@@ -114,8 +111,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
         if(isDualPane){
             ft.replace(R.id.view_container_tablet, mViewStepFragment);
             ft.commit();
-        }
-        else{
+        } else{
             // detach and re-attach each time makes sure the newly set data will be shown instead of the previously saved data
             ft.detach(mViewStepFragment);
             Log.d(TAG, "mViewFragment is detached");
@@ -138,8 +134,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
         if(isDualPane){
             ft.replace(R.id.select_container_tablet, mSelectStepFragment);
             ft.commit();
-        }
-        else{
+        } else{
             ft.replace(R.id.select_step_container, mSelectStepFragment);
             ft.hide(mViewStepFragment);
             ft.show(mSelectStepFragment);

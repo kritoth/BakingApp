@@ -23,6 +23,7 @@ import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
+import com.tiansirk.bakingapp.utils.AppExecutors;
 import com.tiansirk.bakingapp.utils.DateConverter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
@@ -60,13 +61,12 @@ public class MainActivity extends AppCompatActivity {
         if(savedInstanceState != null && savedInstanceState.containsKey(STATE_RECIPES)){
             mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
             Log.d(TAG, "mRecipe is received from savedInstanceState");
-        }else{
+        } else{
             // Load data from JSON
             parseJsonFromFile();
         }
 
-
-        // Set ItemClickListeners: plain and long
+        // Set ItemClickListeners: single and long
         setupItemClickListeners();
 
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
@@ -145,10 +145,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Recipe long pressed for to make it Favorite");
                 //Saves if it is not a favorite yet
                 if(!longClickedRecipe.isFavorite()) {
+                    showAsFavorite();
                     saveRecipeAsFavorite(longClickedRecipe);
                 }
                 //Removes if it is a favorite already
                 else if(longClickedRecipe.isFavorite()) {
+                    showAsNotFavorite();
                     removeRecipeFromFavorites(longClickedRecipe);
                 }
                 else{
@@ -197,12 +199,10 @@ public class MainActivity extends AppCompatActivity {
         if(insertedRecipeId > -1){
             Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_LONG).show();
             Log.d(TAG, "Recipe INSERT successful");
-        }
-        else{
+        } else{
             Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_LONG).show();
             Log.d(TAG, "Recipe INSERT unsuccessful");
         }
-
     }
 
     /**
@@ -244,12 +244,11 @@ public class MainActivity extends AppCompatActivity {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                iD[0] = mDbase.stepDao().insertStep(step)
+                iD[0] = mDbase.stepDao().insertStep(step);
             }
         });
         return iD[0];
     }
-
 
     /**
      * Removes the {@param Recipe} from the App's Database
@@ -298,30 +297,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * This method will make the RecyclerView visible and hide the error message
-     */
-    private void showDataView() {
-        /* First, make sure the error is invisible */
-        binding.tvErrorMessageRecipes.setVisibility(View.INVISIBLE);
-        /* Then hide loading indicator */
-        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
-        /* Then, make sure the movie is visible */
-        binding.rvRecipes.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * This method will make the error message visible and hide the RecyclerView
-     */
-    private void showErrorMessage() {
-        /* First, hide the currently visible data */
-        binding.rvRecipes.setVisibility(View.INVISIBLE);
-        /* Then hide loading indicator */
-        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
-        /* Then, show the error */
-        binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
-    }
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -347,6 +322,44 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * This method will make the RecyclerView visible and hide the error message
+     */
+    private void showDataView() {
+        /* First, make sure the error is invisible */
+        binding.tvErrorMessageRecipes.setVisibility(View.INVISIBLE);
+        /* Then hide loading indicator */
+        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
+        /* Then, make sure the movie is visible */
+        binding.rvRecipes.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method will make the error message visible and hide the RecyclerView
+     */
+    private void showErrorMessage() {
+        /* First, hide the currently visible data */
+        binding.rvRecipes.setVisibility(View.INVISIBLE);
+        /* Then hide loading indicator */
+        binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
+        /* Then, show the error */
+        binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method will make the filled star visible and hide the empty star
+     */
+    private void showAsFavorite(){
+
+    }
+
+    /**
+     * This method will make the empty star visible and hide the filled star
+     */
+    private void showAsNotFavorite(){
+
     }
 
     /**

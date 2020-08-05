@@ -66,7 +66,7 @@ public class Ingredient {
     }
 
     public boolean hasRecipeId(){
-        if(this.recipeId == -1) return false;
+        if(this.recipeId < 0) return false;
         else return true;
     }
 
