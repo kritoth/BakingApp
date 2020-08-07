@@ -12,14 +12,14 @@ import androidx.room.Query;
 @Dao
 public interface RecipeDao {
     //Create
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertRecipeToFavorites(Recipe recipe);
 
     //Read
-    @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE id = :id)")
-    LiveData<Integer> searchRecipe(int id); //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
+    @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
+    LiveData<Long> searchRecipe(long id); //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
 
-    @Query("SELECT * FROM recipe_table ORDER BY id ASC")
+    @Query("SELECT * FROM recipe_table ORDER BY roomId ASC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesById();
 
     @Query("SELECT * FROM recipe_table ORDER BY name ASC")
@@ -31,8 +31,8 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipe_table ORDER BY dateAddedToFav DESC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesByDateAdded();
 
-    @Query("SELECT * FROM recipe_table WHERE id = :id")
-    LiveData<Recipe> loadFavoriteRecipe(int id);
+    @Query("SELECT * FROM recipe_table WHERE roomId = :id")
+    LiveData<Recipe> loadFavoriteRecipe(long id);
 
     //Update
 
@@ -43,4 +43,11 @@ public interface RecipeDao {
 
     @Query("DELETE FROM recipe_table")
     void deleteAllFavoriteRecipe();
+
+
+    //For testing only
+    @Query("SELECT * FROM recipe_table")
+    List<Recipe> queryAllFavoriteRecipes();
+    @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
+    int queryIfRecipeExists(long id);
 }

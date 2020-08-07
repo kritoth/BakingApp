@@ -2,6 +2,8 @@ package com.tiansirk.bakingapp.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import men.ngopi.zain.jsonloaderlibrary.JSONLoader;
@@ -14,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -23,14 +26,18 @@ import com.tiansirk.bakingapp.data.Ingredient;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
+import com.tiansirk.bakingapp.model.FavoriteViewModel;
+import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.AppExecutors;
 import com.tiansirk.bakingapp.utils.DateConverter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getApplicationContext().deleteDatabase("favoriterecipes");
+
         // Initiating views
         initViews();
-
         // Initiating RecyclerView
         setupRecyclerView();
 
@@ -66,13 +74,15 @@ public class MainActivity extends AppCompatActivity {
             parseJsonFromFile();
         }
 
+        mAdapter = new RecipeAdapter(this);
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
+        binding.rvRecipes.setAdapter(mAdapter);
+
         // Set ItemClickListeners: single and long
         setupItemClickListeners();
 
-        mAdapter.setRecipesData(Arrays.asList(mRecipes));
-
-        Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
-        Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+        //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
+        //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
 
         mDbase = AppDatabase.getsInstance(getApplicationContext());
 
@@ -92,8 +102,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
         binding.rvRecipes.setLayoutManager(gridLayoutManager);
         binding.rvRecipes.setHasFixedSize(true);
-        mAdapter = new RecipeAdapter(this);
-        binding.rvRecipes.setAdapter(mAdapter);
+
     }
 
     /**
@@ -138,24 +147,29 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter.setOnItemLongClickListener(new RecipeAdapter.RecipeAdapterItemLongClickListener() {
             @Override
-            public void onItemLongClick(int position) {
-                Toast.makeText(getApplicationContext(), "Item LONG clicked: " + mRecipes[position].getName(), Toast.LENGTH_SHORT).show();
-                //TODO: make it favorite: 1. show with a star ?2. into local db?
+            public void onItemLongClick(int position, View view) {
                 Recipe longClickedRecipe = mRecipes[position];
-                Log.d(TAG, "Recipe long pressed for to make it Favorite");
+                Log.d(TAG, "Recipe long pressed for to make it Favorite: " + longClickedRecipe.getName());
+
                 //Saves if it is not a favorite yet
                 if(!longClickedRecipe.isFavorite()) {
-                    showAsFavorite();
+                    mRecipes[position].setFavorite(true);
+                    //longClickedRecipe.setFavorite(true); //TODO: ezt a státuszt nem menti a rendszer, mert ez csak egy lokális variable -nél állítja be és elforgatásnál sem menti, így nem kerül be az onSaveInstanceState-be sem
+                    showAsFavorite(view);
                     saveRecipeAsFavorite(longClickedRecipe);
+                    mAdapter.notifyItemChanged(position);
                 }
                 //Removes if it is a favorite already
                 else if(longClickedRecipe.isFavorite()) {
-                    showAsNotFavorite();
+                    //longClickedRecipe.setFavorite(false); //TODO: ezt a státuszt nem menti a rendszer, mert ez csak egy lokális variable -nél állítja be és elforgatásnál sem menti, így nem kerül be az onSaveInstanceState-be sem
+                    showAsNotFavorite(view);
                     removeRecipeFromFavorites(longClickedRecipe);
+                    mAdapter.notifyItemChanged(position);
                 }
                 else{
                     Log.e(TAG, "The long-clicked Recipe's isFavorite is null!");
                 }
+
             }
         });
     }
@@ -178,31 +192,37 @@ public class MainActivity extends AppCompatActivity {
      */
     private void saveRecipeAsFavorite(Recipe recipe) {
         recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
-        long insertedRecipeId = insertRecipeToDbase(recipe); // here the Recipe gets an id as it is autogenerated by Room when it is inserted
-        //check if the Recipe truly has an id and if not Log an error?
+        recipe.setFavorite(true);
+        long insertedRecipeId = insertRecipeToDbase(recipe);
+
+        Log.d(TAG, "Recipe inserted with the id of: " + insertedRecipeId);
+
         for(int i=0; i<recipe.getIngredients().length; i++){
             Ingredient currIngredient = recipe.getIngredients()[i];
-            if(!currIngredient.hasRecipeId()) {
-                currIngredient.setRecipeId(recipe.getId());
-            }
+            currIngredient.setRecipeId(insertedRecipeId);
             insertIngredient(currIngredient);
-            Log.d(TAG, "Ingredient inserted:\n" + i + ": " + currIngredient.toString());
+            //Log.d(TAG, "Ingredient inserted:\n" + i + ": " + currIngredient.toString());
         }
         for(int j=0; j<recipe.getSteps().length; j++){
             Step currStep = recipe.getSteps()[j];
-            if(!currStep.hasRecipeId()) {
-                currStep.setRecipeId(recipe.getId());
-            }
+            currStep.setRecipeId(insertedRecipeId);
             insertStep(currStep);
-            Log.d(TAG, "Step inserted:\n" + j + ": " + currStep.toString());
+            //Log.d(TAG, "Step inserted:\n" + j + ": " + currStep.toString());
         }
+
         if(insertedRecipeId > -1){
             Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Recipe INSERT successful");
+            Log.d(TAG, "Recipe INSERT successful\nisFavorite status: " + recipe.isFavorite());
         } else{
             Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Recipe INSERT unsuccessful");
+            recipe.setFavorite(false);
+            Log.d(TAG, "Recipe INSERT unsuccessful\nisFavorite status: " + recipe.isFavorite());
         }
+        /* //These are for testing purposes only!!!
+        int succesful = searchRecipe(recipe, insertedRecipeId);
+        Log.d(TAG, "Recipe exists scnd: " + succesful);
+        queryAll();
+        */
     }
 
     /**
@@ -211,12 +231,17 @@ public class MainActivity extends AppCompatActivity {
      */
     private long insertRecipeToDbase(final Recipe recipe){
         final long[] iD = new long[1];
+        Log.d(TAG, "INSERTRecipe started: " + recipe.toString());
+        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
             }
         });
+        */
+        Log.d(TAG, "INSERTRecipe executed: " + iD[0]);
         return iD[0];
     }
 
@@ -257,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         deleteIngredientsFromFavorites(recipe);
         deleteStepsFromFavorites(recipe);
         deleteRecipeFromFavorites(recipe);
+        recipe.setFavorite(false);
         Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_LONG).show();
     }
 
@@ -300,6 +326,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(TAG, " onSaveInstanceState is called.");
+
         outState.putString(STATE_RECIPES, JsonParser.serializeRecipesToJson(mRecipes));
     }
 
@@ -351,15 +379,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will make the filled star visible and hide the empty star
      */
-    private void showAsFavorite(){
-
+    private void showAsFavorite(View view){
+        ((ImageView)view).setImageResource(R.drawable.ic_baseline_star_filled_24);
     }
 
     /**
      * This method will make the empty star visible and hide the filled star
      */
-    private void showAsNotFavorite(){
-
+    private void showAsNotFavorite(View view){
+        ((ImageView)view).setImageResource(R.drawable.ic_baseline_star_border_24);
     }
 
     /**
@@ -368,5 +396,42 @@ public class MainActivity extends AppCompatActivity {
      */
     private static Date today(){
         return Calendar.getInstance().getTime();
+    }
+
+    /*
+    * For testing if Recipe insertion is OK. Returning 1 if exists and 0 if not
+     */
+    private int searchRecipe(Recipe recipe, long id){
+        final Integer[] exists = {null};
+        exists[0] = mDbase.recipeDao().queryIfRecipeExists(id);
+        Log.d(TAG, "Recipe exists frst: " + exists[0]);
+        return exists[0];
+    }
+    /*
+     * For testing queries all Recipes, Ingredients and Steps
+     */
+    private void queryAll(){
+        List<Recipe> queriedRecipes = new ArrayList<>();
+        List<Ingredient> queriedIngreds = new ArrayList<>();
+        List<Step> queriedSteps = new ArrayList<>();
+
+        queriedRecipes.addAll(mDbase.recipeDao().queryAllFavoriteRecipes());
+        queriedIngreds.addAll(mDbase.ingredientDao().queryAllIngreds());
+        queriedSteps.addAll(mDbase.stepDao().queryAllSteps());
+
+        Log.d(TAG, "List of queried Recipes size: " + queriedRecipes.size());
+        Log.d(TAG, "\nList of queried Ingredients size: " + queriedIngreds.size());
+        Log.d(TAG, "\nList of queried Step size: " + queriedSteps.size());
+
+        if(queriedRecipes != null && !queriedRecipes.isEmpty()) {
+            Log.d(TAG,"\nFirst Recipe in DB: " + queriedRecipes.get(0).toString());
+        }
+        if(queriedIngreds != null && !queriedIngreds.isEmpty()) {
+            Log.d(TAG,"\nFirst Ingredient in DB: " + queriedIngreds.get(0).toString());
+        }
+        if(queriedSteps != null && !queriedSteps.isEmpty()) {
+            Log.d(TAG, "\nFirst Step in DB: " + queriedSteps.get(0).toString());
+        }
+
     }
 }

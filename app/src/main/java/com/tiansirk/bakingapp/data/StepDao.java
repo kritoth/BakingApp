@@ -36,4 +36,9 @@ public interface StepDao {
 
     @Query("DELETE FROM step_table")
     void deleteAllSteps();
+
+
+    //For testing only
+    @Query("SELECT * FROM step_table")
+    List<Step> queryAllSteps();
 }

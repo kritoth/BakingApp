@@ -2,6 +2,8 @@ package com.tiansirk.bakingapp.data;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.Arrays;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -12,8 +14,11 @@ public class Recipe {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    private int id;
+    private long roomId;
 
+    @Expose
+    @Ignore
+    private int id;
     @Expose
     private String name;
     @Expose
@@ -53,9 +58,11 @@ public class Recipe {
         this.isFavorite = false;
     }
 
-    public int getId() {
-        return id;
+    public long getRoomId() {
+        return roomId;
     }
+
+    public int getId() { return id;}
 
     public String getName() {
         return name;
@@ -83,6 +90,10 @@ public class Recipe {
 
     public boolean isFavorite() {
         return isFavorite;
+    }
+
+    public void setRoomId(long roomId) {
+        this.roomId = roomId;
     }
 
     public void setId(int id) {
@@ -113,12 +124,14 @@ public class Recipe {
     public String toString() {
         return "Recipe{" +
                 "id= " + id +
+                ", roomId= " + roomId +
                 ", name='" + name + '\'' +
-                ",\n ingredients=" + ingredients +
-                ",\n steps=" + steps +
+                ",\n ingredients=" + Arrays.toString(ingredients) +
+                ",\n steps=" + Arrays.toString(steps) +
                 ",\n servings=" + servings +
                 ", imgUrl='" + imgUrl + '\'' +
                 ", favorite=" + isFavorite +
+                ", datAddedToFav= " + dateAddedToFav +
                 '}';
     }
 }

@@ -1,10 +1,13 @@
 package com.tiansirk.bakingapp.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
@@ -39,7 +42,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     /** The interface that receives onLongClick messages. */
     public interface RecipeAdapterItemLongClickListener {
-        void onItemLongClick(int position);
+        void onItemLongClick(int position, View view);
     }
     /** Sets the received custom item long click listener to the member custom item long click listener
      * @param onItemLongClickListener
@@ -66,6 +69,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position) {
         Recipe currentItem = mRecipes.get(position);
         holder.cardBinding.tvRecipeTitle.setText(currentItem.getName());
+        //Log.d(LOG_TAG, "currentItem: " + currentItem.getName() + "\nisFavorite: " + currentItem.isFavorite());
+        if(currentItem.isFavorite()) {
+            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_filled_24);
+        }
+        if(!currentItem.isFavorite()) {
+            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_border_24);
+        }
     }
 
     @Override
@@ -101,17 +111,20 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
             cardBinding.cardView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
+                    ImageView star = view.findViewById(R.id.iv_favorite);
                     if(clickListener != null){
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
-                            longClickListener.onItemLongClick(position);
+                            longClickListener.onItemLongClick(position, star);
                         }
                     }
                     return true;
                 }
             });
         }
+
     }
+
 
     /**
      * This method is to set the data of the Recipes on a RecipeAdapter if thers is already
@@ -128,4 +141,5 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public List<Recipe> getRecipesData() {
         return mRecipes;
     }
+
 }

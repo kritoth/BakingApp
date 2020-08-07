@@ -62,6 +62,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepViewHold
         public StepViewHolder(@NonNull ItemRecipeBinding itemViewBinding, final StepsAdapterItemClickListener clickListener) {
             super(itemViewBinding.getRoot());
             this.cardStepBinding = itemViewBinding;
+            cardStepBinding.ivFavorite.setVisibility(View.GONE);
 
             /** setting the clickListener to the card_view */
             cardStepBinding.cardView.setOnClickListener(new View.OnClickListener() {

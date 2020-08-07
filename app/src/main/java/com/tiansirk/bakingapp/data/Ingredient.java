@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "ingredient_table", foreignKeys = @ForeignKey(
         entity = Recipe.class,
-        parentColumns = "id",
+        parentColumns = "roomId",
         childColumns = "recipeId",
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE))
@@ -19,9 +19,9 @@ public class Ingredient {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    private int id;
+    private long id;
     @ColumnInfo(index = true)
-    private int recipeId; //This is the foreign key
+    private long recipeId; //This is the foreign key
 
     @Expose
     private double quantity;
@@ -34,7 +34,7 @@ public class Ingredient {
     public Ingredient(){}
 
     @Ignore
-    public Ingredient(int recipeId, double quantity, String measure, String ingredient) {
+    public Ingredient(long recipeId, double quantity, String measure, String ingredient) {
         this.recipeId = recipeId;
         this.quantity = quantity;
         this.measure = measure;
@@ -43,31 +43,25 @@ public class Ingredient {
 
     @Ignore
     public Ingredient(double quantity, String measure, String ingredient) {
-        this.recipeId = -1;
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getRecipeId() {
+    public long getRecipeId() {
         return recipeId;
     }
 
-    public void setRecipeId(int recipeId) {
+    public void setRecipeId(long recipeId) {
         this.recipeId = recipeId;
-    }
-
-    public boolean hasRecipeId(){
-        if(this.recipeId < 0) return false;
-        else return true;
     }
 
     public double getQuantity() {

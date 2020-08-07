@@ -11,17 +11,33 @@
     android:clickable="true"
     android:longClickable="true"
     android:foreground="?android:attr/selectableItemBackground">
-    <TextView
-        android:id="@+id/tv_recipe_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/cardview_dark_background"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:hint="@string/hint_recipe_name"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_recipe_title"
+            android:layout_weight="8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/cardview_dark_background"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:hint="@string/hint_recipe_name" />
+
+        <ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/content_description_star_favorite"
+            app:srcCompat="@drawable/ic_baseline_star_border_24" />
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

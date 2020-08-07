@@ -6,6 +6,8 @@ import android.os.Looper;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import androidx.annotation.NonNull;
+
 public class AppExecutors {
 
     private static final String TAG = AppExecutors.class.getSimpleName();
@@ -48,8 +50,8 @@ public class AppExecutors {
     private static class MainThreadExecutor implements Executor{
         private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
         @Override
-        public void execute(Runnable runnable) {
-
+        public void execute(@NonNull Runnable command) {
+            mainThreadHandler.post(command);
         }
     }
 }

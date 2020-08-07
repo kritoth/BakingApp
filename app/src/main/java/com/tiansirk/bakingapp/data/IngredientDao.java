@@ -36,4 +36,9 @@ public interface IngredientDao {
 
     @Query("DELETE FROM ingredient_table")
     void deleteAllIngredients();
+
+
+    //For testing only
+    @Query("SELECT * FROM ingredient_table")
+    List<Ingredient> queryAllIngreds();
 }

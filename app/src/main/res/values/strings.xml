@@ -13,4 +13,5 @@
     <string name="fav_sorting__by_number_of_servings">Sort by number of servings</string>
     <string name="fav_sorting_by_date_added_to_favorites">Sort by date added to favorites</string>
     <string name="fav_sorting_delete_all_favorites">DELETE ALL FAVORITES!</string>
+    <string name="content_description_star_favorite">A star indicating as favorite</string>
 </resources>

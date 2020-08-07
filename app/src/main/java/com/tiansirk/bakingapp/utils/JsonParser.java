@@ -30,7 +30,7 @@ public class JsonParser {
      * @return the array of {@link Recipe}s
      */
     public static Recipe[] getRecipesFromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Recipe[] recipes = gson.fromJson(json, Recipe[].class);
         return recipes;
     }
@@ -50,7 +50,7 @@ public class JsonParser {
      * @return the {@link Recipe}
      */
     public static Recipe getRecipeFromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         return gson.fromJson(json, Recipe.class);
     }
 
@@ -69,7 +69,7 @@ public class JsonParser {
      * @return the array of {@link Step}s
      */
     public static Step[] getStepsFromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Step[] steps = gson.fromJson(json, Step[].class);
         return steps;
     }
@@ -89,7 +89,7 @@ public class JsonParser {
      * @return the array of {@link Ingredient}s
      */
     public static Ingredient[] getIngredientsFromJson(String json){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         Ingredient[] ingredients = gson.fromJson(json, Ingredient[].class);
         return ingredients;
     }

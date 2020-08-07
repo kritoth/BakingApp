@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "step_table", foreignKeys = @ForeignKey(
         entity = Recipe.class,
-        parentColumns = "id",
+        parentColumns = "roomId",
         childColumns = "recipeId",
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE))
@@ -19,9 +19,9 @@ public class Step {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
-    private int id;
+    private long id;
     @ColumnInfo(index = true)
-    private int recipeId; //This is the foreign key
+    private long recipeId; //This is the foreign key
 
     @Expose
     private String shortDescription;
@@ -37,41 +37,26 @@ public class Step {
 
     @Ignore
     public Step(String shortDescription, String description, String videoURL, String imageURL) {
-        this.recipeId = -1;
         this.shortDescription = shortDescription;
         this.description = description;
         this.videoURL = videoURL;
         this.imageURL = imageURL;
     }
 
-    @Ignore
-    public Step(int recipeId, String shortDescription, String description, String videoURL, String imageURL) {
-        this.recipeId = recipeId;
-        this.shortDescription = shortDescription;
-        this.description = description;
-        this.videoURL = videoURL;
-        this.imageURL = imageURL;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getRecipeId() {
+    public long getRecipeId() {
         return recipeId;
     }
 
-    public void setRecipeId(int recipeId) {
+    public void setRecipeId(long recipeId) {
         this.recipeId = recipeId;
-    }
-
-    public boolean hasRecipeId(){
-        if(this.recipeId == -1) return false;
-        else return true;
     }
 
     public String getShortDescription() {
