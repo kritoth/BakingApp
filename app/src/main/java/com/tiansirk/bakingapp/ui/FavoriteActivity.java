@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Recipe;
@@ -16,7 +15,6 @@ import com.tiansirk.bakingapp.model.FavoriteViewModel;
 import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.AppExecutors;
 
-import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -30,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FavoriteActivity extends AppCompatActivity {
 
     private static final String TAG = FavoriteActivity.class.getSimpleName();
+    private static final String KEY_ACTIVITY_INTENT = "CHOSEN_RECIPE";
     private static final String DEFAULT_SORT_PREFERENCE = "id";
 
     private ActivityFavoriteBinding binding;
@@ -44,13 +43,30 @@ public class FavoriteActivity extends AppCompatActivity {
 
         initViews();
         initRecyclerView();
+        mAdapter = new RecipeAdapter(this);
+        Log.d(TAG, "new RecipeAdapter constructed.");
 
-        loadRecipesFromDB();
+        FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
+        ViewModelProvider provider = new ViewModelProvider(this, factory);
+        final FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
+        Log.d(TAG, "ViewModel is created.");
+        viewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>(){
+            @Override
+            public void onChanged(List<Recipe> recipes) {
+                Log.d(TAG, "ViewModel is Queried by alphabet, ready to st data into the Adapter.");
+                mAdapter.setRecipesData(recipes);
+            }
+        });
+        binding.recyclerviewFavorites.setAdapter(mAdapter);
+        Log.d(TAG, "Adapter is added to RecyclerView.");
+        if(mAdapter.getRecipesData().isEmpty()) showErrorMessage();
+        else showDataView();
 
-        Log.d(TAG, "Favorite Recipes:\n");
+        //loadRecipesFromDB();
     }
 
     private void initViews() {
+        Log.d(TAG, "Viewbinding is initiated.");
         binding = ActivityFavoriteBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -62,8 +78,7 @@ public class FavoriteActivity extends AppCompatActivity {
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
         binding.recyclerviewFavorites.setLayoutManager(gridLayoutManager);
         binding.recyclerviewFavorites.setHasFixedSize(true);
-        mAdapter = new RecipeAdapter(this);
-        binding.recyclerviewFavorites.setAdapter(mAdapter);
+        Log.d(TAG, "RecyclerView has set up.");
     }
 
 
@@ -74,54 +89,60 @@ public class FavoriteActivity extends AppCompatActivity {
         final FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
         // Querying the Database according to user's preference
         // TODO: Ingredient and Step -s are not queried here, only RecipeDAO
-        if(mSortingPreference == null || mSortingPreference.isEmpty()){
-            mSortingPreference = DEFAULT_SORT_PREFERENCE;
+        if(viewModel.countNumberOfRows() == null){
+            showErrorMessage();
         }
-        switch (mSortingPreference) {
-            case "id":
-                viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(List<Recipe> recipes) {
-                        showDataView();
-                        mAdapter.setRecipesData(recipes);
-                    }
-                });
-                Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-                break;
-            case "abc":
-                viewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(List<Recipe> recipes) {
-                        showDataView();
-                        mAdapter.setRecipesData(recipes);
-                    }
-                });
-                Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-                break;
-            case "servings":
-                viewModel.getRecipesByServings().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(List<Recipe> recipes) {
-                        showDataView();
-                        mAdapter.setRecipesData(recipes);
-                    }
-                });
-                Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-                break;
-            case "date":
-                viewModel.getRecipesByDate().observe(this, new Observer<List<Recipe>>() {
-                    @Override
-                    public void onChanged(List<Recipe> recipes) {
-                        showDataView();
-                        mAdapter.setRecipesData(recipes);
-                    }
-                });
-                Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-                break;
-            case "delete":
-                confirmAndNuke(viewModel);
-                Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-                break;
+        else {
+            if (mSortingPreference == null || mSortingPreference.isEmpty()) {
+                mSortingPreference = DEFAULT_SORT_PREFERENCE;
+            }
+            switch (mSortingPreference) {
+                case "id":
+                    viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+                        @Override
+                        public void onChanged(List<Recipe> recipes) {
+                            showDataView();
+                            mAdapter.setRecipesData(recipes);
+                            mAdapter.getRecipesData();
+                        }
+                    });
+                    Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+                    break;
+                case "abc":
+                    viewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
+                        @Override
+                        public void onChanged(List<Recipe> recipes) {
+                            showDataView();
+                            mAdapter.setRecipesData(recipes);
+                        }
+                    });
+                    Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+                    break;
+                case "servings":
+                    viewModel.getRecipesByServings().observe(this, new Observer<List<Recipe>>() {
+                        @Override
+                        public void onChanged(List<Recipe> recipes) {
+                            showDataView();
+                            mAdapter.setRecipesData(recipes);
+                        }
+                    });
+                    Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+                    break;
+                case "date":
+                    viewModel.getRecipesByDate().observe(this, new Observer<List<Recipe>>() {
+                        @Override
+                        public void onChanged(List<Recipe> recipes) {
+                            showDataView();
+                            mAdapter.setRecipesData(recipes);
+                        }
+                    });
+                    Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+                    break;
+                case "delete":
+                    confirmAndNuke(viewModel);
+                    Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
+                    break;
+            }
         }
     }
 
@@ -198,9 +219,23 @@ public class FavoriteActivity extends AppCompatActivity {
      * This method will make the RecyclerView visible and hide the error message
      */
     private void showDataView() {
+        Log.d(TAG, "Show data view initiated.");
         /* Hide loading indicator */
         binding.pbLoadingIndicatorFavorites.setVisibility(View.INVISIBLE);
         /* Then, make sure the movie is visible */
         binding.recyclerviewFavorites.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * This method will make the error message visible and hide the RecyclerView
+     */
+    private void showErrorMessage() {
+        Log.d(TAG, "Show error message initiated.");
+        /* First, hide the currently visible data */
+        binding.recyclerviewFavorites.setVisibility(View.INVISIBLE);
+        /* Then hide loading indicator */
+        binding.pbLoadingIndicatorFavorites.setVisibility(View.INVISIBLE);
+        /* Then, show the error */
+        binding.tvErrorMessageFavorites.setVisibility(View.VISIBLE);
     }
 }

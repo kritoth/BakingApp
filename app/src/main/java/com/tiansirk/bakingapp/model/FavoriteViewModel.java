@@ -15,6 +15,7 @@ public class FavoriteViewModel extends AndroidViewModel {
     private AppDatabase mDb;
 
     private LiveData<Long> recipeIsExists;
+    private LiveData<Integer> numberOfRows;
 
     private LiveData<List<Recipe>> recipesById; //used in FavoriteActivity to sort by id
     private LiveData<List<Recipe>> recipesByAlphabet; //used in FavoriteActivity to sort by alphabet
@@ -33,6 +34,11 @@ public class FavoriteViewModel extends AndroidViewModel {
     public LiveData<Long> searchRecipe(long id){
         recipeIsExists = mDb.recipeDao().searchRecipe(id);
         return recipeIsExists;
+    }
+
+    public LiveData<Integer> countNumberOfRows(){
+        numberOfRows = mDb.recipeDao().checkTableIsEmpty();
+        return numberOfRows;
     }
 
     public LiveData<List<Recipe>> getRecipesById() {

@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set up the DB
+        mDbase = AppDatabase.getsInstance(getApplicationContext());
         //getApplicationContext().deleteDatabase("favoriterecipes");
 
         // Initiating views
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         } else{
             // Load data from JSON
             parseJsonFromFile();
+            // And update the list to show which are favorites
+            showFavoriteStatus(-1);
         }
         // Set up the custom Adapter
         mAdapter = new RecipeAdapter(this);
@@ -86,11 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
         //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-
-        // Set up the DB
-        mDbase = AppDatabase.getsInstance(getApplicationContext());
-        // Observe the DB whether to refresh the itemView
-        //showFavoriteStatus(-1);
 
         // Set ItemClickListeners: single and long
         setupItemClickListeners();
@@ -202,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 insertedRecipeId[0] = insertRecipeToDbase(recipe);
+                Log.d(TAG, "Recipe inserted with the ID of: " + insertedRecipeId[0]);
                 for(int i=0; i<recipe.getIngredients().length; i++){
                     Ingredient currIngredient = recipe.getIngredients()[i];
                     currIngredient.setRecipeId(insertedRecipeId[0]);
@@ -217,12 +217,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         if(insertedRecipeId[0] > -1){
-            Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "Recipe INSERT successful\nisFavorite status: " + recipe.isFavorite());
+            Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
         } else{
-            Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_SHORT).show();
             recipe.setFavorite(false);
-            Log.d(TAG, "Recipe INSERT unsuccessful\nisFavorite status: " + recipe.isFavorite());
+            Log.d(TAG, "Recipe INSERT unsuccessful!\nReturned ID is: " + insertedRecipeId + "\nisFavorite status: " + recipe.isFavorite());
         }
         /* //These are for testing purposes only!!!
         int succesful = searchRecipe(recipe, insertedRecipeId);
@@ -238,15 +237,7 @@ public class MainActivity extends AppCompatActivity {
     private long insertRecipeToDbase(final Recipe recipe){
         final long[] iD = new long[1];
         //Log.d(TAG, "INSERTRecipe started: " + recipe.toString());
-        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe); //- This is for testing purposes only
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
-            }
-        });
-*/
+        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
         Log.d(TAG, "INSERTRecipe executed: " + iD[0]);
         return iD[0];
     }
@@ -258,14 +249,6 @@ public class MainActivity extends AppCompatActivity {
     private long insertIngredient(final Ingredient ingredient){
         final long[] iD = new long[1];
         iD[0] = mDbase.ingredientDao().insertIngredient(ingredient);
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                iD[0] = mDbase.ingredientDao().insertIngredient(ingredient);
-            }
-        });
-        */
         return iD[0];
     }
 
@@ -276,14 +259,6 @@ public class MainActivity extends AppCompatActivity {
     private long insertStep(final Step step){
         final long[] iD = new long[1];
         mDbase.stepDao().insertStep(step);
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                iD[0] = mDbase.stepDao().insertStep(step);
-            }
-        });
-         */
         return iD[0];
     }
 
@@ -299,10 +274,9 @@ public class MainActivity extends AppCompatActivity {
                 deleteRecipeFromFavorites(recipe);
             }
         });
-
         recipe.setFavorite(false);
         Log.d(TAG, "DELETERecipe executed, isFavorite: " + recipe.isFavorite());
-        Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -310,14 +284,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void deleteIngredientsFromFavorites(final Recipe recipe){
         mDbase.ingredientDao().removeIngredientsOfRecipe(recipe.getId());
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDbase.ingredientDao().removeIngredientsOfRecipe(recipe.getId());
-            }
-        });
-         */
     }
 
     /**
@@ -325,14 +291,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void deleteStepsFromFavorites(final Recipe recipe){
         mDbase.stepDao().removeStepsOfRecipe(recipe.getId());
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDbase.stepDao().removeStepsOfRecipe(recipe.getId());
-            }
-        });
-         */
     }
 
     /**
@@ -341,14 +299,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void deleteRecipeFromFavorites(final Recipe recipe){
         mDbase.recipeDao().removeFavoriteRecipe(recipe);
-        /*
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDbase.recipeDao().removeFavoriteRecipe(recipe);
-            }
-        });
-         */
     }
 
     @Override

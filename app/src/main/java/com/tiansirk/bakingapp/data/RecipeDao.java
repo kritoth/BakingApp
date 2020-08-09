@@ -12,12 +12,15 @@ import androidx.room.Query;
 @Dao
 public interface RecipeDao {
     //Create
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     long insertRecipeToFavorites(Recipe recipe);
 
     //Read
     @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
     LiveData<Long> searchRecipe(long id); //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
+
+    @Query("SELECT COUNT(*) FROM recipe_table")
+    LiveData<Integer> checkTableIsEmpty(); // Counts the number of rows exists in the table
 
     @Query("SELECT * FROM recipe_table ORDER BY roomId ASC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesById();
