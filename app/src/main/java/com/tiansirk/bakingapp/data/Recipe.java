@@ -1,8 +1,13 @@
 package com.tiansirk.bakingapp.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -10,7 +15,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "recipe_table")
-public class Recipe {
+public class Recipe implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -134,4 +139,59 @@ public class Recipe {
                 ", datAddedToFav= " + dateAddedToFav +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Recipe)) return false;
+        Recipe recipe = (Recipe) o;
+        return getName().equals(recipe.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
+    }
+
+    protected Recipe(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        ingredients = new Ingredient[0];
+        in.readTypedArray(ingredients, Ingredient.CREATOR);
+        in.readTypedArray(steps, Step.CREATOR);
+        servings = in.readInt();
+        imgUrl = in.readString();
+        dateAddedToFav = in.readLong();
+        isFavorite = in.readByte() != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeTypedArray(ingredients, 0);
+        dest.writeTypedArray(steps, 0);
+        dest.writeInt(servings);
+        dest.writeString(imgUrl);
+        dest.writeLong(dateAddedToFav);
+        dest.writeByte((byte) (isFavorite ? 0x01 : 0x00));
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Recipe> CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
 }

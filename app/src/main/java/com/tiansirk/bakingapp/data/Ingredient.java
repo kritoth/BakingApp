@@ -1,5 +1,8 @@
 package com.tiansirk.bakingapp.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 
 import androidx.annotation.NonNull;
@@ -15,7 +18,7 @@ import androidx.room.PrimaryKey;
         childColumns = "recipeId",
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE))
-public class Ingredient {
+public class Ingredient implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -92,4 +95,37 @@ public class Ingredient {
     public String toString() {
         return id + ". " + ingredient + ": " + quantity + ", " + measure + ", recipeId: " + recipeId;
     }
+
+
+    protected Ingredient(Parcel in){
+        recipeId = in.readLong();
+        quantity = in.readDouble();
+        measure = in.readString();
+        ingredient = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(recipeId);
+        parcel.writeDouble(quantity);
+        parcel.writeString(measure);
+        parcel.writeString(ingredient);
+    }
+
+    public static final Parcelable.Creator<Ingredient> CREATOR = new Parcelable.Creator<Ingredient>() {
+        @Override
+        public Ingredient createFromParcel(Parcel in) {
+            return new Ingredient(in);
+        }
+
+        @Override
+        public Ingredient[] newArray(int size) {
+            return new Ingredient[size];
+        }
+    };
 }

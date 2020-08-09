@@ -11,6 +11,7 @@ import men.ngopi.zain.jsonloaderlibrary.StringLoaderListener;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,13 +68,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the saved Recipe array or load it from JSON
         if(savedInstanceState != null && savedInstanceState.containsKey(STATE_RECIPES)){
-            mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
+            //mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_RECIPES);
+            mRecipes = new Recipe[parcelables.length];
+            for (int i = 0; i < parcelables.length; ++i) {
+                mRecipes[i] = (Recipe) parcelables[i];
+            }
             Log.d(TAG, "mRecipe is received from savedInstanceState");
         } else{
             // Load data from JSON
             parseJsonFromFile();
         }
-
+        // Set up the custom Adapter
         mAdapter = new RecipeAdapter(this);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         binding.rvRecipes.setAdapter(mAdapter);
@@ -81,7 +87,10 @@ public class MainActivity extends AppCompatActivity {
         //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
         //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
 
+        // Set up the DB
         mDbase = AppDatabase.getsInstance(getApplicationContext());
+        // Observe the DB whether to refresh the itemView
+        //showFavoriteStatus(-1);
 
         // Set ItemClickListeners: single and long
         setupItemClickListeners();
@@ -346,8 +355,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, " onSaveInstanceState is called.");
-
-        outState.putString(STATE_RECIPES, JsonParser.serializeRecipesToJson(mRecipes));
+        outState.putParcelableArray(STATE_RECIPES, mRecipes);
+//        outState.putString(STATE_RECIPES, JsonParser.serializeRecipesToJson(mRecipes));
     }
 
     @Override
@@ -397,20 +406,23 @@ public class MainActivity extends AppCompatActivity {
     /**
      * This method will make the star either filled or not by
      */
-    private void showFavoriteStatus(final int position){
+    private void showFavoriteStatus(int position){
 
-        // Sets up the LiveData with ViewModel to actively refresh the Adapter by observing the DB
-        FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
-        ViewModelProvider provider = new ViewModelProvider(this, factory);
-        FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
-        viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
-            @Override
-            public void onChanged(List<Recipe> recipes) {
-                Log.d(TAG, "Updating Recipes from LiveData in ViewModel");
-                mAdapter.notifyItemChanged(position);
-            }
-        });
+        if(position > -1) mAdapter.notifyItemChanged(position);
+        else {
+            // Sets up the LiveData with ViewModel to actively refresh the Adapter by observing the DB
+            FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
+            ViewModelProvider provider = new ViewModelProvider(this, factory);
+            FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
 
+            viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+                @Override
+                public void onChanged(List<Recipe> recipes) {
+                    Log.d(TAG, "Updating Recipes from LiveData in ViewModel");
+                    mAdapter.updateRecipeList(recipes);
+                }
+            });
+        }
     }
 
     /**

@@ -10,15 +10,11 @@ import android.widget.ImageView;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
-import com.tiansirk.bakingapp.model.FavoriteViewModel;
-import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -31,8 +27,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     // member var for own custom longClickListener
     private RecipeAdapterItemLongClickListener mLongClickListener;
 
-
-     /** The interface that receives onClick messages. */
+    /** The interface that receives onClick messages. */
      public interface RecipeAdapterItemClickListener {
         void onItemClick(int position);
      }
@@ -90,7 +85,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     @Override
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
-        Log.d(LOG_TAG, "Super onBindViewHolder is called.");
         Recipe currentItem = mRecipes.get(position);
         holder.cardBinding.tvRecipeTitle.setText(currentItem.getName());
         if(currentItem.isFavorite()) {
@@ -148,7 +142,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
     }
 
-
     /**
      * This method is to set the data of the Recipes on a RecipeAdapter if thers is already
      * created one. This is handy when there is new data but don't needed to create a
@@ -158,6 +151,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      */
     public void setRecipesData (List<Recipe> recipes) {
         this.mRecipes = recipes;
+    }
+
+    /**
+     * Updates the Dataset with the data received as parameter
+     * @param favoriteRecipes
+     */
+    public void updateRecipeList(List<Recipe> favoriteRecipes) {
+        Log.d(LOG_TAG, "updateRecipeList is called");
+        for(Recipe r : favoriteRecipes) {
+            if (mRecipes.contains(r)){
+                mRecipes.get(mRecipes.indexOf(r)).setFavorite(true);
+            }
+        }
     }
 
     /** Getter method for the Recipes data present in the adapter */
