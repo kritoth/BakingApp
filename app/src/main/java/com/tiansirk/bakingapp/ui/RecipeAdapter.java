@@ -10,11 +10,15 @@ import android.widget.ImageView;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.Recipe;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
+import com.tiansirk.bakingapp.model.FavoriteViewModel;
+import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
@@ -65,16 +69,35 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return new RecipeViewHolder(itemBinding, mClickListener, mLongClickListener);
     }
 
+    /*
     @Override
-    public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecipeAdapter.RecipeViewHolder holder, int position, List<Object> payloads) {
+        if(!payloads.isEmpty()){
+            if (payloads.get(0) instanceof Boolean) {
+                if((Boolean) payloads.get(0)) {
+                    holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_filled_24);//Favorite
+                }
+                else if(!(Boolean) payloads.get(0)) {
+                    holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_border_24);//Not favorite
+                }
+            }
+        } else {
+            super.onBindViewHolder(holder,position, payloads);
+        }
+
+    }
+*/
+
+    @Override
+    public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
+        Log.d(LOG_TAG, "Super onBindViewHolder is called.");
         Recipe currentItem = mRecipes.get(position);
         holder.cardBinding.tvRecipeTitle.setText(currentItem.getName());
-        //Log.d(LOG_TAG, "currentItem: " + currentItem.getName() + "\nisFavorite: " + currentItem.isFavorite());
         if(currentItem.isFavorite()) {
-            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_filled_24);
+            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_filled_24);//Favorite
         }
-        if(!currentItem.isFavorite()) {
-            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_border_24);
+        else if(!currentItem.isFavorite()) {
+            holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_border_24);//Not favorite
         }
     }
 

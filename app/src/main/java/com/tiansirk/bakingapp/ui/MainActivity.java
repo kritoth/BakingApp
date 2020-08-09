@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getApplicationContext().deleteDatabase("favoriterecipes");
+        //getApplicationContext().deleteDatabase("favoriterecipes");
 
         // Initiating views
         initViews();
@@ -78,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         binding.rvRecipes.setAdapter(mAdapter);
 
-        // Set ItemClickListeners: single and long
-        setupItemClickListeners();
-
         //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
         //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
 
         mDbase = AppDatabase.getsInstance(getApplicationContext());
+
+        // Set ItemClickListeners: single and long
+        setupItemClickListeners();
 
         if(mAdapter.getRecipesData().isEmpty()) showErrorMessage();
         else showDataView();
@@ -95,15 +95,14 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
     }
-
     private void setupRecyclerView() {
         // use the respective number of columns for phones and tablets(sw600dp)
         int gridColumnCount = getResources().getInteger(R.integer.grid_column_count);
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, gridColumnCount);
         binding.rvRecipes.setLayoutManager(gridLayoutManager);
         binding.rvRecipes.setHasFixedSize(true);
-
     }
+
 
     /**
      * Reads from the .json file and returns its String representation. Uses JSONLoader Library,
@@ -149,22 +148,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemLongClick(int position, View view) {
                 Recipe longClickedRecipe = mRecipes[position];
-                Log.d(TAG, "Recipe long pressed for to make it Favorite: " + longClickedRecipe.getName());
 
                 //Saves if it is not a favorite yet
                 if(!longClickedRecipe.isFavorite()) {
-                    mRecipes[position].setFavorite(true);
-                    //longClickedRecipe.setFavorite(true); //TODO: ezt a státuszt nem menti a rendszer, mert ez csak egy lokális variable -nél állítja be és elforgatásnál sem menti, így nem kerül be az onSaveInstanceState-be sem
-                    showAsFavorite(view);
                     saveRecipeAsFavorite(longClickedRecipe);
-                    mAdapter.notifyItemChanged(position);
+
+                    showFavoriteStatus(position);
                 }
                 //Removes if it is a favorite already
                 else if(longClickedRecipe.isFavorite()) {
-                    //longClickedRecipe.setFavorite(false); //TODO: ezt a státuszt nem menti a rendszer, mert ez csak egy lokális variable -nél állítja be és elforgatásnál sem menti, így nem kerül be az onSaveInstanceState-be sem
-                    showAsNotFavorite(view);
                     removeRecipeFromFavorites(longClickedRecipe);
-                    mAdapter.notifyItemChanged(position);
+
+                    showFavoriteStatus(position);
                 }
                 else{
                     Log.e(TAG, "The long-clicked Recipe's isFavorite is null!");
@@ -190,27 +185,29 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Saves the {@param Recipe} into the App's Database as favorite
      */
-    private void saveRecipeAsFavorite(Recipe recipe) {
+    private void saveRecipeAsFavorite(final Recipe recipe) {
         recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
         recipe.setFavorite(true);
-        long insertedRecipeId = insertRecipeToDbase(recipe);
-
-        Log.d(TAG, "Recipe inserted with the id of: " + insertedRecipeId);
-
-        for(int i=0; i<recipe.getIngredients().length; i++){
-            Ingredient currIngredient = recipe.getIngredients()[i];
-            currIngredient.setRecipeId(insertedRecipeId);
-            insertIngredient(currIngredient);
-            //Log.d(TAG, "Ingredient inserted:\n" + i + ": " + currIngredient.toString());
-        }
-        for(int j=0; j<recipe.getSteps().length; j++){
-            Step currStep = recipe.getSteps()[j];
-            currStep.setRecipeId(insertedRecipeId);
-            insertStep(currStep);
-            //Log.d(TAG, "Step inserted:\n" + j + ": " + currStep.toString());
-        }
-
-        if(insertedRecipeId > -1){
+        final long[] insertedRecipeId = new long[1];
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                insertedRecipeId[0] = insertRecipeToDbase(recipe);
+                for(int i=0; i<recipe.getIngredients().length; i++){
+                    Ingredient currIngredient = recipe.getIngredients()[i];
+                    currIngredient.setRecipeId(insertedRecipeId[0]);
+                    insertIngredient(currIngredient);
+                    //Log.d(TAG, "Ingredient inserted:\n" + i + ": " + currIngredient.toString());
+                }
+                for(int j=0; j<recipe.getSteps().length; j++){
+                    Step currStep = recipe.getSteps()[j];
+                    currStep.setRecipeId(insertedRecipeId[0]);
+                    insertStep(currStep);
+                    //Log.d(TAG, "Step inserted:\n" + j + ": " + currStep.toString());
+                }
+            }
+        });
+        if(insertedRecipeId[0] > -1){
             Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_LONG).show();
             Log.d(TAG, "Recipe INSERT successful\nisFavorite status: " + recipe.isFavorite());
         } else{
@@ -231,8 +228,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private long insertRecipeToDbase(final Recipe recipe){
         final long[] iD = new long[1];
-        Log.d(TAG, "INSERTRecipe started: " + recipe.toString());
-        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
+        //Log.d(TAG, "INSERTRecipe started: " + recipe.toString());
+        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe); //- This is for testing purposes only
         /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -240,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
                 iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
             }
         });
-        */
+*/
         Log.d(TAG, "INSERTRecipe executed: " + iD[0]);
         return iD[0];
     }
@@ -251,12 +248,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private long insertIngredient(final Ingredient ingredient){
         final long[] iD = new long[1];
+        iD[0] = mDbase.ingredientDao().insertIngredient(ingredient);
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 iD[0] = mDbase.ingredientDao().insertIngredient(ingredient);
             }
         });
+        */
         return iD[0];
     }
 
@@ -266,23 +266,33 @@ public class MainActivity extends AppCompatActivity {
      */
     private long insertStep(final Step step){
         final long[] iD = new long[1];
+        mDbase.stepDao().insertStep(step);
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 iD[0] = mDbase.stepDao().insertStep(step);
             }
         });
+         */
         return iD[0];
     }
 
     /**
      * Removes the {@param Recipe} from the App's Database
      */
-    private void removeRecipeFromFavorites(Recipe recipe) {
-        deleteIngredientsFromFavorites(recipe);
-        deleteStepsFromFavorites(recipe);
-        deleteRecipeFromFavorites(recipe);
+    private void removeRecipeFromFavorites(final Recipe recipe) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                deleteIngredientsFromFavorites(recipe);
+                deleteStepsFromFavorites(recipe);
+                deleteRecipeFromFavorites(recipe);
+            }
+        });
+
         recipe.setFavorite(false);
+        Log.d(TAG, "DELETERecipe executed, isFavorite: " + recipe.isFavorite());
         Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_LONG).show();
     }
 
@@ -290,24 +300,30 @@ public class MainActivity extends AppCompatActivity {
      * Deletes Ingredient objects related to the {@param Recipe} object from the app's Database
      */
     private void deleteIngredientsFromFavorites(final Recipe recipe){
+        mDbase.ingredientDao().removeIngredientsOfRecipe(recipe.getId());
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mDbase.ingredientDao().removeIngredientsOfRecipe(recipe.getId());
             }
         });
+         */
     }
 
     /**
      * Deletes Step objects related to the {@param Recipe} object from the app's Database
      */
     private void deleteStepsFromFavorites(final Recipe recipe){
+        mDbase.stepDao().removeStepsOfRecipe(recipe.getId());
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mDbase.stepDao().removeStepsOfRecipe(recipe.getId());
             }
         });
+         */
     }
 
     /**
@@ -315,12 +331,15 @@ public class MainActivity extends AppCompatActivity {
      * @return the iD of the deleted row from the app's Database
      */
     private void deleteRecipeFromFavorites(final Recipe recipe){
+        mDbase.recipeDao().removeFavoriteRecipe(recipe);
+        /*
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
                 mDbase.recipeDao().removeFavoriteRecipe(recipe);
             }
         });
+         */
     }
 
     @Override
@@ -341,7 +360,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-
         switch (itemId){
             case R.id.favorite:
                 Log.d(TAG, "Menu item selected: " + item.toString());
@@ -377,17 +395,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This method will make the filled star visible and hide the empty star
+     * This method will make the star either filled or not by
      */
-    private void showAsFavorite(View view){
-        ((ImageView)view).setImageResource(R.drawable.ic_baseline_star_filled_24);
-    }
+    private void showFavoriteStatus(final int position){
 
-    /**
-     * This method will make the empty star visible and hide the filled star
-     */
-    private void showAsNotFavorite(View view){
-        ((ImageView)view).setImageResource(R.drawable.ic_baseline_star_border_24);
+        // Sets up the LiveData with ViewModel to actively refresh the Adapter by observing the DB
+        FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
+        ViewModelProvider provider = new ViewModelProvider(this, factory);
+        FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
+        viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(List<Recipe> recipes) {
+                Log.d(TAG, "Updating Recipes from LiveData in ViewModel");
+                mAdapter.notifyItemChanged(position);
+            }
+        });
+
     }
 
     /**
@@ -397,6 +420,8 @@ public class MainActivity extends AppCompatActivity {
     private static Date today(){
         return Calendar.getInstance().getTime();
     }
+
+
 
     /*
     * For testing if Recipe insertion is OK. Returning 1 if exists and 0 if not
@@ -432,6 +457,5 @@ public class MainActivity extends AppCompatActivity {
         if(queriedSteps != null && !queriedSteps.isEmpty()) {
             Log.d(TAG, "\nFirst Step in DB: " + queriedSteps.get(0).toString());
         }
-
     }
 }
