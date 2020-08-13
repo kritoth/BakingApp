@@ -7,11 +7,6 @@
         android:orderInCategory="1"
         app:showAsAction="collapseActionView"/>
     <item
-        android:id="@+id/sort_id"
-        android:title="@string/fav_sorting_by_recipe_id"
-        android:orderInCategory="1"
-        app:showAsAction="collapseActionView"/>
-    <item
         android:id="@+id/sort_servings_number"
         android:title="@string/fav_sorting__by_number_of_servings"
         android:orderInCategory="1"

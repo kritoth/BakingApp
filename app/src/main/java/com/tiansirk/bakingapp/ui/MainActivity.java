@@ -174,16 +174,12 @@ public class MainActivity extends AppCompatActivity {
     private void saveRecipeAsFavorite(Recipe recipe) {
         recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
         recipe.setFavorite(true);
-        long insertedRecipeId = mViewModel.insertRecipeToFavorites(recipe);
-        if(insertedRecipeId == -1){
-            Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_SHORT).show();
-            recipe.setFavorite(false);
-            Log.d(TAG, "Recipe INSERT unsuccessful!\nReturned ID is: " + insertedRecipeId + "\nisFavorite status: " + recipe.getIsFavorite());
-        } else{
+        mViewModel.insertRecipeToFavorites(recipe);
+
             updateRecipeInArray(recipe);
             mAdapter.setRecipesData(Arrays.asList(mRecipes));
             Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
-        }
+
         /* //These are for testing purposes only!!!
         int succesful = searchRecipe(recipe, insertedRecipeId);
         Log.d(TAG, "Recipe exists scnd: " + succesful);
@@ -192,16 +188,15 @@ public class MainActivity extends AppCompatActivity {
     }
     /** Removes the {@param Recipe} from the App's Database */
     private void removeRecipeFromFavorites(Recipe recipe) {
-        int[] numOfDeletedRows = mViewModel.deleteRecipe(recipe);
+
+        mViewModel.deleteRecipe(recipe);
         recipe.setFavorite(false);
         Log.d(TAG, "DELETERecipe executed");
-        if(numOfDeletedRows.length == 0 && numOfDeletedRows[0] == 0){
-            Toast.makeText(this, recipe.getName() + " is failed to be removed from favorites.", Toast.LENGTH_SHORT).show();
-        } else {
+
             updateRecipeInArray(recipe);
             mAdapter.setRecipesData(Arrays.asList(mRecipes));
             Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     /**
@@ -273,10 +268,12 @@ public class MainActivity extends AppCompatActivity {
         /* Then, show the error */
         binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
     }
+
     /** Helper method to return the date of the day it's been called */
     private static Date today(){
         return Calendar.getInstance().getTime();
     }
+
     /** Helper method to update one element in the array of Recipes */
     private void updateRecipeInArray(Recipe recipe){
         for(int i=0; i<mRecipes.length;i++){
@@ -314,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Recipe exists frst: " + exists[0]);
         return exists[0];
     }
-    /** For testing queries all Recipes, Ingredients and Steps */
+/*    *//** For testing queries all Recipes, Ingredients and Steps *//*
     private void queryAll(){
         List<Recipe> queriedRecipes = new ArrayList<>();
         List<Ingredient> queriedIngreds = new ArrayList<>();
@@ -337,5 +334,5 @@ public class MainActivity extends AppCompatActivity {
         if(queriedSteps != null && !queriedSteps.isEmpty()) {
             Log.d(TAG, "\nFirst Step in DB: " + queriedSteps.get(0).toString());
         }
-    }
+    }*/
 }

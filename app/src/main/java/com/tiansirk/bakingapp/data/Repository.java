@@ -31,23 +31,23 @@ public class Repository {
     }
 
     /* Inserts */
-    public long insertRecipeToFavorites(final Recipe recipe) {
-        final long[] rowIdRecipe = new long[1];
+    public void insertRecipeToFavorites(final Recipe recipe) {
+        final int[] rowIdRecipe = new int[1];
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                rowIdRecipe[0] = mDb.recipeDao().insertRecipeToFavorites(recipe);
-                insertIngredientsOfRecipe(rowIdRecipe[0], recipe, mDb.ingredientDao());
-                insertStepsOfRecipe(rowIdRecipe[0], recipe, mDb.stepDao());
+                mDb.recipeDao().insertRecipeToFavorites(recipe);
+                insertIngredientsOfRecipe(recipe.getName(), recipe, mDb.ingredientDao());
+                insertStepsOfRecipe(recipe.getName(), recipe, mDb.stepDao());
             }
         });
-        return rowIdRecipe[0];
+
     }
-    private static boolean insertIngredientsOfRecipe(long foreignKey, Recipe recipe, IngredientDao ingredientDao){
+    private static boolean insertIngredientsOfRecipe(String foreignKey, Recipe recipe, IngredientDao ingredientDao){
         long[] rowIdOfInsertedIngredients = new long[recipe.getIngredients().length];
         for(int i=0;i<recipe.getIngredients().length;i++) {
             Ingredient currIngredietn = recipe.getIngredients()[i];
-            currIngredietn.setRecipeId(foreignKey);
+            currIngredietn.setRecipeName(foreignKey);
             rowIdOfInsertedIngredients[i] = ingredientDao.insertIngredient(currIngredietn);
         }
         if(rowIdOfInsertedIngredients.length == recipe.getIngredients().length) {
@@ -58,11 +58,11 @@ public class Repository {
             return false;
         }
     }
-    private static boolean insertStepsOfRecipe(long foreignKey, Recipe recipe, StepDao stepDao){
+    private static boolean insertStepsOfRecipe(String foreignKey, Recipe recipe, StepDao stepDao){
         long[] rowIdOfInsertedSteps = new long[recipe.getSteps().length];
         for(int i=0;i<recipe.getSteps().length;i++) {
             Step currStep = recipe.getSteps()[i];
-            currStep.setRecipeId(foreignKey);
+            currStep.setRecipeName(foreignKey);
             rowIdOfInsertedSteps[i] = stepDao.insertStep(currStep);
         }
         if(rowIdOfInsertedSteps.length == recipe.getSteps().length) {
@@ -75,30 +75,23 @@ public class Repository {
     }
 
     /* Deletes */
-    public int[] deleteRecipe(final Recipe recipe){
+    public void deleteRecipe(final Recipe recipe){
+        final int[] numOfDeletedSteps = new int[1];
+        final int[] numOfDeletedIngredients = new int[1];
+        final int[] numOfDeletedRecipes = new int[1];
+
         //At first delete the Steps while the Recipe has its unique ID
-        DeleteStepsAndIngredientsAsyncTask deleteStepsAndIngredientsAsyncTask =
-                new DeleteStepsAndIngredientsAsyncTask(mDb.stepDao(), mDb.ingredientDao());
-        deleteStepsAndIngredientsAsyncTask.execute(recipe.getRoomId());
-        int numOfDeletedSteps = deleteStepsAndIngredientsAsyncTask.getNumOfDeletedSteps();
-        int numOfDeletedIngredients = deleteStepsAndIngredientsAsyncTask.getNumOfDeletedIngredients();
-        //Check if the deletion from child tables were successful and proceed with the parent table, but quit if not
-        if(numOfDeletedSteps != recipe.getSteps().length
-                || numOfDeletedIngredients != recipe.getIngredients().length) {
-            Log.e(TAG, "Failed to delete some of the " + recipe.getName() + "'s Steps or Ingredients from the Database!");
-            return new int[]{numOfDeletedIngredients, numOfDeletedSteps};
-        } else {
-            Log.d(TAG, "All of the " + recipe.getName() + "'s Steps and Ingredients have been successfully deleted from the Database, proceed to delete Recipe itself!");
-            DeleteRecipeAsyncTask deleteRecipeAsyncTask = new DeleteRecipeAsyncTask(mDb.recipeDao());
-            deleteRecipeAsyncTask.execute(recipe);
-            int numOfDeletedRecipes = deleteRecipeAsyncTask.getNumOfDeletedRecipes();
-            if(numOfDeletedRecipes == 0){
-                Log.e(TAG, "Failed to delete the " + recipe.getName() + " Recipe from the Database!");
-            } else {
-                Log.d(TAG, "The " + recipe.getName() + " Recipe has been successfully deleted from the Database");
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                numOfDeletedSteps[0] = mDb.stepDao().removeStepsOfRecipe(recipe.getName());
+                Log.d(TAG, "Number of removed Steps: " + numOfDeletedSteps[0]);
+                numOfDeletedIngredients[0] = mDb.ingredientDao().removeIngredientsOfRecipe(recipe.getName());
+                Log.d(TAG, "Number of removed Ingredients: " + numOfDeletedIngredients[0]);
+                mDb.recipeDao().removeFavoriteRecipe(recipe);
             }
-            return new int[]{numOfDeletedRecipes};
-        }
+        });
+
     }
 
     public void deleteAllFavorites(){
@@ -115,8 +108,8 @@ public class Repository {
 
     /* Queries */
     //Searches if the Recipe exists or not, returning 1 if exists and 0 if not
-    public LiveData<Long> searchRecipe(long id){
-        recipeIsExists = mDb.recipeDao().searchRecipe(id);
+    public LiveData<Long> searchRecipe(String name){
+        recipeIsExists = mDb.recipeDao().searchRecipe(name);
         return recipeIsExists;
     }
 
@@ -145,15 +138,20 @@ public class Repository {
         return recipesByDate;
     }
 
-    public LiveData<List<Ingredient>> getIngredientsForRecipe(int id){
-        ingredientsForRecipe = mDb.ingredientDao().loadIngredientsForRecipe(id);
+    public LiveData<List<Ingredient>> getIngredientsForRecipe(String name){
+        ingredientsForRecipe = mDb.ingredientDao().loadIngredientsForRecipe(name);
         return ingredientsForRecipe;
     }
 
-    public LiveData<List<Step>> getStepsForRecipe(int id){
-        stepsForRecipe = mDb.stepDao().loadStepsForRecipe(id);
+    public LiveData<List<Step>> getStepsForRecipe(String name) {
+        stepsForRecipe = mDb.stepDao().loadStepsForRecipe(name);
         return stepsForRecipe;
     }
+
+
+
+
+/*
 
     private static class DeleteStepsAndIngredientsAsyncTask extends AsyncTask<Long, Void, Integer[]>{
         private StepDao stepDao;
@@ -204,9 +202,7 @@ public class Repository {
             return numOfDeletedRecipes;
         }
     }
-
-
-
+*/
 
     /*
     private static class InsertRecipeAsyncTask extends AsyncTask<Recipe, Void, long[][]> {

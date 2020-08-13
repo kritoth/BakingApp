@@ -191,10 +191,6 @@ public class FavoriteActivity extends AppCompatActivity {
                 mSortingPreference = "abc";
                 Log.d(TAG, "Sort alphabetical menu item selected");
                 return true;
-            case R.id.sort_id:
-                mSortingPreference = "id";
-                Log.d(TAG, "Sort by id menu item selected");
-                return true;
             case R.id.sort_servings_number:
                 mSortingPreference = "servings";
                 Log.d(TAG, "Sort by servings number menu item selected");

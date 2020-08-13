@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "step_table", foreignKeys = @ForeignKey(
         entity = Recipe.class,
-        parentColumns = "roomId",
-        childColumns = "recipeId",
+        parentColumns = "name",
+        childColumns = "recipeName",
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE))
 public class Step implements Parcelable {
@@ -24,7 +24,7 @@ public class Step implements Parcelable {
     @NonNull
     private long id;
     @ColumnInfo(index = true)
-    private long recipeId; //This is the foreign key
+    private String recipeName; //This is the foreign key
 
     @Expose
     private String shortDescription;
@@ -54,12 +54,12 @@ public class Step implements Parcelable {
         this.id = id;
     }
 
-    public long getRecipeId() {
-        return recipeId;
+    public String getRecipeName() {
+        return recipeName;
     }
 
-    public void setRecipeId(long recipeId) {
-        this.recipeId = recipeId;
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
     }
 
     public String getShortDescription() {
@@ -102,11 +102,13 @@ public class Step implements Parcelable {
                 ", description='" + description + '\'' +
                 ", videoURL='" + videoURL + '\'' +
                 ", imageURL='" + imageURL + '\'' +
-                ", recipeId= " + recipeId +
+                ", recipeId= " + recipeName +
                 "}\n";
     }
 
+    /* Implement Parcelable */
     protected Step(Parcel in){
+        recipeName = in.readString();
         shortDescription = in.readString();
         description = in.readString();
         videoURL = in.readString();
@@ -120,6 +122,7 @@ public class Step implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(recipeName);
         parcel.writeString(shortDescription);
         parcel.writeString(description);
         parcel.writeString(videoURL);

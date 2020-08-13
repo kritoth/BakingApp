@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -17,13 +18,15 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "recipe_table")
 public class Recipe implements Parcelable {
 
-    @PrimaryKey(autoGenerate = true)
+    //@PrimaryKey(autoGenerate = true)
     @NonNull
     private long roomId;
 
     @Expose
     @Ignore
     private int id;
+    @PrimaryKey
+    @NonNull
     @Expose
     private String name;
     @Expose

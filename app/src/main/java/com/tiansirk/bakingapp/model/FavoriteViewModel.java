@@ -31,13 +31,13 @@ public class FavoriteViewModel extends AndroidViewModel {
     }
 
     /* Inserts */
-    public long insertRecipeToFavorites(Recipe recipe){
-        return mRepository.insertRecipeToFavorites(recipe);
+    public void insertRecipeToFavorites(Recipe recipe){
+        mRepository.insertRecipeToFavorites(recipe);
     }
 
     /* Deletes */
-    public int[] deleteRecipe(Recipe recipe){
-        return mRepository.deleteRecipe(recipe);
+    public void deleteRecipe(Recipe recipe){
+        mRepository.deleteRecipe(recipe);
     }
     public void deleteAllFavorites(){
         mRepository.deleteAllFavorites();
@@ -45,8 +45,8 @@ public class FavoriteViewModel extends AndroidViewModel {
 
     /* Queries */
     //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
-    public LiveData<Long> searchRecipe(long id){
-        recipeIsExists = mRepository.searchRecipe(id);
+    public LiveData<Long> searchRecipe(String name){
+        recipeIsExists = mRepository.searchRecipe(name);
         return recipeIsExists;
     }
 
@@ -75,13 +75,13 @@ public class FavoriteViewModel extends AndroidViewModel {
         return recipesByDate;
     }
 
-    public LiveData<List<Ingredient>> getIngredientsForRecipe(int id){
-        ingredientsForRecipe = mRepository.getIngredientsForRecipe(id);
+    public LiveData<List<Ingredient>> getIngredientsForRecipe(String name){
+        ingredientsForRecipe = mRepository.getIngredientsForRecipe(name);
         return ingredientsForRecipe;
     }
 
-    public LiveData<List<Step>> getStepsForRecipe(int id){
-        stepsForRecipe = mRepository.getStepsForRecipe(id);
+    public LiveData<List<Step>> getStepsForRecipe(String name){
+        stepsForRecipe = mRepository.getStepsForRecipe(name);
         return stepsForRecipe;
     }
 }

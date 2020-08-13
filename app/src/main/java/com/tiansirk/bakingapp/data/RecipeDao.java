@@ -16,8 +16,8 @@ public interface RecipeDao {
     long insertRecipeToFavorites(Recipe recipe);
 
     //Read
-    @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
-    LiveData<Long> searchRecipe(long id); //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
+    @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE name = :name)")
+    LiveData<Long> searchRecipe(String name); //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
 
     @Query("SELECT COUNT(*) FROM recipe_table")
     LiveData<Integer> checkTableIsEmpty(); // Counts the number of rows exists in the table
@@ -34,11 +34,8 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipe_table ORDER BY dateAddedToFav DESC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesByDateAdded();
 
-    @Query("SELECT * FROM recipe_table WHERE roomId = :id")
-    LiveData<Recipe> loadFavoriteRecipe(long id);
-
-    //Update
-
+    @Query("SELECT * FROM recipe_table WHERE name = :name")
+    LiveData<Recipe> loadFavoriteRecipe(String name);
 
     //Delete
     @Delete
@@ -46,6 +43,7 @@ public interface RecipeDao {
 
     @Query("DELETE FROM recipe_table")
     int deleteAllFavoriteRecipe();
+
 
     //Queries without LiveData
     @Query("SELECT * FROM recipe_table ORDER BY roomId ASC")

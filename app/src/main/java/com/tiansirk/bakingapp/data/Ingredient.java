@@ -14,8 +14,8 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "ingredient_table", foreignKeys = @ForeignKey(
         entity = Recipe.class,
-        parentColumns = "roomId",
-        childColumns = "recipeId",
+        parentColumns = "name",
+        childColumns = "recipeName",
         onDelete = ForeignKey.CASCADE,
         onUpdate = ForeignKey.CASCADE))
 public class Ingredient implements Parcelable {
@@ -24,7 +24,7 @@ public class Ingredient implements Parcelable {
     @NonNull
     private long id;
     @ColumnInfo(index = true)
-    private long recipeId; //This is the foreign key
+    private String recipeName; //This is the foreign key
 
     @Expose
     private double quantity;
@@ -37,8 +37,8 @@ public class Ingredient implements Parcelable {
     public Ingredient(){}
 
     @Ignore
-    public Ingredient(long recipeId, double quantity, String measure, String ingredient) {
-        this.recipeId = recipeId;
+    public Ingredient(String recipeName, double quantity, String measure, String ingredient) {
+        this.recipeName = recipeName;
         this.quantity = quantity;
         this.measure = measure;
         this.ingredient = ingredient;
@@ -59,12 +59,12 @@ public class Ingredient implements Parcelable {
         this.id = id;
     }
 
-    public long getRecipeId() {
-        return recipeId;
+    public String getRecipeName() {
+        return recipeName;
     }
 
-    public void setRecipeId(long recipeId) {
-        this.recipeId = recipeId;
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
     }
 
     public double getQuantity() {
@@ -93,12 +93,12 @@ public class Ingredient implements Parcelable {
 
     @Override
     public String toString() {
-        return id + ". " + ingredient + ": " + quantity + ", " + measure + ", recipeId: " + recipeId;
+        return id + ". " + ingredient + ": " + quantity + ", " + measure + ", recipeId: " + recipeName;
     }
 
-
+    /* Implement Parcelable */
     protected Ingredient(Parcel in){
-        recipeId = in.readLong();
+        recipeName = in.readString();
         quantity = in.readDouble();
         measure = in.readString();
         ingredient = in.readString();
@@ -111,7 +111,7 @@ public class Ingredient implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(recipeId);
+        parcel.writeString(recipeName);
         parcel.writeDouble(quantity);
         parcel.writeString(measure);
         parcel.writeString(ingredient);

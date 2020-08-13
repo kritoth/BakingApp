@@ -15,21 +15,18 @@ public interface IngredientDao {
     long insertIngredient(Ingredient ingredient);
 
     //Read
-    @Query("SELECT * FROM ingredient_table WHERE recipeId = :id")
-    LiveData<List<Ingredient>> loadIngredientsForRecipe(int id);
+    @Query("SELECT * FROM ingredient_table WHERE recipeName = :recipeName")
+    LiveData<List<Ingredient>> loadIngredientsForRecipe(String recipeName);
 
     @Query("SELECT * FROM ingredient_table")
-    List<Ingredient> loadAllIngredients();
+    LiveData<List<Ingredient>> loadAllIngredients();
 
     @Query("SELECT COUNT (id) FROM ingredient_table")
-    int getIngredientsCount();
-
-    //Update
-
+    LiveData<Integer> getIngredientsCount();
 
     //Delete
-    @Query("DELETE FROM ingredient_table WHERE recipeId = :id")
-    int removeIngredientsOfRecipe(long id); //return the number of rows deleted
+    @Query("DELETE FROM ingredient_table WHERE recipeName = :recipeName")
+    int removeIngredientsOfRecipe(String recipeName); //return the number of rows deleted
 
     @Delete
     int removeIngredient(Ingredient ingredient);
@@ -37,8 +34,4 @@ public interface IngredientDao {
     @Query("DELETE FROM ingredient_table")
     void deleteAllIngredients();
 
-
-    //For testing only
-    @Query("SELECT * FROM ingredient_table")
-    List<Ingredient> queryAllIngreds();
 }

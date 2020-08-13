@@ -15,21 +15,18 @@ public interface StepDao {
     long insertStep(Step step);
 
     //Read
-    @Query("SELECT * FROM step_table WHERE recipeId = :id")
-    LiveData<List<Step>> loadStepsForRecipe(int id);
+    @Query("SELECT * FROM step_table WHERE recipeName = :recipeName")
+    LiveData<List<Step>> loadStepsForRecipe(String recipeName);
 
     @Query("SELECT * FROM step_table")
-    List<Step> loadAllSteps();
+    LiveData<List<Step>> loadAllSteps();
 
     @Query("SELECT COUNT (id) FROM step_table")
-    int getStepsCount();
-
-    //Update
-
+    LiveData<Integer> getStepsCount();
 
     //Delete
-    @Query("DELETE FROM step_table WHERE recipeId = :id")
-    int removeStepsOfRecipe(long id); //return the number of rows deleted
+    @Query("DELETE FROM step_table WHERE recipeName = :recipeName")
+    int removeStepsOfRecipe(String recipeName); //return the number of rows deleted
 
     @Delete
     int removeStep(Step step);
@@ -37,8 +34,4 @@ public interface StepDao {
     @Query("DELETE FROM step_table")
     void deleteAllSteps();
 
-
-    //For testing only
-    @Query("SELECT * FROM step_table")
-    List<Step> queryAllSteps();
 }
