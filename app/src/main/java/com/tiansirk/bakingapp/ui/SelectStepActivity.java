@@ -45,57 +45,48 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
         setContentView(R.layout.activity_select_recipe_step);
 
         // check what the device is, ie. if it has the view in sw600dp.xml layout, then it is a tablet
-        if (findViewById(R.id.view_container_tablet) != null) {
-            isDualPane = true;
-        } else {
-            isDualPane = false;
-        }
+        if (findViewById(R.id.view_container_tablet) != null) isDualPane = true;
+        else isDualPane = false;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
-
         // Check if recreating a previously destroyed instance.
         if (savedInstanceState != null) {
-/*
-            mRecipe = JsonParser.getRecipeFromJson(savedInstanceState.getString(STATE_RECIPE));
-            mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STATE_STEPS));
-            mIngredients = JsonParser.getIngredientsFromJson(savedInstanceState.getString(STATE_INGREDIENTS));
-*/
+            //First recreate saved Recipe
             mRecipe = savedInstanceState.getParcelable(STATE_RECIPE);
+            //Second recreate saved Ingredients array
             Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_INGREDIENTS);
             mIngredients = new Ingredient[parcelables.length];
             for (int i = 0; i < parcelables.length; ++i) {
                 mIngredients[i] = (Ingredient) parcelables[i];
             }
+            //Third recreate saved Steps array
             Parcelable[] parcelables2 = savedInstanceState.getParcelableArray(STATE_STEPS);
             mSteps = new Step[parcelables2.length];
             for (int i = 0; i < parcelables2.length; ++i) {
                 mSteps[i] = (Step) parcelables2[i];
             }
-
+            //Fourth recreate saved Fragments
             mSelectStepFragment = (FragmentSelectSteps) fragmentManager.getFragment(savedInstanceState, FragmentSelectSteps.TAG);
             mViewStepFragment = (FragmentViewStep) fragmentManager.getFragment(savedInstanceState, FragmentViewStep.TAG);
-            Log.d(TAG, "mSelectFragment and mViewFragment is recreated from savedInstanceState.");
-        } else{
-            // get the received {@link Step} objects
+        } else {
+            // Get the received Recipe object
             if(getIntent() != null){
-                if(getIntent().getStringExtra("selected_recipe") !=  null){
-                    mRecipe = JsonParser.getRecipeFromJson(getIntent().getStringExtra("selected_recipe"));
+                if(getIntent().getExtras().getParcelable("selected_recipe") !=  null){
+                    mRecipe = getIntent().getExtras().getParcelable("selected_recipe");
                 }
             }
-            // set the Ingredient and Step objects from the received Recipe
+            // Set the Ingredient and Step objects from the received Recipe
             mSteps = mRecipe.getSteps();
             mIngredients = mRecipe.getIngredients();
             // Get the fragments
             mSelectStepFragment = new FragmentSelectSteps();
             mViewStepFragment = new FragmentViewStep();
-
             // Set the data of the select fragment
             mSelectStepFragment.setIngredients(mIngredients);
             mSelectStepFragment.setSteps(mSteps);
             mViewStepFragment.setSteps(mSteps, 0); // shows first step as default behavior
-
-            // Setup the fragments according to the device
+            // Setup the fragments according to the device configuration
             if(isDualPane){
                 ft.replace(R.id.select_container_tablet, mSelectStepFragment);
                 ft.replace(R.id.view_container_tablet, mViewStepFragment);
@@ -105,7 +96,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
                 ft.replace(R.id.select_step_container, mSelectStepFragment);
                 ft.replace(R.id.view_step_container, mViewStepFragment);
                 ft.commit();
-                // start with showing select fragment but not view fragment
+                // Start with showing select fragment but not view fragment
                 ft.show(mSelectStepFragment);
                 ft.hide(mViewStepFragment);
             }
@@ -157,11 +148,6 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        /*outState.putString(STATE_RECIPE, JsonParser.serializeRecipeToJson(mRecipe));
-        outState.putString(STATE_STEPS, JsonParser.serializeStepsToJson(mSteps));
-        outState.putString(STATE_INGREDIENTS, JsonParser.serializeIngredientsToJson(mIngredients));
-*/
         outState.putParcelable(STATE_RECIPE, mRecipe);
         outState.putParcelableArray(STATE_STEPS, mSteps);
         outState.putParcelableArray(STATE_INGREDIENTS,  mIngredients);

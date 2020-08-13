@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set up the DB
-        //mDbase = AppDatabase.getsInstance(getApplicationContext());
         getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
 
         // Initiating views
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChanged(List<Recipe> recipes) {
                     for(Recipe recipe :recipes){
-                        updateRecipeInArray(recipe);//TODO: ezt observe()-en kívül is meg kell tenni, hogy a csillagokat az elején jelölje,mert akkor még nincs change
+                        updateRecipeInArray(recipe);
                     }
                 }
             });
@@ -90,13 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up Adapter
         setupAdapter();
-
-        //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
-        //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
-
         // Set up ItemClickListener
         setupItemClickListeners();
-
         // Set up ItemLongClickListener
         setupItemLongClickListeners();
 
@@ -108,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        setTitle("Baking Time");//Sets the title in the action bar
+        setTitle(getString(R.string.app_title));//Sets the title in the action bar
     }
     private void setupViewModel(){
         FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
@@ -140,9 +133,8 @@ public class MainActivity extends AppCompatActivity {
     }
     /** Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on */
     private void startSelectRecipeStepActivity(Recipe recipe) {
-        String selectedRecipeToJson = JsonParser.serializeRecipeToJson(recipe);
         Intent intent = new Intent(this, SelectStepActivity.class);
-        intent.putExtra(SELECTED_RECIPE, selectedRecipeToJson);
+        intent.putExtra(SELECTED_RECIPE, recipe);
         startActivity(intent);
     }
 
@@ -155,12 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 //Saves if it is not a favorite yet
                 if(!longClickedRecipe.getIsFavorite()) {
                     saveRecipeAsFavorite(longClickedRecipe);
-                    //showFavoriteStatus(position);
                 }
                 //Removes if it is a favorite already
                 else if(longClickedRecipe.getIsFavorite()) {
                     removeRecipeFromFavorites(longClickedRecipe);
-                    //showFavoriteStatus(position);
                 }
             }
         });
@@ -170,28 +160,19 @@ public class MainActivity extends AppCompatActivity {
         recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
         recipe.setFavorite(true);
         mViewModel.insertRecipeToFavorites(recipe);
-
-            updateRecipeInArray(recipe);
-            mAdapter.setRecipesData(Arrays.asList(mRecipes));
-            Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
-
-        /* //These are for testing purposes only!!!
-        int succesful = searchRecipe(recipe, insertedRecipeId);
-        Log.d(TAG, "Recipe exists scnd: " + succesful);
-        queryAll();
-        */
+        Log.d(TAG, "SAVE Recipe executed");
+        updateRecipeInArray(recipe);
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
+        Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
     }
     /** Removes the {@param Recipe} from the App's Database */
     private void removeRecipeFromFavorites(Recipe recipe) {
-
         mViewModel.deleteRecipe(recipe);
         recipe.setFavorite(false);
-        Log.d(TAG, "DELETERecipe executed");
-
-            updateRecipeInArray(recipe);
-            mAdapter.setRecipesData(Arrays.asList(mRecipes));
-            Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
-
+        Log.d(TAG, "DELETE Recipe executed");
+        updateRecipeInArray(recipe);
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
+        Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -206,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 .get(new StringLoaderListener() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d(TAG, "onResponse get called");
+                        Log.d(TAG, "parseJsonFromFile - onResponse get called");
                         // response as String to be used to parse content into array of Recipe
                         mRecipes = JsonParser.getRecipesFromJson(response);
                     }
@@ -222,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, " onSaveInstanceState is called.");
         outState.putParcelableArray(STATE_OF_RECIPES, mRecipes);
     }
 
@@ -237,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         switch (itemId){
             case R.id.favorite:
-                Log.d(TAG, "Menu item selected: " + item.toString());
                 Intent intent = new Intent(this, FavoriteActivity.class);
                 startActivity(intent);
                 return true;
@@ -247,20 +226,20 @@ public class MainActivity extends AppCompatActivity {
 
     /** This method will make the RecyclerView visible and hide the error message */
     private void showDataView() {
-        /* First, make sure the error is invisible */
+        // First, make sure the error is invisible
         binding.tvErrorMessageRecipes.setVisibility(View.INVISIBLE);
-        /* Then hide loading indicator */
+        // Then hide loading indicator
         binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
-        /* Then, make sure the movie is visible */
+        // Then, make sure the movie is visible
         binding.rvRecipes.setVisibility(View.VISIBLE);
     }
     /** This method will make the error message visible and hide the RecyclerView */
     private void showErrorMessage() {
-        /* First, hide the currently visible data */
+        // First, hide the currently visible data
         binding.rvRecipes.setVisibility(View.INVISIBLE);
-        /* Then hide loading indicator */
+        // Then hide loading indicator
         binding.pbLoadingIndicatorRecipes.setVisibility(View.INVISIBLE);
-        /* Then, show the error */
+        // Then, show the error
         binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
     }
 

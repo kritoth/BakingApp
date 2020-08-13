@@ -93,7 +93,7 @@ public class Ingredient implements Parcelable {
 
     @Override
     public String toString() {
-        return id + ". " + ingredient + ": " + quantity + ", " + measure + ", recipeId: " + recipeName;
+        return id + ". " + ingredient + ": " + quantity + ", " + measure + ", recipeName: " + recipeName;
     }
 
     /* Implement Parcelable */

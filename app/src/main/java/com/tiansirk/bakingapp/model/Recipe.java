@@ -163,9 +163,8 @@ public class Recipe implements Parcelable {
     protected Recipe(Parcel in) {
         id = in.readInt();
         name = in.readString();
-        ingredients = new Ingredient[0];
-        in.readTypedArray(ingredients, Ingredient.CREATOR);
-        in.readTypedArray(steps, Step.CREATOR);
+        this.ingredients = in.createTypedArray(Ingredient.CREATOR);
+        this.steps = in.createTypedArray(Step.CREATOR);
         servings = in.readInt();
         imgUrl = in.readString();
         dateAddedToFav = in.readLong();
@@ -181,8 +180,8 @@ public class Recipe implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeTypedArray(ingredients, 0);
-        dest.writeTypedArray(steps, 0);
+        dest.writeTypedArray(this.ingredients, 0);
+        dest.writeTypedArray(this.steps, 0);
         dest.writeInt(servings);
         dest.writeString(imgUrl);
         dest.writeLong(dateAddedToFav);

@@ -97,12 +97,12 @@ public class Step implements Parcelable {
     @Override
     public String toString() {
         return "Step{" +
-                "id=" + id +
-                ", shortDescription='" + shortDescription + '\'' +
-                ", description='" + description + '\'' +
-                ", videoURL='" + videoURL + '\'' +
-                ", imageURL='" + imageURL + '\'' +
-                ", recipeId= " + recipeName +
+                "recipeName= " + recipeName +
+                "id= " + id +
+                ", shortDescription= '" + shortDescription + '\'' +
+                ", description= '" + description + '\'' +
+                ", videoURL= '" + videoURL + '\'' +
+                ", imageURL= '" + imageURL + '\'' +
                 "}\n";
     }
 

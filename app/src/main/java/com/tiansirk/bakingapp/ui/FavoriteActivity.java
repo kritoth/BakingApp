@@ -153,9 +153,8 @@ public class FavoriteActivity extends AppCompatActivity {
     }
     /** Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on */
     private void startSelectRecipeStepActivity(Recipe recipe) {
-        String selectedRecipeToJson = JsonParser.serializeRecipeToJson(recipe);
         Intent intent = new Intent(this, SelectStepActivity.class);
-        intent.putExtra(SELECTED_RECIPE, selectedRecipeToJson);
+        intent.putExtra(SELECTED_RECIPE, recipe);
         startActivity(intent);
     }
 
