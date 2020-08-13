@@ -112,6 +112,10 @@ public class Recipe implements Parcelable {
         this.name = name;
     }
 
+    public void setIngredients(Ingredient[] ingredients){ this.ingredients = ingredients;}
+
+    public void setSteps(Step[] steps){ this.steps = steps;}
+
     public void setServings(int servings) {
         this.servings = servings;
     }
@@ -127,6 +131,7 @@ public class Recipe implements Parcelable {
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
     }
+
 
     @Override
     public String toString() {

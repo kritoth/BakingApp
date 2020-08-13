@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private RecipeAdapter mAdapter;
 
     private FavoriteViewModel mViewModel;
-    private AppDatabase mDbase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             parseJsonFromFile();
             Log.d(TAG, "mRecipe is received from JSON");
             // And update the list to set their favorite status
-            mViewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+            mViewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
                 @Override
                 public void onChanged(List<Recipe> recipes) {
                     for(Recipe recipe :recipes){
@@ -283,56 +282,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-    /** This method will make the star either filled or not by */
-    private void showFavoriteStatus(int position){
-        if(position > -1) mAdapter.notifyItemChanged(position);
-        else {
-            // Sets up the LiveData with ViewModel to actively refresh the Adapter by observing the DB
-            mViewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
-                @Override
-                public void onChanged(List<Recipe> recipes) {
-                    Log.d(TAG, "Updating Recipes from LiveData in ViewModel");
-                    mAdapter.updateRecipeList(recipes);
-                }
-            });
-        }
-    }
-
-
-
-
-    /** For testing if Recipe insertion is OK. Returning 1 if exists and 0 if not */
-    private int searchRecipe(Recipe recipe, long id){
-        final Integer[] exists = {null};
-        exists[0] = mDbase.recipeDao().queryIfRecipeExists(id);
-        Log.d(TAG, "Recipe exists frst: " + exists[0]);
-        return exists[0];
-    }
-/*    *//** For testing queries all Recipes, Ingredients and Steps *//*
-    private void queryAll(){
-        List<Recipe> queriedRecipes = new ArrayList<>();
-        List<Ingredient> queriedIngreds = new ArrayList<>();
-        List<Step> queriedSteps = new ArrayList<>();
-
-        queriedRecipes.addAll(mDbase.recipeDao().queryAllFavoriteRecipesById());
-        queriedIngreds.addAll(mDbase.ingredientDao().queryAllIngreds());
-        queriedSteps.addAll(mDbase.stepDao().queryAllSteps());
-
-        Log.d(TAG, "List of queried Recipes size: " + queriedRecipes.size());
-        Log.d(TAG, "\nList of queried Ingredients size: " + queriedIngreds.size());
-        Log.d(TAG, "\nList of queried Step size: " + queriedSteps.size());
-
-        if(queriedRecipes != null && !queriedRecipes.isEmpty()) {
-            Log.d(TAG,"\nFirst Recipe in DB: " + queriedRecipes.get(0).toString());
-        }
-        if(queriedIngreds != null && !queriedIngreds.isEmpty()) {
-            Log.d(TAG,"\nFirst Ingredient in DB: " + queriedIngreds.get(0).toString());
-        }
-        if(queriedSteps != null && !queriedSteps.isEmpty()) {
-            Log.d(TAG, "\nFirst Step in DB: " + queriedSteps.get(0).toString());
-        }
-    }*/
 }

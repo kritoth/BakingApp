@@ -32,13 +32,11 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FavoriteActivity extends AppCompatActivity {
 
     private static final String TAG = FavoriteActivity.class.getSimpleName();
-    private static final String KEY_ACTIVITY_INTENT = "CHOSEN_RECIPE";
-    private static final String DEFAULT_SORT_PREFERENCE = "id";
+    private static final String DEFAULT_SORT_PREFERENCE = "date";
     private static final String SELECTED_RECIPE = "selected_recipe";
 
     private ActivityFavoriteBinding binding;
 
-    private AppDatabase mDb;
     private FavoriteViewModel mViewModel;
 
     private List<Recipe> mFavRecipes;
@@ -95,7 +93,6 @@ public class FavoriteActivity extends AppCompatActivity {
 
     private void setupAdapter(){
         mAdapter = new RecipeAdapter(this);
-
         binding.recyclerviewFavorites.setAdapter(mAdapter);
         Log.d(TAG, "Adapter has been set up.");
     }
@@ -103,22 +100,11 @@ public class FavoriteActivity extends AppCompatActivity {
     /** Queries the DB using LiveData */
     private void loadRecipesFromDB() {
         binding.pbLoadingIndicatorFavorites.setVisibility(View.VISIBLE);
-            if (mSortingPreference == null || mSortingPreference.isEmpty()) {
-                mSortingPreference = DEFAULT_SORT_PREFERENCE;
-            }
-            switch (mSortingPreference) {
-                case "id":
-                    mViewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
-                        @Override
-                        public void onChanged(List<Recipe> recipes) {
-                            showDataView();
-                            mFavRecipes = recipes;
-                            mAdapter.setRecipesData(mFavRecipes);
-                        }
-                    });
-                    Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
-                    break;
-                case "abc":
+        if (mSortingPreference == null || mSortingPreference.isEmpty()) {
+            mSortingPreference = DEFAULT_SORT_PREFERENCE;
+        }
+        switch (mSortingPreference) {
+            case "abc":
                     mViewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
                         @Override
                         public void onChanged(List<Recipe> recipes) {
@@ -129,7 +115,7 @@ public class FavoriteActivity extends AppCompatActivity {
                     });
                     Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
                     break;
-                case "servings":
+            case "servings":
                     mViewModel.getRecipesByServings().observe(this, new Observer<List<Recipe>>() {
                         @Override
                         public void onChanged(List<Recipe> recipes) {
@@ -140,7 +126,7 @@ public class FavoriteActivity extends AppCompatActivity {
                     });
                     Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
                     break;
-                case "date":
+            case "date":
                     mViewModel.getRecipesByDate().observe(this, new Observer<List<Recipe>>() {
                         @Override
                         public void onChanged(List<Recipe> recipes) {
@@ -151,10 +137,10 @@ public class FavoriteActivity extends AppCompatActivity {
                     });
                     Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
                     break;
-                case "delete":
-                    //confirmAndNuke();
+            case "delete":
+                    confirmAndNuke();
                     break;
-            }
+        }
     }
 
     /** Sets RecipeAdapterItemClickListener to the RecyclerView items according to the respective interface is in {@link RecipeAdapter} */
@@ -185,7 +171,6 @@ public class FavoriteActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int selectedItem = item.getItemId();
-
         switch (selectedItem){
             case R.id.sort_alphabetical:
                 mSortingPreference = "abc";
@@ -207,38 +192,17 @@ public class FavoriteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void confirmAndNuke(final FavoriteViewModel viewModel) {
+    private void confirmAndNuke() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setTitle("Confirm to delete ALL favorites!");
         builder.setMessage("Are you sure?");
-
-        if(viewModel != null){
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewModel.deleteAllFavorites();
-                        }
-                    });
-                    dialog.dismiss();
-                }
-            });
-        } else {
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.recipeDao().deleteAllFavoriteRecipe();
-                        }
-                    });
-                    dialog.dismiss();
-                }
-            });
-        }
-
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mViewModel.deleteAllFavorites();
+                dialog.dismiss();
+            }
+        });
         builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -247,14 +211,15 @@ public class FavoriteActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
         AlertDialog alert = builder.create();
         alert.show();
     }
 
-    /**
-     * This method will make the RecyclerView visible and hide the error message
-     */
+    private void updateRecipes(List<Recipe> loadedRecipes){
+
+    }
+
+    /** This method will make the RecyclerView visible and hide the error message */
     private void showDataView() {
         Log.d(TAG, "Show data view initiated.");
         /* Hide loading indicator */
@@ -265,9 +230,7 @@ public class FavoriteActivity extends AppCompatActivity {
         binding.recyclerviewFavorites.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * This method will make the error message visible and hide the RecyclerView
-     */
+    /** This method will make the error message visible and hide the RecyclerView */
     private void showNoFavMessage() {
         Log.d(TAG, "Show no-fav message initiated.");
         /* First, hide the currently visible data */
