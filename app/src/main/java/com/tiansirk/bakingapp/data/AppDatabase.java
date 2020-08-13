@@ -16,7 +16,7 @@ public abstract class AppDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "favoriterecipes";
     private static AppDatabase sInstance;
 
-    public static AppDatabase getsInstance(Context context){
+    public static synchronized AppDatabase getsInstance(Context context){
         if(sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
@@ -27,7 +27,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             AppDatabase.DATABASE_NAME)
                             .fallbackToDestructiveMigration()
-                            //.allowMainThreadQueries()
+                            //.allowMainThreadQueries()// Main thread!
                             .build();
                 }
             }

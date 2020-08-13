@@ -29,7 +29,7 @@ public interface StepDao {
 
     //Delete
     @Query("DELETE FROM step_table WHERE recipeId = :id")
-    void removeStepsOfRecipe(int id);
+    int removeStepsOfRecipe(long id); //return the number of rows deleted
 
     @Delete
     int removeStep(Step step);

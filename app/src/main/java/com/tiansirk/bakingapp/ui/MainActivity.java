@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -29,7 +28,6 @@ import com.tiansirk.bakingapp.data.Step;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
 import com.tiansirk.bakingapp.model.FavoriteViewModel;
 import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
-import com.tiansirk.bakingapp.utils.AppExecutors;
 import com.tiansirk.bakingapp.utils.DateConverter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
@@ -44,14 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private static final String EXTRA_SELECTED_RECIPE = "selected_recipe";
-    private final String STATE_RECIPES = "state_recipes";
+    private static final String SELECTED_RECIPE = "selected_recipe";
+    private static final String STATE_OF_RECIPES = "state_of_recipes";
 
     private ActivityMainBinding binding;
 
     private Recipe[] mRecipes;
     private RecipeAdapter mAdapter;
 
+    private FavoriteViewModel mViewModel;
     private AppDatabase mDbase;
 
     @Override
@@ -60,18 +59,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Set up the DB
-        mDbase = AppDatabase.getsInstance(getApplicationContext());
-        //getApplicationContext().deleteDatabase("favoriterecipes");
+        //mDbase = AppDatabase.getsInstance(getApplicationContext());
+        getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
 
         // Initiating views
         initViews();
-        // Initiating RecyclerView
+        // Set up RecyclerView
         setupRecyclerView();
+        // Set up ViewModel
+        setupViewModel();
 
         // Get the saved Recipe array or load it from JSON
-        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_RECIPES)){
+        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_OF_RECIPES)){
             //mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
-            Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_RECIPES);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_OF_RECIPES);
             mRecipes = new Recipe[parcelables.length];
             for (int i = 0; i < parcelables.length; ++i) {
                 mRecipes[i] = (Recipe) parcelables[i];
@@ -80,19 +81,29 @@ public class MainActivity extends AppCompatActivity {
         } else{
             // Load data from JSON
             parseJsonFromFile();
-            // And update the list to show which are favorites
-            showFavoriteStatus(-1);
+            Log.d(TAG, "mRecipe is received from JSON");
+            // And update the list to set their favorite status
+            mViewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+                @Override
+                public void onChanged(List<Recipe> recipes) {
+                    for(Recipe recipe :recipes){
+                        updateRecipeInArray(recipe);//TODO: ezt observe()-en kívül is meg kell tenni, hogy a csillagokat az elején jelölje,mert akkor még nincs change
+                    }
+                }
+            });
         }
-        // Set up the custom Adapter
-        mAdapter = new RecipeAdapter(this);
-        mAdapter.setRecipesData(Arrays.asList(mRecipes));
-        binding.rvRecipes.setAdapter(mAdapter);
+
+        // Set up Adapter
+        setupAdapter();
 
         //Log.d(TAG, "\n***mRecipes array size: " + mRecipes.length + "\nFirst element: " + mRecipes[0]);
         //Log.d(TAG, "\n***mAdapter List size: " + mAdapter.getRecipesData().size() + "\nFirst element: " + mAdapter.getRecipesData().get(0));
 
-        // Set ItemClickListeners: single and long
+        // Set up ItemClickListener
         setupItemClickListeners();
+
+        // Set up ItemLongClickListener
+        setupItemLongClickListeners();
 
         if(mAdapter.getRecipesData().isEmpty()) showErrorMessage();
         else showDataView();
@@ -102,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+        setTitle("Baking Time");//Sets the title in the action bar
+    }
+    private void setupViewModel(){
+        FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
+        ViewModelProvider provider = new ViewModelProvider(this, factory);
+        mViewModel = provider.get(FavoriteViewModel.class);
     }
     private void setupRecyclerView() {
         // use the respective number of columns for phones and tablets(sw600dp)
@@ -110,13 +127,87 @@ public class MainActivity extends AppCompatActivity {
         binding.rvRecipes.setLayoutManager(gridLayoutManager);
         binding.rvRecipes.setHasFixedSize(true);
     }
+    private void setupAdapter(){
+        mAdapter = new RecipeAdapter(this);
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
+        binding.rvRecipes.setAdapter(mAdapter);
+    }
 
+    /** Sets RecipeAdapterItemClickListener to the RecyclerView items according to the respective interface is in {@link RecipeAdapter} */
+    private void setupItemClickListeners(){
+        mAdapter.setOnItemClickListener(new RecipeAdapter.RecipeAdapterItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Recipe clickedRecipe = mRecipes[position];
+                startSelectRecipeStepActivity(clickedRecipe);
+            }
+        });
+    }
+    /** Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on */
+    private void startSelectRecipeStepActivity(Recipe recipe) {
+        String selectedRecipeToJson = JsonParser.serializeRecipeToJson(recipe);
+        Intent intent = new Intent(this, SelectStepActivity.class);
+        intent.putExtra(SELECTED_RECIPE, selectedRecipeToJson);
+        startActivity(intent);
+    }
+
+    /** Sets RecipeAdapterItemLongClickListener to the RecyclerView items according to the respective interface is in {@link RecipeAdapter} */
+    private void setupItemLongClickListeners(){
+        mAdapter.setOnItemLongClickListener(new RecipeAdapter.RecipeAdapterItemLongClickListener() {
+            @Override
+            public void onItemLongClick(int position, View view) {
+                Recipe longClickedRecipe = mRecipes[position];
+                //Saves if it is not a favorite yet
+                if(!longClickedRecipe.getIsFavorite()) {
+                    saveRecipeAsFavorite(longClickedRecipe);
+                    //showFavoriteStatus(position);
+                }
+                //Removes if it is a favorite already
+                else if(longClickedRecipe.getIsFavorite()) {
+                    removeRecipeFromFavorites(longClickedRecipe);
+                    //showFavoriteStatus(position);
+                }
+            }
+        });
+    }
+    /** Saves the {@param Recipe} into the App's Database as favorite */
+    private void saveRecipeAsFavorite(Recipe recipe) {
+        recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
+        recipe.setFavorite(true);
+        long insertedRecipeId = mViewModel.insertRecipeToFavorites(recipe);
+        if(insertedRecipeId == -1){
+            Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_SHORT).show();
+            recipe.setFavorite(false);
+            Log.d(TAG, "Recipe INSERT unsuccessful!\nReturned ID is: " + insertedRecipeId + "\nisFavorite status: " + recipe.getIsFavorite());
+        } else{
+            updateRecipeInArray(recipe);
+            mAdapter.setRecipesData(Arrays.asList(mRecipes));
+            Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
+        }
+        /* //These are for testing purposes only!!!
+        int succesful = searchRecipe(recipe, insertedRecipeId);
+        Log.d(TAG, "Recipe exists scnd: " + succesful);
+        queryAll();
+        */
+    }
+    /** Removes the {@param Recipe} from the App's Database */
+    private void removeRecipeFromFavorites(Recipe recipe) {
+        int[] numOfDeletedRows = mViewModel.deleteRecipe(recipe);
+        recipe.setFavorite(false);
+        Log.d(TAG, "DELETERecipe executed");
+        if(numOfDeletedRows.length == 0 && numOfDeletedRows[0] == 0){
+            Toast.makeText(this, recipe.getName() + " is failed to be removed from favorites.", Toast.LENGTH_SHORT).show();
+        } else {
+            updateRecipeInArray(recipe);
+            mAdapter.setRecipesData(Arrays.asList(mRecipes));
+            Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     /**
      * Reads from the .json file and returns its String representation. Uses JSONLoader Library,
      * https://android-arsenal.com/details/1/7916,
      * a simple Android library to open .json file from the {assets} folder
-     *
      * @return String file
      */
     private void parseJsonFromFile(){
@@ -129,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
                         // response as String to be used to parse content into array of Recipe
                         mRecipes = JsonParser.getRecipesFromJson(response);
                     }
-
                     @Override
                     public void onFailure(IOException error) {
                         // error with opening/reading file
@@ -139,174 +229,11 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Sets RecipeAdapterItemClickListener and RecipeAdapterItemLongClickListener to the RecyclerView items
-     * according to the respective interfaces are in {@link RecipeAdapter}
-     */
-    private void setupItemClickListeners(){
-        mAdapter.setOnItemClickListener(new RecipeAdapter.RecipeAdapterItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Recipe clickedRecipe = mRecipes[position];
-                startSelectRecipeStepActivity(clickedRecipe);
-            }
-        });
-
-        mAdapter.setOnItemLongClickListener(new RecipeAdapter.RecipeAdapterItemLongClickListener() {
-            @Override
-            public void onItemLongClick(int position, View view) {
-                Recipe longClickedRecipe = mRecipes[position];
-
-                //Saves if it is not a favorite yet
-                if(!longClickedRecipe.isFavorite()) {
-                    saveRecipeAsFavorite(longClickedRecipe);
-
-                    showFavoriteStatus(position);
-                }
-                //Removes if it is a favorite already
-                else if(longClickedRecipe.isFavorite()) {
-                    removeRecipeFromFavorites(longClickedRecipe);
-
-                    showFavoriteStatus(position);
-                }
-                else{
-                    Log.e(TAG, "The long-clicked Recipe's isFavorite is null!");
-                }
-
-            }
-        });
-    }
-
-    /**
-     * Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on as
-     * JSON by using Gson for converting
-     * @param recipe that was clicked on
-     */
-    private void startSelectRecipeStepActivity(Recipe recipe) {
-        String selectedRecipeToJson = JsonParser.serializeRecipeToJson(recipe);
-
-        Intent intent = new Intent(this, SelectStepActivity.class);
-        intent.putExtra(EXTRA_SELECTED_RECIPE, selectedRecipeToJson);
-        startActivity(intent);
-    }
-
-    /**
-     * Saves the {@param Recipe} into the App's Database as favorite
-     */
-    private void saveRecipeAsFavorite(final Recipe recipe) {
-        recipe.setDateAddedToFav(DateConverter.toTimestamp(today()));
-        recipe.setFavorite(true);
-        final long[] insertedRecipeId = new long[1];
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                insertedRecipeId[0] = insertRecipeToDbase(recipe);
-                Log.d(TAG, "Recipe inserted with the ID of: " + insertedRecipeId[0]);
-                for(int i=0; i<recipe.getIngredients().length; i++){
-                    Ingredient currIngredient = recipe.getIngredients()[i];
-                    currIngredient.setRecipeId(insertedRecipeId[0]);
-                    insertIngredient(currIngredient);
-                    //Log.d(TAG, "Ingredient inserted:\n" + i + ": " + currIngredient.toString());
-                }
-                for(int j=0; j<recipe.getSteps().length; j++){
-                    Step currStep = recipe.getSteps()[j];
-                    currStep.setRecipeId(insertedRecipeId[0]);
-                    insertStep(currStep);
-                    //Log.d(TAG, "Step inserted:\n" + j + ": " + currStep.toString());
-                }
-            }
-        });
-        if(insertedRecipeId[0] > -1){
-            Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
-        } else{
-            Toast.makeText(getApplicationContext(), "Saving " + recipe.getName() + " as favorite was unsuccessful.", Toast.LENGTH_SHORT).show();
-            recipe.setFavorite(false);
-            Log.d(TAG, "Recipe INSERT unsuccessful!\nReturned ID is: " + insertedRecipeId + "\nisFavorite status: " + recipe.isFavorite());
-        }
-        /* //These are for testing purposes only!!!
-        int succesful = searchRecipe(recipe, insertedRecipeId);
-        Log.d(TAG, "Recipe exists scnd: " + succesful);
-        queryAll();
-        */
-    }
-
-    /**
-     * Inserts a {@param Recipe} object into the app's Database
-     * @return the iD of the new row from the app's Database
-     */
-    private long insertRecipeToDbase(final Recipe recipe){
-        final long[] iD = new long[1];
-        //Log.d(TAG, "INSERTRecipe started: " + recipe.toString());
-        iD[0] = mDbase.recipeDao().insertRecipeToFavorites(recipe);
-        Log.d(TAG, "INSERTRecipe executed: " + iD[0]);
-        return iD[0];
-    }
-
-    /**
-     * Inserts an {@param Ingredient} object into the app's Database
-     * @return the iD of the new row from the app's Database
-     */
-    private long insertIngredient(final Ingredient ingredient){
-        final long[] iD = new long[1];
-        iD[0] = mDbase.ingredientDao().insertIngredient(ingredient);
-        return iD[0];
-    }
-
-    /**
-     * Inserts a {@param Step} object into the app's Database
-     * @return the iD of the new row from the app's Database
-     */
-    private long insertStep(final Step step){
-        final long[] iD = new long[1];
-        mDbase.stepDao().insertStep(step);
-        return iD[0];
-    }
-
-    /**
-     * Removes the {@param Recipe} from the App's Database
-     */
-    private void removeRecipeFromFavorites(final Recipe recipe) {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                deleteIngredientsFromFavorites(recipe);
-                deleteStepsFromFavorites(recipe);
-                deleteRecipeFromFavorites(recipe);
-            }
-        });
-        recipe.setFavorite(false);
-        Log.d(TAG, "DELETERecipe executed, isFavorite: " + recipe.isFavorite());
-        Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Deletes Ingredient objects related to the {@param Recipe} object from the app's Database
-     */
-    private void deleteIngredientsFromFavorites(final Recipe recipe){
-        mDbase.ingredientDao().removeIngredientsOfRecipe(recipe.getId());
-    }
-
-    /**
-     * Deletes Step objects related to the {@param Recipe} object from the app's Database
-     */
-    private void deleteStepsFromFavorites(final Recipe recipe){
-        mDbase.stepDao().removeStepsOfRecipe(recipe.getId());
-    }
-
-    /**
-     * Deletes the {@param Recipe} object from the app's Database
-     * @return the iD of the deleted row from the app's Database
-     */
-    private void deleteRecipeFromFavorites(final Recipe recipe){
-        mDbase.recipeDao().removeFavoriteRecipe(recipe);
-    }
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, " onSaveInstanceState is called.");
-        outState.putParcelableArray(STATE_RECIPES, mRecipes);
-//        outState.putString(STATE_RECIPES, JsonParser.serializeRecipesToJson(mRecipes));
+        outState.putParcelableArray(STATE_OF_RECIPES, mRecipes);
     }
 
     @Override
@@ -315,7 +242,6 @@ public class MainActivity extends AppCompatActivity {
         inflater.inflate(R.menu.settings, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
@@ -329,9 +255,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * This method will make the RecyclerView visible and hide the error message
-     */
+    /** This method will make the RecyclerView visible and hide the error message */
     private void showDataView() {
         /* First, make sure the error is invisible */
         binding.tvErrorMessageRecipes.setVisibility(View.INVISIBLE);
@@ -340,10 +264,7 @@ public class MainActivity extends AppCompatActivity {
         /* Then, make sure the movie is visible */
         binding.rvRecipes.setVisibility(View.VISIBLE);
     }
-
-    /**
-     * This method will make the error message visible and hide the RecyclerView
-     */
+    /** This method will make the error message visible and hide the RecyclerView */
     private void showErrorMessage() {
         /* First, hide the currently visible data */
         binding.rvRecipes.setVisibility(View.INVISIBLE);
@@ -352,20 +273,28 @@ public class MainActivity extends AppCompatActivity {
         /* Then, show the error */
         binding.tvErrorMessageRecipes.setVisibility(View.VISIBLE);
     }
+    /** Helper method to return the date of the day it's been called */
+    private static Date today(){
+        return Calendar.getInstance().getTime();
+    }
+    /** Helper method to update one element in the array of Recipes */
+    private void updateRecipeInArray(Recipe recipe){
+        for(int i=0; i<mRecipes.length;i++){
+            if(mRecipes[i].equals(recipe))
+                mRecipes[i].setFavorite(recipe.getIsFavorite());
+                Log.d(TAG, "Updating " + recipe.getName() + "'s favorite status to: " + recipe.getIsFavorite());
+        }
+    }
 
-    /**
-     * This method will make the star either filled or not by
-     */
+
+
+
+    /** This method will make the star either filled or not by */
     private void showFavoriteStatus(int position){
-
         if(position > -1) mAdapter.notifyItemChanged(position);
         else {
             // Sets up the LiveData with ViewModel to actively refresh the Adapter by observing the DB
-            FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
-            ViewModelProvider provider = new ViewModelProvider(this, factory);
-            FavoriteViewModel viewModel = provider.get(FavoriteViewModel.class);
-
-            viewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
+            mViewModel.getRecipesById().observe(this, new Observer<List<Recipe>>() {
                 @Override
                 public void onChanged(List<Recipe> recipes) {
                     Log.d(TAG, "Updating Recipes from LiveData in ViewModel");
@@ -375,34 +304,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Helper method to return the date of the day it's been called
-     * @return Date object of the same day
-     */
-    private static Date today(){
-        return Calendar.getInstance().getTime();
-    }
 
 
 
-    /*
-    * For testing if Recipe insertion is OK. Returning 1 if exists and 0 if not
-     */
+    /** For testing if Recipe insertion is OK. Returning 1 if exists and 0 if not */
     private int searchRecipe(Recipe recipe, long id){
         final Integer[] exists = {null};
         exists[0] = mDbase.recipeDao().queryIfRecipeExists(id);
         Log.d(TAG, "Recipe exists frst: " + exists[0]);
         return exists[0];
     }
-    /*
-     * For testing queries all Recipes, Ingredients and Steps
-     */
+    /** For testing queries all Recipes, Ingredients and Steps */
     private void queryAll(){
         List<Recipe> queriedRecipes = new ArrayList<>();
         List<Ingredient> queriedIngreds = new ArrayList<>();
         List<Step> queriedSteps = new ArrayList<>();
 
-        queriedRecipes.addAll(mDbase.recipeDao().queryAllFavoriteRecipes());
+        queriedRecipes.addAll(mDbase.recipeDao().queryAllFavoriteRecipesById());
         queriedIngreds.addAll(mDbase.ingredientDao().queryAllIngreds());
         queriedSteps.addAll(mDbase.stepDao().queryAllSteps());
 

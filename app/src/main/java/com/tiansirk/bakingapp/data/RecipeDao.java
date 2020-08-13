@@ -12,7 +12,7 @@ import androidx.room.Query;
 @Dao
 public interface RecipeDao {
     //Create
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insertRecipeToFavorites(Recipe recipe);
 
     //Read
@@ -42,15 +42,24 @@ public interface RecipeDao {
 
     //Delete
     @Delete
-    int removeFavoriteRecipe(Recipe recipe);
+    int removeFavoriteRecipe(Recipe recipe); //return the number of rows deleted
 
     @Query("DELETE FROM recipe_table")
-    void deleteAllFavoriteRecipe();
+    int deleteAllFavoriteRecipe();
 
+    //Queries without LiveData
+    @Query("SELECT * FROM recipe_table ORDER BY roomId ASC")
+    List<Recipe> queryAllFavoriteRecipesById();
 
-    //For testing only
-    @Query("SELECT * FROM recipe_table")
-    List<Recipe> queryAllFavoriteRecipes();
+    @Query("SELECT * FROM recipe_table ORDER BY name ASC")
+    List<Recipe> queryAllFavoriteRecipesAlphabetically();
+
+    @Query("SELECT * FROM recipe_table ORDER BY servings ASC")
+    List<Recipe> queryAllFavoriteRecipesByServings();
+
+    @Query("SELECT * FROM recipe_table ORDER BY dateAddedToFav DESC")
+    List<Recipe> queryAllFavoriteRecipesByDateAdded();
+
     @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
     int queryIfRecipeExists(long id);
 }

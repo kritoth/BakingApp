@@ -98,7 +98,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
                 ft.hide(mViewStepFragment);
             }
         }
-
+        setTitle(mRecipe.getName()); //Sets the title in the action bar
     }
 
     /** This method is defined in the select fragment's interface to send data from it to the

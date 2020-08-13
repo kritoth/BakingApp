@@ -12,10 +12,10 @@ import androidx.lifecycle.LiveData;
 
 public class FavoriteViewModel extends AndroidViewModel {
 
-    private AppDatabase mDb;
+    private Repository mRepository;
 
-    private LiveData<Long> recipeIsExists;
-    private LiveData<Integer> numberOfRows;
+    private LiveData<Long> recipeIsExists; // use it to check if the given recipe exists  in recipe_table
+    private LiveData<Integer> numberOfRowsInRecipeTable; //use it to check the num of entries in recipe_table
 
     private LiveData<List<Recipe>> recipesById; //used in FavoriteActivity to sort by id
     private LiveData<List<Recipe>> recipesByAlphabet; //used in FavoriteActivity to sort by alphabet
@@ -27,51 +27,61 @@ public class FavoriteViewModel extends AndroidViewModel {
 
     public FavoriteViewModel(@NonNull Application application) {
         super(application);
-        mDb = AppDatabase.getsInstance(application);
+        mRepository = new Repository(application);
     }
 
+    /* Inserts */
+    public long insertRecipeToFavorites(Recipe recipe){
+        return mRepository.insertRecipeToFavorites(recipe);
+    }
+
+    /* Deletes */
+    public int[] deleteRecipe(Recipe recipe){
+        return mRepository.deleteRecipe(recipe);
+    }
+    public void deleteAllFavorites(){
+        mRepository.deleteAllFavorites();
+    }
+
+    /* Queries */
     //Searches if the Recipe exsts or not, returning 1 if exists and 0 if not
     public LiveData<Long> searchRecipe(long id){
-        recipeIsExists = mDb.recipeDao().searchRecipe(id);
+        recipeIsExists = mRepository.searchRecipe(id);
         return recipeIsExists;
     }
 
     public LiveData<Integer> countNumberOfRows(){
-        numberOfRows = mDb.recipeDao().checkTableIsEmpty();
-        return numberOfRows;
+        numberOfRowsInRecipeTable = mRepository.countNumberOfRows();
+        return numberOfRowsInRecipeTable;
     }
 
     public LiveData<List<Recipe>> getRecipesById() {
-        recipesById = mDb.recipeDao().loadAllFavoriteRecipesById();
+        recipesById = mRepository.getRecipesById();
         return recipesById;
     }
 
     public LiveData<List<Recipe>> getRecipesByAlphabet() {
-        recipesByAlphabet = mDb.recipeDao().loadAllFavoriteRecipesAlphabetically();
+        recipesByAlphabet = mRepository.getRecipesByAlphabet();
         return recipesByAlphabet;
     }
 
     public LiveData<List<Recipe>> getRecipesByServings() {
-        recipesByServings = mDb.recipeDao().loadAllFavoriteRecipesByServings();
+        recipesByServings = mRepository.getRecipesByServings();
         return recipesByServings;
     }
 
     public LiveData<List<Recipe>> getRecipesByDate() {
-        recipesByDate = mDb.recipeDao().loadAllFavoriteRecipesByDateAdded();
+        recipesByDate = mRepository.getRecipesByDate();
         return recipesByDate;
     }
 
     public LiveData<List<Ingredient>> getIngredientsForRecipe(int id){
-        ingredientsForRecipe = mDb.ingredientDao().loadIngredientsForRecipe(id);
+        ingredientsForRecipe = mRepository.getIngredientsForRecipe(id);
         return ingredientsForRecipe;
     }
 
     public LiveData<List<Step>> getStepsForRecipe(int id){
-        stepsForRecipe = mDb.stepDao().loadStepsForRecipe(id);
+        stepsForRecipe = mRepository.getStepsForRecipe(id);
         return stepsForRecipe;
-    }
-
-    public void deleteAllFavorites(){
-        mDb.recipeDao().deleteAllFavoriteRecipe();
     }
 }

@@ -8,14 +8,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_favorites"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_recipe"/>
     <TextView
         android:id="@+id/tv_error_message_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="16dp"
-        android:text="@string/error_message"
+        android:text="@string/no_favorites"
         android:textSize="20sp"
         android:visibility="invisible" />
     <ProgressBar

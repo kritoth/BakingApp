@@ -93,7 +93,7 @@ public class Recipe implements Parcelable {
         return dateAddedToFav;
     }
 
-    public boolean isFavorite() {
+    public boolean getIsFavorite() {
         return isFavorite;
     }
 
@@ -140,6 +140,7 @@ public class Recipe implements Parcelable {
                 '}';
     }
 
+    /* Implementing equals */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -147,12 +148,12 @@ public class Recipe implements Parcelable {
         Recipe recipe = (Recipe) o;
         return getName().equals(recipe.getName());
     }
-
     @Override
     public int hashCode() {
         return Objects.hash(getName());
     }
 
+    /* Implementing Parcelable */
     protected Recipe(Parcel in) {
         id = in.readInt();
         name = in.readString();

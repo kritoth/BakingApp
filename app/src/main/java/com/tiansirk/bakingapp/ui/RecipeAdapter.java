@@ -87,16 +87,17 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     public void onBindViewHolder(@NonNull RecipeViewHolder holder, int position) {
         Recipe currentItem = mRecipes.get(position);
         holder.cardBinding.tvRecipeTitle.setText(currentItem.getName());
-        if(currentItem.isFavorite()) {
+        if(currentItem.getIsFavorite()) {
             holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_filled_24);//Favorite
         }
-        else if(!currentItem.isFavorite()) {
+        else {
             holder.cardBinding.ivFavorite.setImageResource(R.drawable.ic_baseline_star_border_24);//Not favorite
         }
     }
 
     @Override
     public int getItemCount() {
+        if(mRecipes == null) return 0;
         return mRecipes.size();
     }
 
@@ -151,6 +152,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
      */
     public void setRecipesData (List<Recipe> recipes) {
         this.mRecipes = recipes;
+        notifyDataSetChanged();
     }
 
     /**
@@ -164,6 +166,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
                 mRecipes.get(mRecipes.indexOf(r)).setFavorite(true);
             }
         }
+        notifyDataSetChanged();
     }
 
     /** Getter method for the Recipes data present in the adapter */
@@ -171,4 +174,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         return mRecipes;
     }
 
+    /** Get the Recipe at {@param position} */
+    public Recipe getRecipeAt(int position){
+        return mRecipes.get(position);
+    }
 }

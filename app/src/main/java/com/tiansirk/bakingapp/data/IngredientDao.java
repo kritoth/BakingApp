@@ -29,7 +29,7 @@ public interface IngredientDao {
 
     //Delete
     @Query("DELETE FROM ingredient_table WHERE recipeId = :id")
-    void removeIngredientsOfRecipe(int id);
+    int removeIngredientsOfRecipe(long id); //return the number of rows deleted
 
     @Delete
     int removeIngredient(Ingredient ingredient);
