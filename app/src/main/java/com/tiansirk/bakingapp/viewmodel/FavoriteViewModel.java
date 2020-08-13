@@ -1,8 +1,11 @@
-package com.tiansirk.bakingapp.model;
+package com.tiansirk.bakingapp.viewmodel;
 
 import android.app.Application;
 
 import com.tiansirk.bakingapp.data.*;
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
 
 import java.util.List;
 
@@ -53,11 +56,6 @@ public class FavoriteViewModel extends AndroidViewModel {
     public LiveData<Integer> countNumberOfRows(){
         numberOfRowsInRecipeTable = mRepository.countNumberOfRows();
         return numberOfRowsInRecipeTable;
-    }
-
-    public LiveData<List<Recipe>> getRecipesById() {
-        recipesById = mRepository.getRecipesById();
-        return recipesById;
     }
 
     public LiveData<List<Recipe>> getRecipesByAlphabet() {

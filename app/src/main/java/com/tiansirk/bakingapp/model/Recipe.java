@@ -1,16 +1,14 @@
-package com.tiansirk.bakingapp.data;
+package com.tiansirk.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;

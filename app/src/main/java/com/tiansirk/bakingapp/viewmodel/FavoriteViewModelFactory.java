@@ -1,4 +1,4 @@
-package com.tiansirk.bakingapp.model;
+package com.tiansirk.bakingapp.viewmodel;
 
 import android.app.Application;
 

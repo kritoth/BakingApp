@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.data.Recipe;
+import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
 import java.util.ArrayList;

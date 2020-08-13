@@ -6,16 +6,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 
 import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Recipe;
-import com.tiansirk.bakingapp.data.Step;
-import com.tiansirk.bakingapp.databinding.ActivitySelectRecipeStepBinding;
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.utils.JsonParser;
-
-import java.util.Arrays;
 
 public class SelectStepActivity extends AppCompatActivity implements FragmentSelectSteps.FragmentSelectStepsListener, FragmentViewStep.FragmentViewStepListener {
 
@@ -58,9 +56,23 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
 
         // Check if recreating a previously destroyed instance.
         if (savedInstanceState != null) {
+/*
             mRecipe = JsonParser.getRecipeFromJson(savedInstanceState.getString(STATE_RECIPE));
             mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STATE_STEPS));
             mIngredients = JsonParser.getIngredientsFromJson(savedInstanceState.getString(STATE_INGREDIENTS));
+*/
+            mRecipe = savedInstanceState.getParcelable(STATE_RECIPE);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_INGREDIENTS);
+            mIngredients = new Ingredient[parcelables.length];
+            for (int i = 0; i < parcelables.length; ++i) {
+                mIngredients[i] = (Ingredient) parcelables[i];
+            }
+            Parcelable[] parcelables2 = savedInstanceState.getParcelableArray(STATE_STEPS);
+            mSteps = new Step[parcelables2.length];
+            for (int i = 0; i < parcelables2.length; ++i) {
+                mSteps[i] = (Step) parcelables2[i];
+            }
+
             mSelectStepFragment = (FragmentSelectSteps) fragmentManager.getFragment(savedInstanceState, FragmentSelectSteps.TAG);
             mViewStepFragment = (FragmentViewStep) fragmentManager.getFragment(savedInstanceState, FragmentViewStep.TAG);
             Log.d(TAG, "mSelectFragment and mViewFragment is recreated from savedInstanceState.");
@@ -145,9 +157,14 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(STATE_RECIPE, JsonParser.serializeRecipeToJson(mRecipe));
+
+        /*outState.putString(STATE_RECIPE, JsonParser.serializeRecipeToJson(mRecipe));
         outState.putString(STATE_STEPS, JsonParser.serializeStepsToJson(mSteps));
         outState.putString(STATE_INGREDIENTS, JsonParser.serializeIngredientsToJson(mIngredients));
+*/
+        outState.putParcelable(STATE_RECIPE, mRecipe);
+        outState.putParcelableArray(STATE_STEPS, mSteps);
+        outState.putParcelableArray(STATE_INGREDIENTS,  mIngredients);
 
         FragmentManager manager = getSupportFragmentManager();
         if (mSelectStepFragment != null && mSelectStepFragment.isAdded()) {

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.data.Ingredient;
+import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.databinding.ItemIngredientsBinding;
 
 import androidx.annotation.NonNull;

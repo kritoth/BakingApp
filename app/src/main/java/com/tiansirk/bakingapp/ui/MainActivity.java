@@ -21,18 +21,14 @@ import android.widget.Toast;
 
 
 import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.data.AppDatabase;
-import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Recipe;
-import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
-import com.tiansirk.bakingapp.model.FavoriteViewModel;
-import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
+import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
+import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.DateConverter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;

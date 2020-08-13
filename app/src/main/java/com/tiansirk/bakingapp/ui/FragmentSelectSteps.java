@@ -7,9 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.databinding.FragmentSelectStepsBinding;
 import com.tiansirk.bakingapp.utils.JsonParser;
 

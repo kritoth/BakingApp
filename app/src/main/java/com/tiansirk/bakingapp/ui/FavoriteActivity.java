@@ -10,12 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tiansirk.bakingapp.R;
-import com.tiansirk.bakingapp.data.AppDatabase;
-import com.tiansirk.bakingapp.data.Recipe;
+import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityFavoriteBinding;
-import com.tiansirk.bakingapp.model.FavoriteViewModel;
-import com.tiansirk.bakingapp.model.FavoriteViewModelFactory;
-import com.tiansirk.bakingapp.utils.AppExecutors;
+import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
+import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import java.util.ArrayList;

@@ -16,7 +16,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.databinding.FragmentViewStepBinding;
-import com.tiansirk.bakingapp.data.*;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import androidx.annotation.NonNull;

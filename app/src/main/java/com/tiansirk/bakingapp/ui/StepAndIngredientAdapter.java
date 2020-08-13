@@ -4,13 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.databinding.ItemIngredientsBinding;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

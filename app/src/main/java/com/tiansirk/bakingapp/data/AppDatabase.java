@@ -3,6 +3,10 @@ package com.tiansirk.bakingapp.data;
 import android.content.Context;
 import android.util.Log;
 
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;

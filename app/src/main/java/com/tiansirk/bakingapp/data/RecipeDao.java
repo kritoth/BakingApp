@@ -1,5 +1,7 @@
 package com.tiansirk.bakingapp.data;
 
+import com.tiansirk.bakingapp.model.Recipe;
+
 import java.util.List;
 
 import androidx.lifecycle.LiveData;

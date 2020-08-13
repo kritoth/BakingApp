@@ -1,4 +1,4 @@
-package com.tiansirk.bakingapp.data;
+package com.tiansirk.bakingapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

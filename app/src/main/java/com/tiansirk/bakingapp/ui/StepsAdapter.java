@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.databinding.ItemRecipeBinding;
 
 import androidx.annotation.NonNull;

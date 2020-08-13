@@ -1,9 +1,11 @@
 package com.tiansirk.bakingapp.data;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.util.Log;
 
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.utils.AppExecutors;
 
 import java.util.List;

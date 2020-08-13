@@ -1,12 +1,10 @@
 package com.tiansirk.bakingapp.utils;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tiansirk.bakingapp.data.Ingredient;
-import com.tiansirk.bakingapp.data.Recipe;
-import com.tiansirk.bakingapp.data.Step;
+import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.Step;
 
 /**
  * Utility class
