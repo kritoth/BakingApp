@@ -87,19 +87,20 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             mSelectStepFragment.setSteps(mSteps);
             mViewStepFragment.setSteps(mSteps, 0); // shows first step as default behavior
             // Setup the fragments according to the device configuration
-            if(isDualPane){
-                ft.replace(R.id.select_container_tablet, mSelectStepFragment);
-                ft.replace(R.id.view_container_tablet, mViewStepFragment);
-                ft.commit();
-            } else{
-                // Set up the select fragment with replace (ie. removes the existing fragment and adds it as new: https://stackoverflow.com/questions/24466302/basic-difference-between-add-and-replace-method-of-fragment/24466345 )
-                ft.replace(R.id.select_step_container, mSelectStepFragment);
-                ft.replace(R.id.view_step_container, mViewStepFragment);
-                ft.commit();
-                // Start with showing select fragment but not view fragment
-                ft.show(mSelectStepFragment);
-                ft.hide(mViewStepFragment);
-            }
+
+        }
+        if(isDualPane){
+            ft.replace(R.id.select_container_tablet, mSelectStepFragment);
+            ft.replace(R.id.view_container_tablet, mViewStepFragment);
+            ft.commit();
+        } else{
+            // Set up the select fragment with replace (ie. removes the existing fragment and adds it as new: https://stackoverflow.com/questions/24466302/basic-difference-between-add-and-replace-method-of-fragment/24466345 )
+            ft.replace(R.id.select_step_container, mSelectStepFragment);
+            ft.replace(R.id.view_step_container, mViewStepFragment);
+            ft.commit();
+            // Start with showing select fragment but not view fragment
+            ft.show(mSelectStepFragment);
+            ft.hide(mViewStepFragment);
         }
         setTitle(mRecipe.getName()); //Sets the title in the action bar
     }

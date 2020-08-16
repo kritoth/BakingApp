@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
+import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.DateConverter;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
+        //getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
 
         // Initiating views
         initViews();
@@ -76,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
             parseJsonFromFile();
             Log.d(TAG, "mRecipe is received from JSON");
             // And update the list to set their favorite status
-            mViewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
+            mViewModel.getRecipesByDate().observe(this, new Observer<List<RecipeWithIngredsSteps>>() {
                 @Override
-                public void onChanged(List<Recipe> recipes) {
-                    for(Recipe recipe :recipes){
-                        updateRecipeInArray(recipe);
+                public void onChanged(List<RecipeWithIngredsSteps> recipes) {
+                    for(RecipeWithIngredsSteps recipe : recipes){
+                        updateRecipeInArray(recipe.getRecipe());
                     }
                 }
             });

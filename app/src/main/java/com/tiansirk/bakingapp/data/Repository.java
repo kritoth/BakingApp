@@ -5,12 +5,14 @@ import android.util.Log;
 
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.utils.AppExecutors;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 
 public class Repository {
 
@@ -20,10 +22,9 @@ public class Repository {
     private LiveData<Long> recipeIsExists; // use it to check if the given recipe exists  in recipe_table
     private LiveData<Integer> numberOfRowsInRecipeTable; //use it to check the num of entries in recipe_table
 
-    private LiveData<List<Recipe>> recipesById; //used in FavoriteActivity to sort by id
     private LiveData<List<Recipe>> recipesByAlphabet; //used in FavoriteActivity to sort by alphabet
     private LiveData<List<Recipe>> recipesByServings; //used in FavoriteActivity to sort by no. of servings
-    private LiveData<List<Recipe>> recipesByDate; //used in FavoriteActivity to sort by date
+    private LiveData<List<RecipeWithIngredsSteps>> recipesByDate; //used in FavoriteActivity to sort by date
 
     private LiveData<List<Ingredient>> ingredientsForRecipe;
     private LiveData<List<Step>> stepsForRecipe;
@@ -90,7 +91,7 @@ public class Repository {
                 Log.d(TAG, "Number of removed Steps: " + numOfDeletedSteps[0]);
                 numOfDeletedIngredients[0] = mDb.ingredientDao().removeIngredientsOfRecipe(recipe.getName());
                 Log.d(TAG, "Number of removed Ingredients: " + numOfDeletedIngredients[0]);
-                mDb.recipeDao().removeFavoriteRecipe(recipe);
+                numOfDeletedRecipes[0] = mDb.recipeDao().removeFavoriteRecipe(recipe);
             }
         });
 
@@ -120,22 +121,7 @@ public class Repository {
         return numberOfRowsInRecipeTable;
     }
 
-    public LiveData<List<Recipe>> getRecipesById() {
-        recipesById = mDb.recipeDao().loadAllFavoriteRecipesById();
-        return recipesById;
-    }
-
-    public LiveData<List<Recipe>> getRecipesByAlphabet() {
-        recipesByAlphabet = mDb.recipeDao().loadAllFavoriteRecipesAlphabetically();
-        return recipesByAlphabet;
-    }
-
-    public LiveData<List<Recipe>> getRecipesByServings() {
-        recipesByServings = mDb.recipeDao().loadAllFavoriteRecipesByServings();
-        return recipesByServings;
-    }
-
-    public LiveData<List<Recipe>> getRecipesByDate() {
+    public LiveData<List<RecipeWithIngredsSteps>> getRecipesByDate() {
         recipesByDate = mDb.recipeDao().loadAllFavoriteRecipesByDateAdded();
         return recipesByDate;
     }
@@ -151,7 +137,14 @@ public class Repository {
     }
 
 
+    private static LiveData<List<Recipe>> mergeDataSources(LiveData... sources) {
+        MediatorLiveData<List<Recipe>> mergedSources = new MediatorLiveData();
+        for (LiveData source : sources) {
+            mergedSources.addSource(source, mergedSources::setValue);
+        }
+        return mergedSources;
 
+    }
 
 /*
 

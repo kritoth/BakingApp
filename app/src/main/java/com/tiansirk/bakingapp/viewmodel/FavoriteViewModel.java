@@ -5,6 +5,7 @@ import android.app.Application;
 import com.tiansirk.bakingapp.data.*;
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 import com.tiansirk.bakingapp.model.Step;
 
 import java.util.List;
@@ -20,10 +21,9 @@ public class FavoriteViewModel extends AndroidViewModel {
     private LiveData<Long> recipeIsExists; // use it to check if the given recipe exists  in recipe_table
     private LiveData<Integer> numberOfRowsInRecipeTable; //use it to check the num of entries in recipe_table
 
-    private LiveData<List<Recipe>> recipesById; //used in FavoriteActivity to sort by id
     private LiveData<List<Recipe>> recipesByAlphabet; //used in FavoriteActivity to sort by alphabet
     private LiveData<List<Recipe>> recipesByServings; //used in FavoriteActivity to sort by no. of servings
-    private LiveData<List<Recipe>> recipesByDate; //used in FavoriteActivity to sort by date
+    private LiveData<List<RecipeWithIngredsSteps>> recipesByDate; //used in FavoriteActivity to sort by date
 
     private LiveData<List<Ingredient>> ingredientsForRecipe;
     private LiveData<List<Step>> stepsForRecipe;
@@ -58,28 +58,9 @@ public class FavoriteViewModel extends AndroidViewModel {
         return numberOfRowsInRecipeTable;
     }
 
-    public LiveData<List<Recipe>> getRecipesByAlphabet() {
-        recipesByAlphabet = mRepository.getRecipesByAlphabet();
-        return recipesByAlphabet;
-    }
-
-    public LiveData<List<Recipe>> getRecipesByServings() {
-        recipesByServings = mRepository.getRecipesByServings();
-        return recipesByServings;
-    }
-
-    public LiveData<List<Recipe>> getRecipesByDate() {
+    public LiveData<List<RecipeWithIngredsSteps>> getRecipesByDate() {
         recipesByDate = mRepository.getRecipesByDate();
         return recipesByDate;
     }
 
-    public LiveData<List<Ingredient>> getIngredientsForRecipe(String name){
-        ingredientsForRecipe = mRepository.getIngredientsForRecipe(name);
-        return ingredientsForRecipe;
-    }
-
-    public LiveData<List<Step>> getStepsForRecipe(String name){
-        stepsForRecipe = mRepository.getStepsForRecipe(name);
-        return stepsForRecipe;
-    }
 }

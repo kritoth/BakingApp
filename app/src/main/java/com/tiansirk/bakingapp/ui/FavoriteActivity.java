@@ -10,8 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tiansirk.bakingapp.R;
+import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityFavoriteBinding;
+import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
+import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.JsonParser;
@@ -102,43 +105,34 @@ public class FavoriteActivity extends AppCompatActivity {
             mSortingPreference = DEFAULT_SORT_PREFERENCE;
         }
         switch (mSortingPreference) {
-            case "abc":
-                    mViewModel.getRecipesByAlphabet().observe(this, new Observer<List<Recipe>>() {
-                        @Override
-                        public void onChanged(List<Recipe> recipes) {
-                            showDataView();
-                            mFavRecipes = recipes;
-                            mAdapter.setRecipesData(mFavRecipes);
-                        }
-                    });
-                    Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
-                    break;
-            case "servings":
-                    mViewModel.getRecipesByServings().observe(this, new Observer<List<Recipe>>() {
-                        @Override
-                        public void onChanged(List<Recipe> recipes) {
-                            showDataView();
-                            mFavRecipes = recipes;
-                            mAdapter.setRecipesData(mFavRecipes);
-                        }
-                    });
-                    Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
-                    break;
             case "date":
-                    mViewModel.getRecipesByDate().observe(this, new Observer<List<Recipe>>() {
+                    mViewModel.getRecipesByDate().observe(this, new Observer<List<RecipeWithIngredsSteps>>() {
                         @Override
-                        public void onChanged(List<Recipe> recipes) {
+                        public void onChanged(List<RecipeWithIngredsSteps> recipes) {
                             showDataView();
-                            mFavRecipes = recipes;
+                            for(RecipeWithIngredsSteps r : recipes) {
+                                Recipe currRecipe = extractRecipe(r);
+                                mFavRecipes.add(currRecipe);
+                            }
                             mAdapter.setRecipesData(mFavRecipes);
                         }
                     });
-                    Log.d(TAG, "\n***mAdapter List size: " + mFavRecipes.size() + "\nFirst element: " + mFavRecipes.toString());
                     break;
             case "delete":
                     confirmAndNuke();
                     break;
         }
+    }
+
+    private static Recipe extractRecipe(RecipeWithIngredsSteps r) {
+        Ingredient[] currIngreds = new Ingredient[r.getIngredients().size()];
+        currIngreds = r.getIngredients().toArray(currIngreds);
+        Step[] currSteps = new Step[r.getSteps().size()];
+        currSteps = r.getSteps().toArray(currSteps);
+        Recipe currRecipe = r.getRecipe();
+        currRecipe.setIngredients(currIngreds);
+        currRecipe.setSteps(currSteps);
+        return currRecipe;
     }
 
     /** Sets RecipeAdapterItemClickListener to the RecyclerView items according to the respective interface is in {@link RecipeAdapter} */
@@ -154,8 +148,13 @@ public class FavoriteActivity extends AppCompatActivity {
     /** Starts the {@link SelectStepActivity} activity and passing the Recipe that was clicked on */
     private void startSelectRecipeStepActivity(Recipe recipe) {
         Intent intent = new Intent(this, SelectStepActivity.class);
+        setIngredsAndSteps(recipe);
         intent.putExtra(SELECTED_RECIPE, recipe);
         startActivity(intent);
+    }
+
+    private void setIngredsAndSteps(Recipe recipe){
+
     }
 
     @Override
@@ -169,18 +168,6 @@ public class FavoriteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int selectedItem = item.getItemId();
         switch (selectedItem){
-            case R.id.sort_alphabetical:
-                mSortingPreference = "abc";
-                Log.d(TAG, "Sort alphabetical menu item selected");
-                return true;
-            case R.id.sort_servings_number:
-                mSortingPreference = "servings";
-                Log.d(TAG, "Sort by servings number menu item selected");
-                return true;
-            case R.id.sort_date:
-                mSortingPreference = "date";
-                Log.d(TAG, "Sort date added menu item selected");
-                return true;
             case R.id.delete_all:
                 mSortingPreference = "delete";
                 Log.d(TAG, "Delete All menu item selected");
@@ -210,10 +197,6 @@ public class FavoriteActivity extends AppCompatActivity {
         });
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    private void updateRecipes(List<Recipe> loadedRecipes){
-
     }
 
     /** This method will make the RecyclerView visible and hide the error message */

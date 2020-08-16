@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+<!--    <item
         android:id="@+id/sort_alphabetical"
         android:title="@string/fav_sorting_alphabetical_order"
         android:orderInCategory="1"
@@ -15,7 +15,7 @@
         android:id="@+id/sort_date"
         android:title="@string/fav_sorting_by_date_added_to_favorites"
         android:orderInCategory="1"
-        app:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>-->
     <item
         android:id="@+id/delete_all"
         android:title="@string/fav_sorting_delete_all_favorites"

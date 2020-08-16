@@ -1,6 +1,7 @@
 package com.tiansirk.bakingapp.data;
 
 import com.tiansirk.bakingapp.model.Recipe;
+import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 @Dao
 public interface RecipeDao {
@@ -24,20 +26,19 @@ public interface RecipeDao {
     @Query("SELECT COUNT(*) FROM recipe_table")
     LiveData<Integer> checkTableIsEmpty(); // Counts the number of rows exists in the table
 
-    @Query("SELECT * FROM recipe_table ORDER BY roomId ASC")
-    LiveData<List<Recipe>> loadAllFavoriteRecipesById();
-
     @Query("SELECT * FROM recipe_table ORDER BY name ASC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesAlphabetically();
 
     @Query("SELECT * FROM recipe_table ORDER BY servings ASC")
     LiveData<List<Recipe>> loadAllFavoriteRecipesByServings();
 
+    @Transaction
     @Query("SELECT * FROM recipe_table ORDER BY dateAddedToFav DESC")
-    LiveData<List<Recipe>> loadAllFavoriteRecipesByDateAdded();
+    LiveData<List<RecipeWithIngredsSteps>> loadAllFavoriteRecipesByDateAdded();
 
+    @Transaction
     @Query("SELECT * FROM recipe_table WHERE name = :name")
-    LiveData<Recipe> loadFavoriteRecipe(String name);
+    LiveData<RecipeWithIngredsSteps> loadFavoriteRecipe(String name);
 
     //Delete
     @Delete
