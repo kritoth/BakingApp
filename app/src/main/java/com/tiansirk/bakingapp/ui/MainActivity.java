@@ -24,6 +24,7 @@ import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
+import com.tiansirk.bakingapp.ui.adapters.RecipeAdapter;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 import com.tiansirk.bakingapp.utils.DateConverter;

@@ -2,6 +2,7 @@ package com.tiansirk.bakingapp.ui;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Layout;
@@ -13,6 +14,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.databinding.FragmentViewStepBinding;
@@ -45,6 +54,7 @@ public class FragmentViewStep extends Fragment {
 
     /** Member var for own custom data-to-be-sent listener */
     private FragmentViewStepListener listener;
+    private ProgressiveMediaSource.Factory mFactory;
 
     /** The interface that receives onClick messages */
     public interface FragmentViewStepListener{
@@ -53,26 +63,44 @@ public class FragmentViewStep extends Fragment {
     /** Member var for keeping track of UI state */
     private boolean isLandscape;
 
+    private SimpleExoPlayer mPlayer;
+
     /** Compulsory empty constructor */
     public FragmentViewStep() {
+    }
+
+    /** When this fragment is attached to its host activity, ie {@link SelectStepActivity} the listener interface is connected
+     * If not then an error exception is thrown to notify the developer.
+     * @param context
+     */
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        // Init ExoPlayer
+        setupPlayerFactory(context);
+        // Init ViewStepListener
+        if (context instanceof FragmentViewStepListener) {
+            listener = (FragmentViewStepListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement FragmentViewStepListener");
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Check the device's orientation
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            isLandscape = true;
-        }
-        else{
-            isLandscape = false;
-        }
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) isLandscape = true;
+        else isLandscape = false;
 
         // Load the saved state (the items in the step) if there is one
         if(savedInstanceState != null && savedInstanceState.get(STATE_STEPS) != null) {
             Log.d(TAG, "mSteps, mStepsIndex and isLandscape is recreated from onCreateView's savedInstanceState.");
             mSteps = JsonParser.getStepsFromJson(savedInstanceState.getString(STATE_STEPS));
             mStepsIndex = savedInstanceState.getInt(STATE_STEPS_INDEX);
+            mPlayer.setPlayWhenReady(true);
         }
 
         // Inflate the View-Step fragment layout
@@ -130,15 +158,26 @@ public class FragmentViewStep extends Fragment {
     /** This presents the data, available in the fields of this fragment, to the user. The videoURL and the description of the selected {@link Step}. */
     private void showStep(){
         // Get a reference to the media player View in the fragment layout
-        TextView videoView = binding.mediaPlayerView;
+        PlayerView videoView = binding.mediaPlayerView;
+        TextView noVideoView = binding.tvNoVideo;
+
         // If a video exists, set it to the view, otherwise show default image/text
         if(mSteps[mStepsIndex].getVideoURL() == null || mSteps[mStepsIndex].getVideoURL().isEmpty()){
-            videoView.setText("There is no Video available!");
+            // stop video and show message: "no-video-available"
+            mPlayer.stop();
+            videoView.setVisibility(View.INVISIBLE);
+            noVideoView.setVisibility(View.VISIBLE);
         }
         else{
-            videoView.setText(mSteps[mStepsIndex].getVideoURL());
+            noVideoView.setVisibility(View.INVISIBLE);
+            videoView.setVisibility(View.VISIBLE);
+            // Get the mediasource
+            MediaSource videoSource = mFactory.createMediaSource(Uri.parse(mSteps[mStepsIndex].getVideoURL()));
+            // Prepare the player with the source.
+            mPlayer.prepare(videoSource);
+            // Bind the exoplayer to the view
+            videoView.setPlayer(mPlayer);
         }
-
         // Setup the descriptionView only when the device is in portrait mode
         if(!isLandscape){
             if(binding.tvViewStep != null){
@@ -151,33 +190,24 @@ public class FragmentViewStep extends Fragment {
                         descriptionView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
                     }
                 } else{
-                    Log.wtf(TAG, "This fragment has a null Step description!");
+                    Log.e(TAG, "This fragment has a null Step description!");
                 }
             } else{
-                Log.wtf(TAG, "view_step TextView is null!");
+                Log.e(TAG, "view_step TextView is null!");
             }
         }
     }
 
-    /** When this fragment is attached to its host activity, ie {@link SelectStepActivity} the listener interface is connected
-     * If not then an error exception is thrown to notify the developer.
-     * @param context
-     */
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof FragmentViewStepListener) {
-            listener = (FragmentViewStepListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement FragmentViewStepListener");
-        }
-    }
-
-    /** When this fragment is detached from the host, the listeners is set to null, to decouple. */
+    // When this fragment is detached from the host...
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d(TAG, "Player releases in onDetach");
+        // ... release ExoPlayer
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
+        // ... decouple the listener
         listener = null;
     }
 
@@ -186,11 +216,26 @@ public class FragmentViewStep extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState is called");
+        mPlayer.setPlayWhenReady(false);
         outState.putString(STATE_STEPS, JsonParser.serializeStepsToJson(mSteps));
         outState.putInt(STATE_STEPS_INDEX, mStepsIndex);
     }
 
 
+    private void setupPlayerFactory(Context context) {
+        if(mPlayer != null) {
+            mPlayer.stop();
+            mPlayer.release();
+            mPlayer = null;
+        }
+        // Create ExoPlayer
+        mPlayer = new SimpleExoPlayer.Builder(context).build();
+        // Produces DataSource instances through which media data is loaded.
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context,
+                Util.getUserAgent(context, "BakingApp"));
+        // This is the MediaSource representing the media to be played.
+        mFactory = new ProgressiveMediaSource.Factory(dataSourceFactory);
+    }
 
     /** Shows or hides the
      * @param fragment according to its current state */

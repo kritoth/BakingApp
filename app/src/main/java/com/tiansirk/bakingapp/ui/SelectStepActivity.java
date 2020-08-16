@@ -13,7 +13,7 @@ import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.Step;
-import com.tiansirk.bakingapp.utils.JsonParser;
+import com.tiansirk.bakingapp.ui.adapters.StepAndIngredientAdapter;
 
 public class SelectStepActivity extends AppCompatActivity implements FragmentSelectSteps.FragmentSelectStepsListener, FragmentViewStep.FragmentViewStepListener {
 
@@ -103,6 +103,7 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             ft.hide(mViewStepFragment);
         }
         setTitle(mRecipe.getName()); //Sets the title in the action bar
+
     }
 
     /** This method is defined in the select fragment's interface to send data from it to the

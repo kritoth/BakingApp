@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.databinding.FragmentSelectStepsBinding;
+import com.tiansirk.bakingapp.ui.adapters.IngredientsAdapter;
+import com.tiansirk.bakingapp.ui.adapters.StepAndIngredientAdapter;
+import com.tiansirk.bakingapp.ui.adapters.StepsAdapter;
 import com.tiansirk.bakingapp.utils.JsonParser;
 
 import androidx.annotation.NonNull;

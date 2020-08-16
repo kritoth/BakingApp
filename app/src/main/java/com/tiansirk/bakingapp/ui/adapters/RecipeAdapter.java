@@ -1,4 +1,4 @@
-package com.tiansirk.bakingapp.ui;
+package com.tiansirk.bakingapp.ui.adapters;
 
 import android.content.Context;
 import android.util.Log;

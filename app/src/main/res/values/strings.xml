@@ -16,4 +16,5 @@
     <string name="content_description_star_favorite">A star indicating as favorite</string>
     <string name="no_favorites">You have no favorites yet.</string>
     <string name="app_title">Baking Time</string>
+    <string name="no_video">There is no video available</string>
 </resources>
