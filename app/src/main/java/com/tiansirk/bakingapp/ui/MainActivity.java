@@ -38,6 +38,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static String PACKAGE_NAME;
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final String SELECTED_RECIPE = "selected_recipe";
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PACKAGE_NAME = getApplicationContext().getPackageName();
 
         //getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
 
