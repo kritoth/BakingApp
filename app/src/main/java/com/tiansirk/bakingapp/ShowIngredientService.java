@@ -6,9 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tiansirk.bakingapp.data.Repository;
 import com.tiansirk.bakingapp.model.Ingredient;
-import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 import com.tiansirk.bakingapp.ui.MainActivity;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
@@ -44,6 +42,11 @@ public class ShowIngredientService extends IntentService {
         context.startService(intent);
     }
 
+    /**
+     * This is called by the above method to handle the sent Intent. This will do its job through the
+     * handleActionUpdateIngredients() method
+     * @param intent to be handled
+     */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         if(intent != null){
@@ -55,7 +58,11 @@ public class ShowIngredientService extends IntentService {
         }
     }
 
+    /**
+     * This method does the detailes to set the Ingredients to the ListView on the RemoteView.
+     */
     private void handleActionUpdateIngredients() {
+        //TODO: this query maybe directly from DAO instead of through ViewModel since this is a Service in a background thread
         //Query the DB to find the necessary Ingredients
         FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
         ViewModelProvider provider = new ViewModelProvider((ViewModelStoreOwner) this, factory);
@@ -70,11 +77,12 @@ public class ShowIngredientService extends IntentService {
 
             }
         });
-
         //Get the widget
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
-        int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, IngredientWidget.class));
+        int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, IngredientWidgetProvider.class));
+        //Trigger data update in the widget ListView and force data refresh
+        manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
         //Update the widget
-        IngredientWidget.updateIngredientsWidgets(this, manager, appWidgetIds, mIngredients[0].getIngredient());
+        IngredientWidgetProvider.updateIngredientsWidgets(this, manager, appWidgetIds, mIngredients[0].getIngredient());
     }
 }

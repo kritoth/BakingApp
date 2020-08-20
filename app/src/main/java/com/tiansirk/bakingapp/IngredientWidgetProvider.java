@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import com.tiansirk.bakingapp.ui.MainActivity;
+import com.tiansirk.bakingapp.ui.adapters.ListWidgetService;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class IngredientWidget extends AppWidgetProvider {
+public class IngredientWidgetProvider extends AppWidgetProvider {
 
     public static void updateIngredientsWidgets(Context context, AppWidgetManager appWidgetManager,
                                           int[] appWidgetIds, String content) {
@@ -24,16 +25,19 @@ public class IngredientWidget extends AppWidgetProvider {
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, String content) {
         // Construct the RemoteViews object
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredient_widget);
-
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list_ingredients);
+        // Set the ListWidgetService intent to act as the adapter for the ListView
+        Intent serviceIntent = new Intent(context, ListWidgetService.class);
+        views.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
         // Intent to launch MainActivity
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        Intent activityIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
         // Set intent to the widget
-        views.setOnClickPendingIntent(R.id.appwidget_image, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_list_placeholder, pendingIntent);
         // Update widget content
-        views.setTextViewText(R.id.appwidget_image, content);
-
+        views.setTextViewText(R.id.widget_empty_text_view, content);
+        // Handle empty list of ingredients
+        views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_view_placeholder);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }

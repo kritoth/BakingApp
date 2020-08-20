@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 
 import com.tiansirk.bakingapp.R;
+import com.tiansirk.bakingapp.ShowIngredientService;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.databinding.ActivityMainBinding;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         updateRecipeInArray(recipe);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
+        ShowIngredientService.startActionUpdateIngredients(getApplicationContext());
     }
     /** Removes the {@param Recipe} from the App's Database */
     private void removeRecipeFromFavorites(Recipe recipe) {
@@ -179,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         updateRecipeInArray(recipe);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
+        ShowIngredientService.startActionUpdateIngredients(getApplicationContext());
     }
 
     /**
