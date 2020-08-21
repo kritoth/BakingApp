@@ -64,13 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Initiating views
         initViews();
+        // Initiating the custom adapter
+        initAdapter();
         // Set up RecyclerView
         setupRecyclerView();
         // Set up ViewModel
         setupViewModel();
 
         // Get the saved Recipe array or load it from JSON
-        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_OF_RECIPES)){
+/*        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_OF_RECIPES)){
             //mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
             Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_OF_RECIPES);
             mRecipes = new Recipe[parcelables.length];
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
             }
             Log.d(TAG, "mRecipe is received from savedInstanceState");
         } else{
+
+ */
             // Load data from JSON
             parseJsonFromFile();
             Log.d(TAG, "mRecipe is received from JSON");
@@ -91,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }
-
+/*        }
+*/
         // Set up Adapter
         setupAdapter();
         // Set up ItemClickListener
@@ -110,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
         setTitle(getString(R.string.app_title));//Sets the title in the action bar
     }
+    private void initAdapter(){
+        mAdapter = new RecipeAdapter(this);
+    }
     private void setupViewModel(){
         FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
         ViewModelProvider provider = new ViewModelProvider(this, factory);
@@ -123,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         binding.rvRecipes.setHasFixedSize(true);
     }
     private void setupAdapter(){
-        mAdapter = new RecipeAdapter(this);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         binding.rvRecipes.setAdapter(mAdapter);
     }
@@ -264,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 mRecipes[i].setFavorite(recipe.getIsFavorite());
                 Log.d(TAG, "Updating " + recipe.getName() + "'s favorite status to: " + recipe.getIsFavorite());
         }
+        mAdapter.setRecipesData(Arrays.asList(mRecipes));
     }
 
 }

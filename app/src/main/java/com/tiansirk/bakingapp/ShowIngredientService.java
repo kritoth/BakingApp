@@ -6,7 +6,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tiansirk.bakingapp.data.AppDatabase;
 import com.tiansirk.bakingapp.model.Ingredient;
+import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 import com.tiansirk.bakingapp.ui.MainActivity;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
@@ -24,7 +26,7 @@ public class ShowIngredientService extends IntentService {
 
     public static final String ACTION_UPDATE_INGREDIENTS = MainActivity.PACKAGE_NAME + ".action_show_ingredients";
 
-    private FavoriteViewModel mViewModel;
+    private AppDatabase mDb;
     private Ingredient[] mIngredients;
 
     public ShowIngredientService(String name) {
@@ -59,30 +61,23 @@ public class ShowIngredientService extends IntentService {
     }
 
     /**
-     * This method does the detailes to set the Ingredients to the ListView on the RemoteView.
+     * This method does the details to set the Ingredients to the ListView on the RemoteView
      */
     private void handleActionUpdateIngredients() {
         //TODO: this query maybe directly from DAO instead of through ViewModel since this is a Service in a background thread
         //Query the DB to find the necessary Ingredients
-        FavoriteViewModelFactory factory = new FavoriteViewModelFactory(getApplication());
-        ViewModelProvider provider = new ViewModelProvider((ViewModelStoreOwner) this, factory);
-        mViewModel = provider.get(FavoriteViewModel.class);
-        mViewModel.getRecipesByDate().observe((LifecycleOwner) this, new Observer<List<RecipeWithIngredsSteps>>() {
-            @Override
-            public void onChanged(List<RecipeWithIngredsSteps> recipeWithIngredsSteps) {
-                RecipeWithIngredsSteps latestFavoritedRecipe = recipeWithIngredsSteps.get(0);
-                mIngredients = new Ingredient[latestFavoritedRecipe.getIngredients().size()];
-                Ingredient[] currIngreds = new Ingredient[latestFavoritedRecipe.getIngredients().size()];
-                mIngredients = latestFavoritedRecipe.getIngredients().toArray(currIngreds);
+        mDb = AppDatabase.getsInstance(getApplicationContext());
+        List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().loadAllFavoriteRecipesByDateAdded().getValue();
+        RecipeWithIngredsSteps latestFavoritedRecipe = recipes.get(0);
+        mIngredients = new Ingredient[latestFavoritedRecipe.getIngredients().size()];
+        mIngredients = latestFavoritedRecipe.getIngredients().toArray(mIngredients);
 
-            }
-        });
         //Get the widget
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, IngredientWidgetProvider.class));
         //Trigger data update in the widget ListView and force data refresh
         manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
         //Update the widget
-        IngredientWidgetProvider.updateIngredientsWidgets(this, manager, appWidgetIds, mIngredients[0].getIngredient());
+        IngredientWidgetProvider.updateIngredientsWidgets(this, manager, appWidgetIds);
     }
 }

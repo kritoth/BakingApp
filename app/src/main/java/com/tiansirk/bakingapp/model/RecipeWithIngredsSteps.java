@@ -7,17 +7,17 @@ import androidx.room.Relation;
 
 public class RecipeWithIngredsSteps {
         @Embedded
-        public Recipe recipe;
+        private Recipe recipe;
         @Relation(
                 parentColumn = "name",
                 entityColumn = "recipeName"
         )
-        public List<Ingredient> ingredients;
+        private List<Ingredient> ingredients;
         @Relation(
                 parentColumn = "name",
                 entityColumn = "recipeName"
         )
-        public List<Step> steps;
+        private List<Step> steps;
 
         public RecipeWithIngredsSteps(Recipe recipe, List<Ingredient> ingredients, List<Step> steps) {
                 this.recipe = recipe;

@@ -1,23 +1,27 @@
 package com.tiansirk.bakingapp.ui.adapters;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.tiansirk.bakingapp.IngredientWidgetProvider;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.data.AppDatabase;
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListWidgetService extends RemoteViewsService{
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListRemoteViewsFactory(this.getApplicationContext());
+        return new ListRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 }
 
@@ -26,11 +30,14 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
     private List<Ingredient> mIngredients;
     private AppDatabase mDb;
-    private Recipe mRecipe;
+    private int mAppWidgetId;
 
-    public ListRemoteViewsFactory(Context context) {
+    public ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
         this.mDb = AppDatabase.getsInstance(context);
+        mIngredients = new ArrayList<>();
+        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     @Override
@@ -47,6 +54,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDestroy() {
+
     }
 
     @Override
@@ -65,9 +73,24 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public RemoteViews getViewAt(int i) {
         if (mIngredients == null || mIngredients.size() == 0) return null;
 
+        // position will always range from 0 to getCount() - 1.
+        // We construct a remote views item based on our widget item xml file, and set the
+        // text based on the position.
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_item_view);
         // Update the textview with the ingredients' names
         views.setTextViewText(R.id.widget_item_ingredient_name, mIngredients.get(i).getIngredient());
+
+        // Next, we set a fill-intent which will be used to fill-in the pending intent template
+        // which is set on the collection view in StackWidgetProvider.
+        Bundle extras = new Bundle();
+        extras.putInt(IngredientWidgetProvider.EXTRA_ITEM, i);
+        Intent fillInIntent = new Intent();
+        fillInIntent.putExtras(extras);
+        views.setOnClickFillInIntent(R.id.widget_item_ingredient_name, fillInIntent);
+
+        // Get all Ingredient info ordered by creation time
+        List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().loadAllFavoriteRecipesByDateAdded().getValue();
+        mIngredients = recipes.get(0).getIngredients();
 
         return views;
     }
@@ -84,7 +107,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
