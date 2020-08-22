@@ -58,8 +58,9 @@ public interface RecipeDao {
     @Query("SELECT * FROM recipe_table ORDER BY servings ASC")
     List<Recipe> queryAllFavoriteRecipesByServings();
 
+    @Transaction
     @Query("SELECT * FROM recipe_table ORDER BY dateAddedToFav DESC")
-    List<Recipe> queryAllFavoriteRecipesByDateAdded();
+    List<RecipeWithIngredsSteps> queryAllFavoriteRecipesByDateAdded();
 
     @Query("SELECT EXISTS(SELECT 1 FROM recipe_table WHERE roomId = :id)")
     int queryIfRecipeExists(long id);

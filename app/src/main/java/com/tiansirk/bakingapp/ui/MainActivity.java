@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import men.ngopi.zain.jsonloaderlibrary.JSONLoader;
 import men.ngopi.zain.jsonloaderlibrary.StringLoaderListener;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -20,6 +22,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.tiansirk.bakingapp.IngredientWidgetProvider;
 import com.tiansirk.bakingapp.R;
 import com.tiansirk.bakingapp.ShowIngredientService;
 import com.tiansirk.bakingapp.model.Recipe;
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewModel();
 
         // Get the saved Recipe array or load it from JSON
-/*        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_OF_RECIPES)){
+        if(savedInstanceState != null && savedInstanceState.containsKey(STATE_OF_RECIPES)){
             //mRecipes = JsonParser.getRecipesFromJson(savedInstanceState.getString(STATE_RECIPES));
             Parcelable[] parcelables = savedInstanceState.getParcelableArray(STATE_OF_RECIPES);
             mRecipes = new Recipe[parcelables.length];
@@ -81,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
             }
             Log.d(TAG, "mRecipe is received from savedInstanceState");
         } else{
-
- */
             // Load data from JSON
             parseJsonFromFile();
             Log.d(TAG, "mRecipe is received from JSON");
@@ -93,10 +94,11 @@ public class MainActivity extends AppCompatActivity {
                     for(RecipeWithIngredsSteps recipe : recipes){
                         updateRecipeInArray(recipe.getRecipe());
                     }
+
                 }
             });
-/*        }
-*/
+        }
+
         // Set up Adapter
         setupAdapter();
         // Set up ItemClickListener
@@ -177,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
         updateRecipeInArray(recipe);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         Toast.makeText(getApplicationContext(), recipe.getName() + " is saved as favorite!", Toast.LENGTH_SHORT).show();
-        ShowIngredientService.startActionUpdateIngredients(getApplicationContext());
+        ShowIngredientService.startActionUpdateIngredients(this);
     }
     /** Removes the {@param Recipe} from the App's Database */
     private void removeRecipeFromFavorites(Recipe recipe) {
@@ -187,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         updateRecipeInArray(recipe);
         mAdapter.setRecipesData(Arrays.asList(mRecipes));
         Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
-        ShowIngredientService.startActionUpdateIngredients(getApplicationContext());
+        ShowIngredientService.startActionUpdateIngredients(this);
     }
 
     /**
