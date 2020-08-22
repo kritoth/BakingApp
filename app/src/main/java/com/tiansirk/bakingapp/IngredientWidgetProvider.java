@@ -26,23 +26,16 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
     public static final String TAG = IngredientWidgetProvider.class.getSimpleName();
     public static final String EXTRA_INGREDIENTS_TO_SHOW = MainActivity.PACKAGE_NAME + ".extra_ingredients_to_show";
 
-    public static void updateIngredientsWidgets(Context context, AppWidgetManager appWidgetManager,
-                                                int[] appWidgetIds, List<Ingredient> ingredients) {
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId, ingredients);
-        }
-    }
 
     private static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId, List<Ingredient> ingredients) {
-        Log.wtf(TAG, "updateAppWidget is called");
+                                int appWidgetId) {
+        Log.d(TAG, "updateAppWidget is called");
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list_ingredients);
         // Set the ListWidgetService intent to act as the adapter for the ListView
         Intent serviceIntent = new Intent(context, ListWidgetService.class);
-        serviceIntent.putParcelableArrayListExtra(EXTRA_INGREDIENTS_TO_SHOW, (ArrayList<? extends Parcelable>) ingredients);
         views.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
-        Log.wtf(TAG, "setRemoteAdapter is called");
+        Log.d(TAG, "setRemoteAdapter is called");
         // Handle empty list of ingredients
         views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_text_view);
 
@@ -50,7 +43,7 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
         Intent activityIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
         // Set intent to the widget
-//        views.setOnClickPendingIntent(R.id.widget_list_placeholder, pendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_list_placeholder, pendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -58,24 +51,21 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        Log.wtf(TAG, "onUpdate is called");
-        //Start the intent service update widget action, the service takes care of updating the widgets UI
-        ShowIngredientService.startActionUpdateIngredients(context);
-/*
+        Log.d(TAG, "onUpdate is called");
         for(int appWidgetId : appWidgetIds){
-            updateAppWidget(context.getApplicationContext(), appWidgetManager, appWidgetId, mRecipeId);//TODO: I don't have this mRecipeId here
+            updateAppWidget(context.getApplicationContext(), appWidgetManager, appWidgetId);
         }
-
         // This triggers onDatasetChanged from RemoteViewsService.RemoteViewsFactory
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
- */
-
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
-        ShowIngredientService.startActionUpdateIngredients(context);
+        Log.d(TAG, "onAppWidgetOptionsChanged is called");
+        updateAppWidget(context.getApplicationContext(), appWidgetManager, appWidgetId);
+        // This triggers onDatasetChanged from RemoteViewsService.RemoteViewsFactory
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list_view);
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions);
     }
 

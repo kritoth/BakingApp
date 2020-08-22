@@ -38,8 +38,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         this.mContext = context;
         this.mDb = AppDatabase.getsInstance(context);
         mIngredients = new ArrayList<>();
-        Log.wtf(TAG, "constructor is called, mIngredients size: " + mIngredients.size());
-        //mIngredients = intent.getParcelableArrayListExtra(IngredientWidgetProvider.EXTRA_INGREDIENTS_TO_SHOW);
+        Log.d(TAG, "constructor is called, mIngredients size: " + mIngredients.size());
     }
 
     @Override
@@ -49,10 +48,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     //called on start and when notifyAppWidgetViewDataChanged is called
     @Override
     public void onDataSetChanged() {
-        // Get all Ingredient info ordered by creation time
+        // Get all Ingredient info of the lastly favorited Recipe
         List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().queryAllFavoriteRecipesByDateAdded();
         mIngredients = recipes.get(0).getIngredients();
-        Log.wtf(TAG, "onDataSetChanged is called, mIngredients size: " + mIngredients.size());
+        Log.d(TAG, "onDataSetChanged is called, mIngredients size: " + mIngredients.size());
     }
 
     @Override
@@ -74,28 +73,19 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int i) {
-        Log.wtf(TAG, "getViewAt is called, mIngredients size: " + mIngredients.size());
+        Log.d(TAG, "getViewAt is called, mIngredients size: " + mIngredients.size());
         // If still there are no ingredients, get all Ingredient info ordered by creation time
         if (mIngredients == null || mIngredients.size() == 0) {
             List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().queryAllFavoriteRecipesByDateAdded();
             mIngredients = recipes.get(0).getIngredients();
         }
-        Log.wtf(TAG, "getViewAt after checking mIngredients size. The new size is: " + mIngredients.size());
+        Log.d(TAG, "getViewAt after checking mIngredients size. The new size is: " + mIngredients.size());
         // position will always range from 0 to getCount() - 1.
         // We construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_item_view);
         // Update the textview with the ingredients' names
         views.setTextViewText(R.id.widget_item_ingredient_name, mIngredients.get(i).getIngredient());
-
-/*        // Next, we set a fill-intent which will be used to fill-in the pending intent template
-        // which is set on the collection view in StackWidgetProvider.
-        Bundle extras = new Bundle();
-        extras.putInt(IngredientWidgetProvider.EXTRA_ITEM, i);
-        Intent fillInIntent = new Intent();
-        fillInIntent.putExtras(extras);
-        views.setOnClickFillInIntent(R.id.widget_item_ingredient_name, fillInIntent);
-*/
 
         return views;
     }
