@@ -14,6 +14,7 @@ import com.tiansirk.bakingapp.ui.MainActivity;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModel;
 import com.tiansirk.bakingapp.viewmodel.FavoriteViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -27,7 +28,7 @@ public class ShowIngredientService extends IntentService {
     public static final String ACTION_UPDATE_INGREDIENTS = MainActivity.PACKAGE_NAME + ".action_show_ingredients";
 
     private AppDatabase mDb;
-    private Ingredient[] mIngredients;
+    private List<Ingredient> mIngredients;
 
     public ShowIngredientService(String name) {
         super(name);
@@ -69,15 +70,16 @@ public class ShowIngredientService extends IntentService {
         mDb = AppDatabase.getsInstance(getApplicationContext());
         List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().loadAllFavoriteRecipesByDateAdded().getValue();
         RecipeWithIngredsSteps latestFavoritedRecipe = recipes.get(0);
-        mIngredients = new Ingredient[latestFavoritedRecipe.getIngredients().size()];
-        mIngredients = latestFavoritedRecipe.getIngredients().toArray(mIngredients);
+        mIngredients = new ArrayList<>();
+        mIngredients = latestFavoritedRecipe.getIngredients();
 
         //Get the widget
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, IngredientWidgetProvider.class));
+
         //Trigger data update in the widget ListView and force data refresh
         manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
         //Update the widget
-        IngredientWidgetProvider.updateIngredientsWidgets(this, manager, appWidgetIds);
+        IngredientWidgetProvider.updateIngredientsWidgets(this, manager, appWidgetIds, mIngredients);
     }
 }

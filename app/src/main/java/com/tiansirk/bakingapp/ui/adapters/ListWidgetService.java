@@ -15,6 +15,7 @@ import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.RecipeWithIngredsSteps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListWidgetService extends RemoteViewsService{
@@ -30,14 +31,12 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private Context mContext;
     private List<Ingredient> mIngredients;
     private AppDatabase mDb;
-    private int mAppWidgetId;
 
     public ListRemoteViewsFactory(Context context, Intent intent) {
         this.mContext = context;
         this.mDb = AppDatabase.getsInstance(context);
         mIngredients = new ArrayList<>();
-        mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                AppWidgetManager.INVALID_APPWIDGET_ID);
+        mIngredients = intent.getParcelableArrayListExtra(IngredientWidgetProvider.EXTRA_INGREDIENTS_TO_SHOW);
     }
 
     @Override
