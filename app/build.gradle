@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
 
-
     defaultConfig {
         applicationId "com.tiansirk.bakingapp"
         minSdkVersion 23
@@ -44,8 +43,16 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.archLifecycleVersion"
 
     testImplementation 'junit:junit:4.12'
+    // Core library
+    androidTestImplementation 'androidx.test:core:1.0.0'
+    // AndroidJUnitRunner and JUnit Rules
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+    // Assertions
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    // Espresso dependencies
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.0'
 
     //JSONLoader for converting .json file to String
     implementation "com.github.zainfikrih:jsonloader-library:$rootProject.jsonLoaderVersion"
