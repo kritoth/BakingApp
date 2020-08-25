@@ -1,6 +1,8 @@
 package com.tiansirk.bakingapp.ui;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        //getApplicationContext().deleteDatabase("favoriterecipes");//TODO: Uncomment this - It Deletes whole DB
+        //getApplicationContext().deleteDatabase("favoriterecipes");// Uncomment this - It Deletes whole DB
 
         // Initiating views
         initViews();

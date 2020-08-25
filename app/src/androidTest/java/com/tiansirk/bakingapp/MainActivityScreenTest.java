@@ -1,21 +1,32 @@
 package com.tiansirk.bakingapp;
 
 import androidx.appcompat.widget.Toolbar;
+
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
 import android.widget.TextView;
 
 import com.tiansirk.bakingapp.ui.MainActivity;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.*;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 import static androidx.test.espresso.Espresso.*;
 import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.assertion.ViewAssertions.*;
+import static androidx.test.espresso.intent.Intents.*;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.*;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
 import static org.hamcrest.Matchers.*;
 
@@ -53,7 +64,7 @@ public class MainActivityScreenTest {
         // checks that the OpensSelectStepActivity opens with the correct recipe name displayed in the ToolBar
         onView(allOf(isAssignableFrom(TextView.class),
                 withParent(isAssignableFrom(Toolbar.class)))).check(matches(withText(RECIPE_NAME)));
-
-
     }
+
+
 }
