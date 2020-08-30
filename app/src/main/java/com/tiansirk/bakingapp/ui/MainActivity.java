@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "mRecipe is received from savedInstanceState");
         } else{
             // Load data from JSON
-            parseJsonFromWeb(); //parseJsonFromFile();//TODO: change to OKHttp
+            parseJsonFromWeb();
             Log.d(TAG, "mRecipe is received from JSON");
             // And update the list to set their favorite status
             mViewModel.getRecipesByDate().observe(this, new Observer<List<RecipeWithIngredsSteps>>() {
@@ -104,14 +104,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-        // Set up Adapter
-        setupAdapter();
-        // Set up ItemClickListener
-        setupItemClickListeners();
-        // Set up ItemLongClickListener
-        setupItemLongClickListeners();
-
+        // Show loading indicator while parsing from web
+        while (mRecipes == null) {
+            binding.pbLoadingIndicatorRecipes.setVisibility(View.VISIBLE);
+        }
+        // When parsed set up the Adapter
+        if(mRecipes != null) {
+            // Set up Adapter
+            setupAdapter();
+            // Set up ItemClickListener
+            setupItemClickListeners();
+            // Set up ItemLongClickListener
+            setupItemLongClickListeners();
+        }
+        // Finally show data or error msg depending on parsing result
         if(mAdapter.getRecipesData().isEmpty()) showErrorMessage();
         else showDataView();
     }
@@ -228,31 +234,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Reads from the .json file and returns its String representation. Uses JSONLoader Library,
-     * https://android-arsenal.com/details/1/7916,
-     * a simple Android library to open .json file from the {assets} folder
-     * @return String file
-     */
-    private void parseJsonFromFile(){
-        JSONLoader.with(this)
-                .fileName("baking.json")
-                .get(new StringLoaderListener() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, "parseJsonFromFile - onResponse get called");
-                        // response as String to be used to parse content into array of Recipe
-                        mRecipes = JsonParser.getRecipesFromJson(response);
-                    }
-                    @Override
-                    public void onFailure(IOException error) {
-                        // error with opening/reading file
-                        Log.e(TAG, "Error with reading from .json file!:", error);
-                        showErrorMessage();
-                    }
-                });
-    }
-
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -318,6 +299,35 @@ public class MainActivity extends AppCompatActivity {
         int[] appWidgetIds = manager.getAppWidgetIds(new ComponentName(this, IngredientWidgetProvider.class));
         //Trigger data update in the widget ListView and force data refresh
         manager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
+    }
+
+
+
+    /** UNUSED
+     * This is to be used when the json is on the disk instead of parsing it from the web
+     *
+     * Reads from the .json file and returns its String representation. Uses JSONLoader Library,
+     * https://android-arsenal.com/details/1/7916,
+     * a simple Android library to open .json file from the {assets} folder
+     * @return String file
+     */
+    private void parseJsonFromFile(){
+        JSONLoader.with(this)
+                .fileName("baking.json")
+                .get(new StringLoaderListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "parseJsonFromFile - onResponse get called");
+                        // response as String to be used to parse content into array of Recipe
+                        mRecipes = JsonParser.getRecipesFromJson(response);
+                    }
+                    @Override
+                    public void onFailure(IOException error) {
+                        // error with opening/reading file
+                        Log.e(TAG, "Error with reading from .json file!:", error);
+                        showErrorMessage();
+                    }
+                });
     }
 
 }

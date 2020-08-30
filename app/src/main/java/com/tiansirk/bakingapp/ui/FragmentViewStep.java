@@ -54,6 +54,8 @@ public class FragmentViewStep extends Fragment {
 
     /** Member var for own custom data-to-be-sent listener */
     private FragmentViewStepListener listener;
+
+    /** Member var for exoPlayer MediaFactory */
     private ProgressiveMediaSource.Factory mFactory;
 
     /** The interface that receives onClick messages */
