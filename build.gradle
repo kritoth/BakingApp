@@ -32,6 +32,7 @@ ext {
     recyclerviewVersion = '1.1.0'
     cardviewVersion = '1.0.0'
     materialVersion = '1.1.0'
+    okHttpVersion = '4.8.1'
     jsonLoaderVersion = '1.0.3'
     gsonVersion = '2.8.6'
     roomVersion = '2.2.5'

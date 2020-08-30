@@ -59,6 +59,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.1.0'
 
+    //OKHttp for network requesting
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.okHttpVersion"
     //JSONLoader for converting .json file to String
     implementation "com.github.zainfikrih:jsonloader-library:$rootProject.jsonLoaderVersion"
     //GSON for parsing JSON-Java Deserialization

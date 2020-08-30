@@ -10,6 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import men.ngopi.zain.jsonloaderlibrary.JSONLoader;
 import men.ngopi.zain.jsonloaderlibrary.StringLoaderListener;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "mRecipe is received from savedInstanceState");
         } else{
             // Load data from JSON
-            parseJsonFromFile();
+            parseJsonFromWeb(); //parseJsonFromFile();//TODO: change to OKHttp
             Log.d(TAG, "mRecipe is received from JSON");
             // And update the list to set their favorite status
             mViewModel.getRecipesByDate().observe(this, new Observer<List<RecipeWithIngredsSteps>>() {
@@ -192,6 +197,35 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, recipe.getName() + " is removed from favorites.", Toast.LENGTH_SHORT).show();
 
         updateWidget();
+    }
+
+    /**
+     * Reads from the http URL and returns its response's String representation to be used by GSON for parsing.
+     * Uses OKHttp library: https://github.com/square/okhttp
+     */
+    private void parseJsonFromWeb(){
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                } else {
+                    // store the result
+                    mRecipes = JsonParser.getRecipesFromJson(response.body().string());
+                }
+            }
+        });
     }
 
     /**
