@@ -8,13 +8,13 @@
     tools:context=".ui.SelectStepActivity"
     android:orientation="vertical">
 
-    <!-- This container holds the Select Recipe Step Fragment -->
+    <!-- This container holds the Select Step Fragment -->
     <FrameLayout android:id="@+id/select_step_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerInside"/>
 
-    <!-- This container holds the View Recipe Step Fragment -->
+    <!-- This container holds the View Step Fragment -->
     <FrameLayout android:id="@+id/view_step_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

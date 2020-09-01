@@ -8,6 +8,7 @@
     android:orientation="horizontal"
     tools:context=".ui.SelectStepActivity">
 
+    <!-- This container holds the Select Step Fragment -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/select_container_tablet"
@@ -17,11 +18,13 @@
         tools:context=".MainActivity">
     </FrameLayout>
 
+    <!-- This is a divider decoration -->
     <View
         android:layout_width="1dp"
         android:layout_height="wrap_content"
         android:background="@android:color/darker_gray"/>
 
+    <!-- This container holds the View Step Fragment -->
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/view_container_tablet"

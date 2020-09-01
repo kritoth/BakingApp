@@ -86,9 +86,8 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             mSelectStepFragment.setIngredients(mIngredients);
             mSelectStepFragment.setSteps(mSteps);
             mViewStepFragment.setSteps(mSteps, 0); // shows first step as default behavior
-            // Setup the fragments according to the device configuration
-
         }
+        // Setup the fragments according to the device configuration
         if(isDualPane){
             ft.replace(R.id.select_container_tablet, mSelectStepFragment);
             ft.replace(R.id.view_container_tablet, mViewStepFragment);
@@ -110,18 +109,26 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
      * view fragment and change its content accordingly */
     @Override
     public void onSelectionSent(int position) {
+        Log.d(TAG, "onSelectionSent() is called from FragmentSelectSteps.java");
         mViewStepFragment.setSteps(mSteps, position); // saves newly received data
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
         if(isDualPane){
+            // detach and re-attach each time makes sure the newly set data will be shown instead of the previously saved data
+            ft.detach(mViewStepFragment);
+            Log.d(TAG, "dualPane mViewFragment is detached");
+            ft.attach(mViewStepFragment);
+            Log.d(TAG, "dualPane mViewFragment is attached");
+
             ft.replace(R.id.view_container_tablet, mViewStepFragment);
             ft.commit();
         } else{
             // detach and re-attach each time makes sure the newly set data will be shown instead of the previously saved data
             ft.detach(mViewStepFragment);
-            Log.d(TAG, "mViewFragment is detached");
+            Log.d(TAG, "!dualPane mViewFragment is detached");
             ft.attach(mViewStepFragment);
-            Log.d(TAG, "mViewFragment is attached");
+            Log.d(TAG, "!dualPane mViewFragment is attached");
+
             ft.replace(R.id.view_step_container, mViewStepFragment);
             ft.commit();
             ft.hide(mSelectStepFragment);
@@ -164,5 +171,4 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             Log.d(TAG, "ViewFragment is saved in onSaveInstanceState!");
         }
     }
-
 }

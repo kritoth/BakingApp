@@ -62,8 +62,10 @@ public class FragmentViewStep extends Fragment {
     public interface FragmentViewStepListener{
         void onBackSelected(Step[] steps);
     }
+
     /** Member var for keeping track of UI state */
     private boolean isLandscape;
+    private boolean isDualPane;
 
     private SimpleExoPlayer mPlayer;
 
@@ -93,10 +95,6 @@ public class FragmentViewStep extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Check the device's orientation
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) isLandscape = true;
-        else isLandscape = false;
-
         // Load the saved state (the items in the step) if there is one
         if(savedInstanceState != null && savedInstanceState.get(STATE_STEPS) != null) {
             Log.d(TAG, "mSteps, mStepsIndex and isLandscape is recreated from onCreateView's savedInstanceState.");
@@ -109,11 +107,18 @@ public class FragmentViewStep extends Fragment {
         binding = FragmentViewStepBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
 
+        // Check the device's orientation
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) isLandscape = true;
+        else isLandscape = false;
+        // Check the device, ie. if it hasn't got the view in sw600dp.xml layout, then it is a tablet
+        if (binding.bottomNavigation != null) isDualPane = false;
+        else isDualPane = true;
+
         // Show the step details
         if(mSteps != null) showStep();
 
-        // Set up the bottom navigation only when the device is in portrait mode
-        if(!isLandscape) setupBottomNavigation();
+        // Set up the bottom navigation only when the device is in portrait mode and not in dualPane
+        if(!isLandscape && !isDualPane) setupBottomNavigation();
 
         return rootView;
     }
