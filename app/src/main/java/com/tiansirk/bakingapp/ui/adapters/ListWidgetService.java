@@ -56,6 +56,10 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
             mRecipe = extractRecipe(recipes.get(0));
             mIngredients = recipes.get(0).getIngredients();
         }
+        else{
+            mRecipe = null;
+            mIngredients.clear();
+        }
 
         Log.d(TAG, "onDataSetChanged is called, mIngredients size: " + mIngredients.size());
     }
@@ -80,7 +84,7 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public int getCount() {
-        if(mIngredients == null) return 0;
+        if(mIngredients == null || mIngredients.size() == 0) return 0;
         return mIngredients.size();
     }
 
