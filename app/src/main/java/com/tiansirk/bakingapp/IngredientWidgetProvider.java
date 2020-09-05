@@ -39,6 +39,7 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
         // Handle empty list of ingredients
         views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_text_view);
 
+        //TODO: change to list item click listener
         // Intent to launch MainActivity
         Intent activityIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);

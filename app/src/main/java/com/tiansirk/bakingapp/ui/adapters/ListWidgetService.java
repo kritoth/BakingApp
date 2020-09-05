@@ -38,7 +38,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         this.mContext = context;
         this.mDb = AppDatabase.getsInstance(context);
         mIngredients = new ArrayList<>();
-        Log.d(TAG, "constructor is called, mIngredients size: " + mIngredients.size());
     }
 
     @Override
@@ -50,7 +49,11 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     public void onDataSetChanged() {
         // Get all Ingredient info of the lastly favorited Recipe
         List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().queryAllFavoriteRecipesByDateAdded();
-        mIngredients = recipes.get(0).getIngredients();
+        //If there are no ingredients saved, avoid getting nullpointer exception
+        if (recipes != null && recipes.size() > 0){
+            mIngredients = recipes.get(0).getIngredients();
+        }
+
         Log.d(TAG, "onDataSetChanged is called, mIngredients size: " + mIngredients.size());
     }
 
@@ -73,13 +76,6 @@ class ListRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int i) {
-        Log.d(TAG, "getViewAt is called, mIngredients size: " + mIngredients.size());
-        // If still there are no ingredients, get all Ingredient info ordered by creation time
-        if (mIngredients == null || mIngredients.size() == 0) {
-            List<RecipeWithIngredsSteps> recipes = mDb.recipeDao().queryAllFavoriteRecipesByDateAdded();
-            mIngredients = recipes.get(0).getIngredients();
-        }
-        Log.d(TAG, "getViewAt after checking mIngredients size. The new size is: " + mIngredients.size());
         // position will always range from 0 to getCount() - 1.
         // We construct a remote views item based on our widget item xml file, and set the
         // text based on the position.
