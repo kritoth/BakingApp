@@ -14,6 +14,7 @@ import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.model.Recipe;
 import com.tiansirk.bakingapp.model.Step;
 import com.tiansirk.bakingapp.ui.adapters.StepAndIngredientAdapter;
+import com.tiansirk.bakingapp.utils.ParcelableUtil;
 
 public class SelectStepActivity extends AppCompatActivity implements FragmentSelectSteps.FragmentSelectStepsListener, FragmentViewStep.FragmentViewStepListener {
 
@@ -70,10 +71,16 @@ public class SelectStepActivity extends AppCompatActivity implements FragmentSel
             mSelectStepFragment = (FragmentSelectSteps) fragmentManager.getFragment(savedInstanceState, FragmentSelectSteps.TAG);
             mViewStepFragment = (FragmentViewStep) fragmentManager.getFragment(savedInstanceState, FragmentViewStep.TAG);
         } else {
-            // Get the received Recipe object
+            // Get the received Recipe object if there is one sent with an Intent
             if(getIntent() != null){
+                // Get it as a Parcelable if it was sent from any other Activity of this app
                 if(getIntent().getExtras().getParcelable("selected_recipe") !=  null){
                     mRecipe = getIntent().getExtras().getParcelable("selected_recipe");
+                }
+                // Get it as a byte[] if it was sent from outside of this app
+                if(getIntent().getExtras().getByteArray("selected_ingredient") !=  null){
+                    byte[] bytes = getIntent().getExtras().getByteArray("selected_ingredient");
+                    mRecipe = ParcelableUtil.unmarshall(bytes, Recipe.CREATOR);
                 }
             }
             // Set the Ingredient and Step objects from the received Recipe

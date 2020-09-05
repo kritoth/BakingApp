@@ -124,6 +124,8 @@ public class FavoriteActivity extends AppCompatActivity {
         }
     }
 
+    /* Helper method for creating plain Recipe object - which properly contains Ingredient and Step arrays -
+     * from RecipeWithIngredsSteps object */
     private static Recipe extractRecipe(RecipeWithIngredsSteps r) {
         Ingredient[] currIngreds = new Ingredient[r.getIngredients().size()];
         currIngreds = r.getIngredients().toArray(currIngreds);

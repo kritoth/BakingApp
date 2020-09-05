@@ -12,6 +12,7 @@ import android.widget.RemoteViews;
 
 import com.tiansirk.bakingapp.model.Ingredient;
 import com.tiansirk.bakingapp.ui.MainActivity;
+import com.tiansirk.bakingapp.ui.SelectStepActivity;
 import com.tiansirk.bakingapp.ui.adapters.ListWidgetService;
 
 import java.util.ArrayList;
@@ -39,12 +40,11 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
         // Handle empty list of ingredients
         views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_text_view);
 
-        //TODO: change to list item click listener
-        // Intent to launch MainActivity
-        Intent activityIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, activityIntent, 0);
+        // Intent to launch the respective Recipe's SelectStepActivity with listItemClickListener, aka PendingIntent, see ListWidgetService's getViewAt() method
+        Intent appIntent = new Intent(context, SelectStepActivity.class);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Set intent to the widget
-        views.setOnClickPendingIntent(R.id.widget_list_placeholder, pendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_list_view, appPendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
