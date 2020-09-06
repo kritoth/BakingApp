@@ -37,14 +37,17 @@ public class IngredientWidgetProvider extends AppWidgetProvider {
         Intent serviceIntent = new Intent(context, ListWidgetService.class);
         views.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
         Log.d(TAG, "setRemoteAdapter is called");
-        // Handle empty list of ingredients
+        // Handle empty list of ingredients with click listener and Intent to launch MainActivity
         views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_text_view);
+        Intent appMainIntent = new Intent(context, MainActivity.class);
+        PendingIntent appEmptyPendingIntent = PendingIntent.getActivity(context, 0, appMainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_empty_text_view, appEmptyPendingIntent);
 
         // Intent to launch the respective Recipe's SelectStepActivity with listItemClickListener, aka PendingIntent, see ListWidgetService's getViewAt() method
-        Intent appIntent = new Intent(context, SelectStepActivity.class);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent appIngredientIntent = new Intent(context, SelectStepActivity.class);
+        PendingIntent appListPendingIntent = PendingIntent.getActivity(context, 0, appIngredientIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Set intent to the widget
-        views.setPendingIntentTemplate(R.id.widget_list_view, appPendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_list_view, appListPendingIntent);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
